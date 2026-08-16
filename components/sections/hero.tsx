@@ -18,14 +18,12 @@ export default function Hero() {
     <section
       className="
         relative
-        min-h-screen
         overflow-hidden
         bg-cream
 
         pt-[76px]
 
         lg:h-screen
-        lg:min-h-0
         lg:pt-[84px]
       "
     >
@@ -78,7 +76,7 @@ export default function Hero() {
           items-start
           gap-8
           px-5
-          py-8
+          py-6
 
           sm:px-6
           sm:py-10

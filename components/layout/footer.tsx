@@ -1,11 +1,26 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Instagram, Facebook, Youtube, Send } from "lucide-react";
 import { nav } from "@/lib/data";
 import { Button } from "@/components/ui/button";
+import { scrollToHash } from "@/lib/utils";
 
 export default function Footer() {
+  const pathname = usePathname();
+
+  // If already on the target page, smooth-scroll immediately; otherwise let
+  // the Link's own navigation happen — Navbar's useHashScroll picks it up on arrival.
+  const handleHashClick = (href: string) => {
+    if (!href.includes("#")) return;
+    const [path, hash] = href.split("#");
+    const targetPath = path || "/";
+    if (pathname === targetPath) {
+      scrollToHash(hash);
+    }
+  };
+
   return (
     <footer className="relative overflow-hidden bg-gradient-to-br from-charcoal-900 via-ink-950 to-charcoal-900 text-white">
       {/* Soft botanical wash - matching all sections with dark theme */}
@@ -44,7 +59,12 @@ export default function Footer() {
           <ul className="mt-4 sm:mt-5 space-y-2 sm:space-y-3 text-xs sm:text-sm text-white/60">
             {nav.slice(0, 6).map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="transition-all duration-300 hover:text-sage-300 hover:pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded px-1">
+                <Link
+                  href={item.href}
+                  scroll={item.href.includes("#") ? false : undefined}
+                  onClick={() => handleHashClick(item.href)}
+                  className="transition-all duration-300 hover:text-sage-300 hover:pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded px-1"
+                >
                   {item.label}
                 </Link>
               </li>
@@ -55,10 +75,13 @@ export default function Footer() {
         <div>
           <h4 className="font-display text-sm sm:text-base font-semibold text-white">Support</h4>
           <ul className="mt-4 sm:mt-5 space-y-2 sm:space-y-3 text-xs sm:text-sm text-white/60">
-            <li><Link href="/#faq" className="transition-all duration-300 hover:text-sage-300 hover:pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded px-1">Help Center</Link></li>
-            <li><Link href="/#classes" className="transition-all duration-300 hover:text-sage-300 hover:pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded px-1">Course Support</Link></li>
-            <li><Link href="/#contact" className="transition-all duration-300 hover:text-sage-300 hover:pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded px-1">Customer Support</Link></li>
-            <li><Link href="/#faq" className="transition-all duration-300 hover:text-sage-300 hover:pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded px-1">FAQ</Link></li>
+            <li><Link href="/faq" className="transition-all duration-300 hover:text-sage-300 hover:pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded px-1">Help Center</Link></li>
+            <li><Link href="/#classes" scroll={false} onClick={() => handleHashClick("/#classes")} className="transition-all duration-300 hover:text-sage-300 hover:pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded px-1">Course Support</Link></li>
+            <li><Link href="/contact" className="transition-all duration-300 hover:text-sage-300 hover:pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded px-1">Customer Support</Link></li>
+            <li><Link href="/faq" className="transition-all duration-300 hover:text-sage-300 hover:pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded px-1">FAQ</Link></li>
+            <li><Link href="/accessories" className="transition-all duration-300 hover:text-sage-300 hover:pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded px-1">Accessories</Link></li>
+            <li><Link href="/other-services" className="transition-all duration-300 hover:text-sage-300 hover:pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded px-1">Other Services</Link></li>
+            <li><Link href="/testimonials" className="transition-all duration-300 hover:text-sage-300 hover:pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded px-1">Testimonials</Link></li>
           </ul>
         </div>
 

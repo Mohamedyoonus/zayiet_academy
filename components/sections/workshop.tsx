@@ -9,7 +9,7 @@ import { workshops } from "@/lib/data";
 
 export default function Workshop() {
   return (
-    <section id="workshop" className="relative overflow-hidden bg-sage-50/40 py-28 dark:bg-ink-950">
+    <section id="workshop" className="relative overflow-hidden bg-ivory-200 py-10 sm:py-16 lg:py-28 dark:bg-ink-950">
       {/* Soft botanical wash - matching Hero and ArtClasses */}
       <div className="pointer-events-none absolute -left-32 top-10 h-[26rem] w-[26rem] rounded-full bg-sage-200/50 blur-[120px]" />
       <div className="pointer-events-none absolute -right-24 bottom-0 h-[22rem] w-[22rem] rounded-full bg-sage-100/70 blur-[130px]" />

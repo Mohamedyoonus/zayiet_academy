@@ -13,7 +13,7 @@ const modeIcons = { school: School, video: Video, play: PlayCircle } as const;
 
 export default function ArtClasses() {
   return (
-    <section id="classes" className="relative bg-sage-50/40 py-16 sm:py-20 dark:bg-ink-950">
+    <section id="classes" className="relative bg-sage-50 py-8 sm:py-14 lg:py-20 dark:bg-ink-950">
       {/* Soft botanical wash - matching Hero section */}
       <div className="pointer-events-none absolute -left-32 top-10 h-[26rem] w-[26rem] rounded-full bg-sage-200/50 blur-[120px]" />
       <div className="pointer-events-none absolute -right-24 bottom-0 h-[22rem] w-[22rem] rounded-full bg-sage-100/70 blur-[130px]" />

@@ -17,11 +17,11 @@ export const nav = [
   { label: "Classes", href: "/#classes" },
   { label: "Workshop", href: "/#workshop" },
   { label: "Gallery", href: "/#gallery" },
-  { label: "Store", href: "/#store" },
-  { label: "Events", href: "/#events" },
-  { label: "Collaboration", href: "/#collaboration" },
-  { label: "About", href: "/#about" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Store", href: "/store" },
+  { label: "Events", href: "/events" },
+  { label: "Collaboration", href: "/collaboration" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export const courses: Course[] = [

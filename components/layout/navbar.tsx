@@ -2,16 +2,33 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image"; 
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { nav } from "@/lib/data";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, scrollToHash } from "@/lib/utils";
+import { useHashScroll } from "@/hooks/use-hash-scroll";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
+  useHashScroll();
+
+  // If already on the target page, smooth-scroll immediately; otherwise let
+  // the Link's own navigation happen and useHashScroll picks it up on arrival.
+  const handleNavClick = (href: string) => {
+    setOpen(false);
+    if (!href.includes("#")) return;
+    const [path, hash] = href.split("#");
+    const targetPath = path || "/";
+    if (pathname === targetPath) {
+      scrollToHash(hash);
+    }
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -86,6 +103,8 @@ export default function Navbar() {
             <Link
               key={item.href}
               href={item.href}
+              scroll={item.href.includes("#") ? false : undefined}
+              onClick={() => handleNavClick(item.href)}
               className="group relative px-4 py-2 text-sm font-medium tracking-wide text-[#2D2D2D] transition-colors hover:text-[#A8BA8E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
             >
               {item.label}
@@ -98,7 +117,7 @@ export default function Navbar() {
           <Button
             size="sm"
             className="hidden sm:inline-flex bg-[#A8BA8E] text-[#FDFBF5] hover:bg-[#A8BA8E]/90"
-            onClick={() => (window.location.href = "/#contact")}
+            onClick={() => (window.location.href = "/contact")}
           >
             Enquire
           </Button>
@@ -166,7 +185,8 @@ export default function Navbar() {
                 >
                   <Link
                     href={item.href}
-                    onClick={() => setOpen(false)}
+                    scroll={item.href.includes("#") ? false : undefined}
+                    onClick={() => handleNavClick(item.href)}
                     className="block border-b border-[#2D2D2D]/10 py-4 font-display text-lg font-medium text-[#2D2D2D] hover:text-[#A8BA8E] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2"
                   >
                     {item.label}
