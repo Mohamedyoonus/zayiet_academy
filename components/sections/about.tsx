@@ -29,7 +29,7 @@ function Counter({ value, suffix }: { value: number; suffix: string }) {
   }, [inView, value]);
 
   return (
-    <span ref={ref} className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-ink-900 dark:text-white">
+    <span ref={ref} className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-charcoal-900">
       {count}
       {suffix}
     </span>
@@ -75,20 +75,20 @@ export default function About() {
 
         <div>
           <SectionHeading eyebrow="About Zayith Academy" title="Built on a" highlight="simple belief" />
-          <p className="mt-4 text-sm sm:text-base text-ink-600 dark:text-ink-300 leading-relaxed">
-            Zayith Academy began with one instructor, a small room and a conviction that art training should feel personal — not mass-produced. Nearly a decade later, that belief still shapes every batch we run.
+          <p className="mt-4 text-sm sm:text-base text-charcoal-600 dark:text-charcoal-300 leading-relaxed">
+            Zayith Academy began with one instructor, a small room and a conviction that art training should feel personal — not mass-produced. Today we run offline classes from our Bangalore studio and live online classes for children aged 5–16 — that same belief still shapes every batch we run.
           </p>
 
           <div className="mt-8 sm:mt-10 grid gap-4 sm:gap-5 sm:grid-cols-2">
             <div className="rounded-3xl border border-sage-200/40 bg-white/60 p-4 sm:p-6 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-md dark:border-white/10 dark:bg-ink-900/40">
               <Target className="h-5 sm:h-6 w-5 sm:w-6 text-sage-600" />
-              <h4 className="mt-3 font-display text-base sm:text-lg font-medium text-ink-900 dark:text-white">Our Mission</h4>
-              <p className="mt-2 text-xs sm:text-sm text-ink-600 dark:text-ink-300">Make quality art education accessible to every age and skill level, without diluting the craft.</p>
+              <h4 className="mt-3 font-display text-base sm:text-lg font-medium text-charcoal-900">Our Mission</h4>
+              <p className="mt-2 text-xs sm:text-sm text-charcoal-600 dark:text-charcoal-300">Make quality art education accessible to every child aged 5–16, without diluting the craft.</p>
             </div>
             <div className="rounded-3xl border border-sage-200/40 bg-white/60 p-4 sm:p-6 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-md dark:border-white/10 dark:bg-ink-900/40">
               <Eye className="h-5 sm:h-6 w-5 sm:w-6 text-sage-600" />
-              <h4 className="mt-3 font-display text-base sm:text-lg font-medium text-ink-900 dark:text-white">Our Vision</h4>
-              <p className="mt-2 text-xs sm:text-sm text-ink-600 dark:text-ink-300">A community where every student sees themselves as a working artist, not just a hobbyist.</p>
+              <h4 className="mt-3 font-display text-base sm:text-lg font-medium text-charcoal-900">Our Vision</h4>
+              <p className="mt-2 text-xs sm:text-sm text-charcoal-600 dark:text-charcoal-300">A community where every student sees themselves as a working artist, not just a hobbyist.</p>
             </div>
           </div>
 
@@ -96,7 +96,7 @@ export default function About() {
             {counters.map((c) => (
               <div key={c.label}>
                 <Counter value={c.value} suffix={c.suffix} />
-                <p className="mt-1 text-xs text-ink-500 dark:text-ink-400">{c.label}</p>
+                <p className="mt-1 text-xs text-charcoal-500 dark:text-charcoal-400">{c.label}</p>
               </div>
             ))}
           </div>

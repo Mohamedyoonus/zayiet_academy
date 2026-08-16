@@ -5,10 +5,10 @@ import { Phone, Mail, Clock, MapPin, Instagram, Facebook, Youtube } from "lucide
 import SectionHeading from "@/components/ui/section-heading";
 
 const info = [
-  { icon: Phone, label: "Call Us", value: "+91 00000 00000" },
-  { icon: Mail, label: "Email Us", value: "hello@a2aacademy.in" },
+  { icon: Phone, label: "Call Us", value: "[Add phone number]" },
+  { icon: Mail, label: "Email Us", value: "[Add email address]" },
   { icon: Clock, label: "Working Hours", value: "Mon – Sat · 10 AM – 7 PM" },
-  { icon: MapPin, label: "Visit Us", value: "Zayith Studio, Madurai, Tamil Nadu" },
+  { icon: MapPin, label: "Visit Us", value: "Zayith Studio, Bangalore, Karnataka" },
 ];
 
 export default function Contact() {
@@ -42,8 +42,8 @@ export default function Contact() {
                 className="rounded-3xl border border-sage-200/40 bg-white/60 p-4 sm:p-6 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-md dark:border-white/10 dark:bg-ink-900/60"
               >
                 <item.icon className="h-4 sm:h-5 w-4 sm:w-5 text-sage-600 dark:text-sage-400" />
-                <div className="mt-2 sm:mt-3 text-xs uppercase tracking-wide text-ink-500 dark:text-ink-400">{item.label}</div>
-                <div className="mt-1 font-display text-base sm:text-lg text-ink-900 dark:text-white">{item.value}</div>
+                <div className="mt-2 sm:mt-3 text-xs uppercase tracking-wide text-charcoal-500 dark:text-charcoal-400">{item.label}</div>
+                <div className="mt-1 font-display text-base sm:text-lg text-charcoal-900">{item.value}</div>
               </motion.div>
             ))}
           </div>
@@ -55,7 +55,7 @@ export default function Contact() {
                 href="#" 
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
-                className="grid h-11 w-11 place-items-center rounded-full border border-sage-200/40 bg-white/60 text-ink-600 backdrop-blur-sm transition-all duration-300 hover:border-sage-400 hover:bg-sage-100/50 hover:text-sage-600 dark:border-white/15 dark:bg-ink-900/60 dark:text-white/70 dark:hover:border-sage-400 dark:hover:text-sage-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+                className="grid h-11 w-11 place-items-center rounded-full border border-sage-200/40 bg-white/60 text-charcoal-600 backdrop-blur-sm transition-all duration-300 hover:border-sage-400 hover:bg-sage-100/50 hover:text-sage-600 dark:border-white/15 dark:bg-ink-900/60   dark:hover:border-sage-400 dark:hover:text-sage-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
               >
                 <Icon className="h-4 w-4" />
               </motion.a>
@@ -72,7 +72,7 @@ export default function Contact() {
         >
           <iframe
             title="Zayith Academy Location"
-            src="https://www.google.com/maps?q=Madurai,Tamil%20Nadu&output=embed"
+            src="https://www.google.com/maps?q=Bangalore,Karnataka&output=embed"
             className="absolute inset-0 h-full w-full grayscale transition-all duration-500 hover:grayscale-0"
             loading="lazy"
           />

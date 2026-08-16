@@ -2,16 +2,19 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Check, Clock, Users, Award, Star, Video, PlayCircle, School } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
 import Badge from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { courses, deliveryModes } from "@/lib/data";
+import { courses, deliveryModes, admissionNote } from "@/lib/data";
 import { formatINR, cn } from "@/lib/utils";
 
 const modeIcons = { school: School, video: Video, play: PlayCircle } as const;
 
 export default function ArtClasses() {
+  const router = useRouter();
+
   return (
     <section id="classes" className="relative bg-sage-50 py-8 sm:py-14 lg:py-20 dark:bg-ink-950">
       {/* Soft botanical wash - matching Hero section */}
@@ -41,17 +44,10 @@ export default function ArtClasses() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
-              className={cn(
-                "card-hover group relative flex flex-col overflow-hidden rounded-2xl border backdrop-blur-sm transition-all duration-300",
-                course.featured
-                  ? "border-sage-300/30 bg-white/80 shadow-lg shadow-sage-200/20 hover:shadow-xl dark:border-white/10 dark:bg-ink-900/90"
-                  : "border-sage-200/40 bg-white/60 shadow-md backdrop-blur-sm hover:shadow-lg dark:border-white/10 dark:bg-ink-900/60"
-              )}
+              className="card-hover group relative flex flex-col overflow-hidden rounded-2xl border border-sage-300/30 bg-white/80 shadow-lg shadow-sage-200/20 backdrop-blur-sm transition-all duration-300 hover:shadow-xl dark:border-white/10 dark:bg-ink-900/90"
             >
-              {course.featured && (
-                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-sage-400 via-ember-gold to-sage-400" />
-              )}
-              
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-sage-400 via-ember-gold to-sage-400" />
+
               {/* Smaller image */}
               <div className="relative h-28 sm:h-32 lg:h-36 overflow-hidden">
                 <Image
@@ -61,44 +57,39 @@ export default function ArtClasses() {
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                <Badge variant={course.featured ? "gold" : "default"} className="absolute left-2.5 top-2.5 sm:left-3 sm:top-3 text-[10px] sm:text-xs px-2 py-0.5">
+                <Badge variant="gold" className="absolute left-2.5 top-2.5 sm:left-3 sm:top-3 text-[10px] sm:text-xs px-2 py-0.5">
                   {course.tier}
                 </Badge>
-                {course.oldFee && (
-                  <div className="absolute right-2.5 top-2.5 sm:right-3 sm:top-3 rounded-full bg-ember-500/90 px-2 py-0.5 text-[9px] font-bold text-white shadow-lg">
-                    Save {Math.round((1 - course.fee / course.oldFee) * 100)}%
-                  </div>
-                )}
               </div>
 
               {/* Ultra compact content */}
               <div className="flex flex-1 flex-col p-3 sm:p-4 lg:p-5">
-                <h3 className="font-display text-base sm:text-lg font-medium text-ink-900 dark:text-white leading-tight">{course.title}</h3>
-                <p className={cn("mt-1 text-xs leading-relaxed line-clamp-2", course.featured ? "text-ink-600" : "text-ink-500 dark:text-ink-300")}>
+                <h3 className="font-display text-base sm:text-lg font-medium text-charcoal-900 leading-tight">{course.title}</h3>
+                <p className="mt-1 text-xs leading-relaxed line-clamp-2 text-charcoal-600">
                   {course.description}
                 </p>
 
                 {/* Ultra compact info grid */}
-                <div className={cn("mt-3 grid grid-cols-2 gap-1.5 border-y py-2.5 text-xs", course.featured ? "border-sage-200/30" : "border-ink-900/8 dark:border-white/10")}>
+                <div className="mt-3 grid grid-cols-2 gap-1.5 border-y border-sage-200/30 py-2.5 text-xs">
                   <div className="flex items-start gap-1.5">
                     <Clock className="mt-0.5 h-3 w-3 shrink-0 text-sage-600" />
                     <div>
-                      <div className="font-semibold text-ink-900 dark:text-white text-[11px]">{course.duration}</div>
-                      <div className={cn("text-[9px]", course.featured ? "text-ink-500" : "text-ink-400 dark:text-ink-400")}>Duration</div>
+                      <div className="font-semibold text-charcoal-900 text-[11px]">{course.duration}</div>
+                      <div className="text-[9px] text-charcoal-500">Duration</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-1.5">
                     <Users className="mt-0.5 h-3 w-3 shrink-0 text-sage-600" />
                     <div>
-                      <div className="font-semibold text-ink-900 dark:text-white text-[11px]">{course.batchSize}</div>
-                      <div className={cn("text-[9px]", course.featured ? "text-ink-500" : "text-ink-400 dark:text-ink-400")}>Batch</div>
+                      <div className="font-semibold text-charcoal-900 text-[11px]">{course.batchSize}</div>
+                      <div className="text-[9px] text-charcoal-500">Batch</div>
                     </div>
                   </div>
                   <div className="col-span-2 flex items-start gap-1.5">
                     <Award className="mt-0.5 h-3 w-3 shrink-0 text-sage-600" />
                     <div>
-                      <div className="font-semibold text-ink-900 dark:text-white text-[11px]">{course.schedule}</div>
-                      <div className={cn("text-[9px]", course.featured ? "text-ink-500" : "text-ink-400 dark:text-ink-400")}>Weekly Schedule</div>
+                      <div className="font-semibold text-charcoal-900 text-[11px]">{course.schedule}</div>
+                      <div className="text-[9px] text-charcoal-500">Weekly Schedule</div>
                     </div>
                   </div>
                 </div>
@@ -108,7 +99,7 @@ export default function ArtClasses() {
                   {course.highlights.slice(0, 3).map((h) => (
                     <li key={h} className="flex items-start gap-1.5 text-[11px] sm:text-xs">
                       <Check className="mt-0.5 h-3 w-3 shrink-0 text-sage-600 flex-shrink-0" />
-                      <span className={cn(course.featured ? "text-ink-800" : "text-ink-700 dark:text-ink-200")}>{h}</span>
+                      <span className="text-charcoal-800">{h}</span>
                     </li>
                   ))}
                 </ul>
@@ -116,18 +107,18 @@ export default function ArtClasses() {
                 {/* Ultra compact footer */}
                 <div className="mt-3 flex items-center justify-between gap-2">
                   <div>
-                    {course.oldFee && (
-                      <span className={cn("mr-1 text-[10px] line-through", course.featured ? "text-ink-400" : "text-ink-400 dark:text-ink-400")}>
-                        {formatINR(course.oldFee)}
-                      </span>
-                    )}
-                    <span className="font-display text-lg sm:text-xl font-semibold text-ink-900 dark:text-white">{formatINR(course.fee)}</span>
+                    <div className="flex items-baseline gap-1">
+                      <span className="font-display text-lg sm:text-xl font-semibold text-charcoal-900">{formatINR(course.feeOffline)}</span>
+                      <span className="text-[10px] text-charcoal-400">/mo Offline</span>
+                    </div>
+                    <div className="text-[10px] text-charcoal-400">{formatINR(course.feeOnline)}/mo Online</div>
                   </div>
-                  
+
                   {/* Ultra compact button */}
                   <Button
-                    variant={course.featured ? "primary" : "dark"}
+                    variant="primary"
                     className="h-8 sm:h-9 text-xs px-4 sm:px-5"
+                    onClick={() => router.push(`/enroll?course=${course.id}`)}
                   >
                     Enroll
                   </Button>
@@ -136,6 +127,8 @@ export default function ArtClasses() {
             </motion.div>
           ))}
         </div>
+
+        <p className="mt-4 text-center text-xs sm:text-sm text-charcoal-500 dark:text-charcoal-400">{admissionNote}</p>
 
         {/* Delivery modes comparison - ULTRA COMPACT */}
         <div className="mt-12 sm:mt-14 lg:mt-16">
@@ -155,8 +148,8 @@ export default function ArtClasses() {
                   <div className="grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-xl bg-gradient-to-br from-sage-500 to-sage-600 text-white shadow-lg shadow-sage-200/40">
                     <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                   </div>
-                  <h4 className="mt-3 font-display text-base sm:text-lg font-medium text-ink-900 dark:text-white">{mode.title}</h4>
-                  <ul className="mt-2 space-y-1 text-[11px] sm:text-xs text-ink-500 dark:text-ink-300">
+                  <h4 className="mt-3 font-display text-base sm:text-lg font-medium text-charcoal-900">{mode.title}</h4>
+                  <ul className="mt-2 space-y-1 text-[11px] sm:text-xs text-charcoal-500 dark:text-charcoal-300">
                     {mode.points.slice(0, 3).map((p) => (
                       <li key={p} className="flex items-center gap-1.5">
                         <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-gold-500" fill="currentColor" />

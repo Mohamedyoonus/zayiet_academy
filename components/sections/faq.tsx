@@ -46,7 +46,7 @@ export default function FAQ() {
                   className="flex w-full items-center justify-between gap-3 sm:gap-4 px-4 sm:px-6 lg:px-7 py-4 sm:py-5 text-left transition-colors duration-200 hover:bg-sage-50/30 dark:hover:bg-white/5"
                   aria-expanded={isOpen}
                 >
-                  <span className="font-display text-base sm:text-lg font-medium text-ink-900 dark:text-white">{f.question}</span>
+                  <span className="font-display text-base sm:text-lg font-medium text-charcoal-900">{f.question}</span>
                   <motion.span
                     animate={{ rotate: isOpen ? 45 : 0 }}
                     transition={{ duration: 0.3 }}
@@ -54,7 +54,7 @@ export default function FAQ() {
                       "grid h-9 w-9 shrink-0 place-items-center rounded-full transition-all duration-300",
                       isOpen 
                         ? "bg-gradient-to-br from-sage-500 to-sage-600 text-white shadow-lg shadow-sage-200/50" 
-                        : "bg-sage-100/50 text-sage-700 dark:bg-white/10 dark:text-white"
+                        : "bg-sage-100/50 text-sage-700 dark:bg-white/10"
                     )}
                   >
                     <Plus className="h-4 w-4" />
@@ -71,7 +71,7 @@ export default function FAQ() {
                     >
                       <div className="px-4 sm:px-6 lg:px-7 pb-4 sm:pb-6 pt-1">
                         <div className="h-px w-full bg-sage-200/30 dark:bg-white/5" />
-                        <p className="mt-4 text-sm leading-relaxed text-ink-600 dark:text-ink-300">{f.answer}</p>
+                        <p className="mt-4 text-sm leading-relaxed text-charcoal-600 dark:text-charcoal-300">{f.answer}</p>
                       </div>
                     </motion.div>
                   )}

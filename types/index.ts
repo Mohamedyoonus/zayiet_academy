@@ -5,17 +5,16 @@ export interface CourseHighlight {
 
 export interface Course {
   id: string;
-  tier: "Foundation" | "Intermediate" | "Final Pro";
+  tier: "Basic" | "Advanced" | "Pro";
   title: string;
   description: string;
   duration: string;
   schedule: string;
   batchSize: string;
   certificate: boolean;
-  fee: number;
-  oldFee?: number;
+  feeOnline: number;
+  feeOffline: number;
   highlights: string[];
-  featured?: boolean;
   image: string;
 }
 

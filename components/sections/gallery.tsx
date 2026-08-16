@@ -45,7 +45,7 @@ export default function Gallery() {
                 "rounded-full px-4 py-2 text-sm font-medium transition-all duration-300",
                 filter === f
                   ? "bg-gradient-to-r from-sage-500 to-sage-600 text-white shadow-lg shadow-sage-200/50"
-                  : "bg-white/60 text-ink-600 backdrop-blur-sm hover:bg-sage-100/50 dark:bg-ink-900/60 dark:text-ink-300 dark:hover:bg-white/10"
+                  : "bg-white/60 text-charcoal-600 backdrop-blur-sm hover:bg-sage-100/50 dark:bg-ink-900/60 dark:text-charcoal-300 dark:hover:bg-white/10"
               )}
             >
               {f}

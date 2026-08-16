@@ -47,7 +47,7 @@ export default function ArtStore() {
                 />
                 <button
                   aria-label="Add to wishlist"
-                  className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/90 text-ink-700 opacity-0 shadow-md transition-all duration-300 group-hover:opacity-100 hover:text-ember-500 dark:bg-ink-800/90 dark:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+                  className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/90 text-charcoal-700 opacity-0 shadow-md transition-all duration-300 group-hover:opacity-100 hover:text-ember-500 dark:bg-ink-800/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
                 >
                   <Heart className="h-4 w-4" />
                 </button>
@@ -62,13 +62,13 @@ export default function ArtStore() {
                   {Array.from({ length: 5 }).map((_, idx) => (
                     <Star key={idx} className="h-3 w-3" fill={idx < Math.round(p.rating) ? "currentColor" : "none"} />
                   ))}
-                  <span className="ml-1 text-ink-400 dark:text-ink-400">{p.rating.toFixed(1)}</span>
+                  <span className="ml-1 text-charcoal-400 dark:text-charcoal-400">{p.rating.toFixed(1)}</span>
                 </div>
-                <h3 className="mt-2 font-display text-lg font-medium text-ink-900 dark:text-white">{p.name}</h3>
+                <h3 className="mt-2 font-display text-lg font-medium text-charcoal-900">{p.name}</h3>
                 <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    {p.oldPrice && <span className="mr-2 text-sm text-ink-400 line-through">{formatINR(p.oldPrice)}</span>}
-                    <span className="font-display text-xl font-semibold text-ink-900 dark:text-white">{formatINR(p.price)}</span>
+                    {p.oldPrice && <span className="mr-2 text-sm text-charcoal-400 line-through">{formatINR(p.oldPrice)}</span>}
+                    <span className="font-display text-xl font-semibold text-charcoal-900">{formatINR(p.price)}</span>
                   </div>
                   <Button size="sm" className="!h-10 !w-10 !p-0 bg-sage-600 hover:bg-sage-700 dark:bg-sage-500 dark:hover:bg-sage-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500" aria-label="Buy now">
                     <ShoppingBag className="h-4 w-4" />

@@ -304,8 +304,8 @@ xl:pt-3
               xl:text-[1.05rem]
             "
           >
-            Professional art education designed to help every learner explore,
-            create and grow — in small batches, with real mentorship.
+            Professional art education for children aged 5–16 — offline in
+            Bangalore or live online, in small batches, with real mentorship.
           </motion.p>
 
           {/* Buttons */}

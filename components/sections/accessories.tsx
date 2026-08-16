@@ -26,7 +26,7 @@ export default function Accessories() {
             highlight="essentials" 
             description="Quality art supplies and tools curated for every creative journey."
           />
-          <Button variant="outline" className="border-sage-300/50 text-sage-700 hover:bg-sage-100/50 dark:border-white/20 dark:text-white dark:hover:bg-white/10 h-11 sm:h-12">
+          <Button variant="outline" className="border-sage-300/50 text-sage-700 hover:bg-sage-100/50 dark:border-white/20 dark:hover:bg-white/10 h-11 sm:h-12">
             View All <ArrowUpRight className="h-4 w-4" />
           </Button>
         </div>

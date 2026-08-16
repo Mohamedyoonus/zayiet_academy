@@ -26,93 +26,97 @@ export const nav = [
 
 export const courses: Course[] = [
   {
-    id: "foundation",
-    tier: "Foundation",
-    title: "Foundation Course",
-    description: "Where every artist begins — line, form, shading and confidence, built one class at a time.",
-    duration: "24 Weeks",
+    id: "basic",
+    tier: "Basic",
+    title: "Basic Course",
+    description: "Where every young artist begins — line, form, shading and confidence, built one visual class at a time. For ages 5–16.",
+    duration: "6 Months",
     schedule: "2 classes / week · 1.5 hrs each",
     batchSize: "15 Students Only",
     certificate: true,
-    fee: 1500,
-    oldFee: 2100,
+    feeOnline: 1500,
+    feeOffline: 1700,
     highlights: ["Fully visual, hands-on classes", "Pencil, shading & basic composition", "Small 15-seat batches", "Certificate of completion"],
     image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=1200&auto=format&fit=crop",
   },
   {
-    id: "intermediate",
-    tier: "Intermediate",
-    title: "Intermediate / Advance",
-    description: "Advanced techniques, colour theory and mentoring for students ready to push further.",
-    duration: "8 Months",
-    schedule: "Professional guidance",
+    id: "advanced",
+    tier: "Advanced",
+    title: "Advanced Course",
+    description: "Deeper technique, colour theory and closer mentoring for students moving on from Basic.",
+    duration: "6 Months",
+    schedule: "2 classes / week · 1.5 hrs each",
     batchSize: "15 Students Only",
     certificate: true,
-    fee: 3200,
-    highlights: ["Advanced shading & colour theory", "One-on-one professional mentoring", "Mixed media exploration", "Certificate of completion"],
+    feeOnline: 2000,
+    feeOffline: 2200,
+    highlights: ["Advanced shading & colour theory", "Closer, small-batch mentoring", "Mixed media exploration", "Certificate of completion"],
     image: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?q=80&w=1200&auto=format&fit=crop",
   },
   {
-    id: "final-pro",
-    tier: "Final Pro",
-    title: "Final Pro",
-    description: "Portfolio building and career guidance for students ready to take art from passion to profession.",
-    duration: "8 Months",
-    schedule: "Studio-style sessions",
-    batchSize: "12 Students Only",
+    id: "pro",
+    tier: "Pro",
+    title: "Pro Course",
+    description: "Portfolio-ready technique for students completing their journey from Basic through Advanced to Pro.",
+    duration: "6 Months",
+    schedule: "2 classes / week · 1.5 hrs each",
+    batchSize: "15 Students Only",
     certificate: true,
-    fee: 5000,
-    highlights: ["Portfolio building for admissions", "Career & placement guidance", "Exhibition-ready final pieces", "Certificate of completion"],
-    featured: true,
+    feeOnline: 2300,
+    feeOffline: 2500,
+    highlights: ["Portfolio-ready final pieces", "Exhibition-style showcase", "Closer, one-on-one guidance", "Certificate of completion"],
     image: "https://images.unsplash.com/photo-1547891654-e66ed7ebb968?q=80&w=1200&auto=format&fit=crop",
   },
 ];
+
+// New students pay a minimum of 3 months' fees at the time of admission.
+export const admissionNote = "New admissions require a minimum of 3 months' fees to be paid upfront.";
 
 export const deliveryModes: DeliveryMode[] = [
   {
     id: "offline",
     title: "Offline Classes",
     icon: "school",
-    points: ["In-studio guided sessions", "24 weeks · 15 students only", "Certificate included"],
+    points: ["In-studio guided sessions in Bangalore", "24 weeks (6 months) · 15 students per batch", "Certificate included"],
   },
   {
     id: "online-live",
     title: "Online Live Classes",
     icon: "video",
-    points: ["24 Weeks live sessions", "Lifetime video access", "Certificate · 15 students/batch"],
+    points: ["24 weeks live sessions, 2/week", "Lifetime video access", "Certificate · limited students per batch"],
   },
   {
     id: "pre-recorded",
     title: "Pre-Recorded Classes",
     icon: "play",
-    points: ["70+ Hours of content", "12 Weeks structured path", "Lifetime access + certificate"],
+    points: ["70+ hours of content", "12 weeks, learn at your own pace", "Lifetime access + certificate"],
   },
 ];
 
 export const workshops: WorkshopEvent[] = [
   {
     id: "w1",
-    title: "Charcoal & Light: A Weekend Intensive",
-    venue: "Zayith Studio, Madurai",
-    date: "Every Saturday",
+    title: "Gated Community Art Workshop",
+    venue: "Venue announced on registration",
+    date: "Register for upcoming dates",
     image: "https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?q=80&w=1200&auto=format&fit=crop",
-    seatsLeft: 6,
+    seatsLeft: 8,
   },
   {
     id: "w2",
-    title: "Watercolour Landscapes Under the Sky",
-    venue: "Zayith Studio, Madurai",
-    date: "Every Sunday",
+    title: "Apartment Association Workshop",
+    venue: "Venue announced on registration",
+    date: "Register for upcoming dates",
     image: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?q=80&w=1200&auto=format&fit=crop",
-    seatsLeft: 4,
+    seatsLeft: 6,
   },
   {
     id: "w3",
-    title: "Portraits in Pencil: Faces & Expression",
-    venue: "Zayith Studio, Madurai",
-    date: "Monthly · Third Week",
+    title: "School Art Workshop",
+    venue: "Venue announced on registration",
+    date: "Register for upcoming dates",
     image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1200&auto=format&fit=crop",
-    seatsLeft: 8,
+    seatsLeft: 10,
   },
 ];
 
@@ -128,30 +132,30 @@ export const products: Product[] = [
 export const materialsKit = [
   "Charcoal Pencil",
   "Brush Set",
-  "DOMS Binding Note — 150 GSM",
+  "Drawing / Note Book — 150 GSM",
+  "Mechanical Eraser",
   "Brustro Drawing Paper — 200 GSM (Pack of 50)",
-  "Blending Stumps",
-  "Electric Eraser",
   "Art Eraser",
-  "Beco Bamboo Tissues",
-  "Sketch Book",
+  "Electric Eraser",
+  "Baco Bamboo Tissues",
+  "Blending Stumps",
 ];
 
 export const accessories: AccessoryCategory[] = [
   { id: "a1", name: "Papers", image: "https://images.unsplash.com/photo-1517697471339-4aa32003c11a?q=80&w=800&auto=format&fit=crop", itemCount: 14 },
-  { id: "a2", name: "Brushes", image: "https://images.unsplash.com/photo-1583505150956-9c8c6c72c4b3?q=80&w=800&auto=format&fit=crop", itemCount: 22 },
-  { id: "a3", name: "Canvas", image: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?q=80&w=800&auto=format&fit=crop", itemCount: 9 },
+  { id: "a2", name: "Pencils", image: "https://images.unsplash.com/photo-1587145820266-a5951ee6f620?q=80&w=800&auto=format&fit=crop", itemCount: 30 },
+  { id: "a3", name: "Erasers", image: "https://images.unsplash.com/photo-1583505150956-9c8c6c72c4b3?q=80&w=800&auto=format&fit=crop", itemCount: 11 },
   { id: "a4", name: "Books", image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=800&auto=format&fit=crop", itemCount: 17 },
-  { id: "a5", name: "Pencils", image: "https://images.unsplash.com/photo-1587145820266-a5951ee6f620?q=80&w=800&auto=format&fit=crop", itemCount: 30 },
-  { id: "a6", name: "Markers", image: "https://images.unsplash.com/photo-1600431521340-491eca880813?q=80&w=800&auto=format&fit=crop", itemCount: 18 },
+  { id: "a5", name: "Brushes", image: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?q=80&w=800&auto=format&fit=crop", itemCount: 22 },
+  { id: "a6", name: "Canvas", image: "https://images.unsplash.com/photo-1600431521340-491eca880813?q=80&w=800&auto=format&fit=crop", itemCount: 9 },
   { id: "a7", name: "Color Kits", image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800&auto=format&fit=crop", itemCount: 12 },
 ];
 
 export const eventClients: EventClient[] = [
-  { id: "e1", category: "Schools", name: "Government Higher Secondary School", year: "2026", description: "3-day art immersion for grades 6–10, culminating in a student exhibition." },
-  { id: "e2", category: "IT Parks", name: "TIDEL Park Creative Wellness Day", year: "2025", description: "Stress-relief sketching and mindful painting sessions for corporate teams." },
-  { id: "e3", category: "Colleges", name: "Fine Arts Fest, Madurai Kamaraj College", year: "2025", description: "Live portrait and mural demonstrations across a two-day college fest." },
-  { id: "e4", category: "Community", name: "Ward Cultural Program", year: "2026", description: "Free weekend art camp for children across the community, open to all." },
+  { id: "e1", category: "Schools", name: "School Art Immersion", year: "2026", description: "Multi-day art workshops for school students, culminating in a student exhibition." },
+  { id: "e2", category: "IT Parks", name: "IT Park Creative Wellness Day", year: "2025", description: "Stress-relief sketching and mindful painting sessions for corporate teams." },
+  { id: "e3", category: "Colleges", name: "College Fine Arts Fest", year: "2025", description: "Live portrait and mural demonstrations across college fests." },
+  { id: "e4", category: "Community", name: "Gated Community Art Camp", year: "2026", description: "Weekend art workshops for children across gated communities and apartment associations." },
 ];
 
 export const otherServices: ServiceCard[] = [
@@ -175,23 +179,26 @@ export const galleryItems: GalleryItem[] = [
   { id: "g9", category: "Portrait", image: "https://images.unsplash.com/photo-1580136579312-94651dfd596d?q=80&w=800&auto=format&fit=crop", title: "Charcoal Portrait", height: 360 },
   { id: "g10", category: "Sketch", image: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=800&auto=format&fit=crop", title: "Hands Study", height: 320 },
   { id: "g11", category: "Workshop", image: "https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?q=80&w=800&auto=format&fit=crop", title: "Live Demo Day", height: 420 },
-  { id: "g12", category: "Students", image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800&auto=format&fit=crop", title: "Final Pro Showcase", height: 380 },
+  { id: "g12", category: "Students", image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800&auto=format&fit=crop", title: "Pro Batch Showcase", height: 380 },
 ];
 
 export const testimonials: Testimonial[] = [
   { id: "t1", name: "Priya Ramesh", role: "Parent", rating: 5, quote: "My daughter joined the Foundation course hesitant to even hold a pencil with confidence. Six months later, her sketchbook is full and so is her confidence.", image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop" },
-  { id: "t2", name: "Arjun Vel", role: "Student", rating: 5, quote: "The Final Pro batch is where I actually built a portfolio worth showing. The mentoring felt personal, not like a classroom of thirty.", image: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=200&auto=format&fit=crop" },
+  { id: "t2", name: "Arjun Vel", role: "Student", rating: 5, quote: "The Pro batch is where I actually built a portfolio worth showing. The mentoring felt personal, not like a classroom of thirty.", image: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=200&auto=format&fit=crop" },
   { id: "t3", name: "Meena Sundaram", role: "Parent", rating: 5, quote: "Small batch sizes made all the difference. Every class felt like personal attention, not a crowd.", image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=200&auto=format&fit=crop" },
   { id: "t4", name: "Karthik R", role: "Student", rating: 4, quote: "Loved the pre-recorded track — I could learn at 11pm after work and still keep up with lifetime access to every lesson.", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop" },
 ];
 
 export const faqs: FAQItem[] = [
-  { id: "f1", question: "Do I need any prior art experience to join Foundation?", answer: "No prior experience is required. The Foundation course is built from the ground up — line, form and shading — for complete beginners of any age." },
-  { id: "f2", question: "What's the difference between Online Live and Pre-Recorded classes?", answer: "Online Live mirrors the offline schedule with real-time instructor feedback over 24 weeks. Pre-Recorded gives you 70+ hours of structured lessons across 12 weeks with lifetime access, so you can learn at your own pace." },
-  { id: "f3", question: "Is a certificate provided for every course?", answer: "Yes — Foundation, Intermediate, Final Pro, Online Live and Pre-Recorded courses all include a certificate of completion." },
-  { id: "f4", question: "How large are the batches?", answer: "We intentionally cap batches at 15 students (12 for Final Pro) so every student gets real, individual attention from instructors." },
-  { id: "f5", question: "Can Zayith Academy host a workshop at our school or office?", answer: "Absolutely — we regularly run workshops at schools, IT parks, colleges and community events. Use the Collaboration form to share your event details and our team will get back to you." },
-  { id: "f6", question: "Do you offer materials, or do I need to buy my own?", answer: "Our Art Store stocks a complete Materials Kit — charcoal pencils, brush sets, drawing paper and more — so you can get started without hunting for supplies." },
+  { id: "f1", question: "What age group is Zayith Academy for?", answer: "Our classes are designed for children aged 5–16 years, progressing through the Basic, Advanced and Pro levels." },
+  { id: "f2", question: "Do I need any prior art experience to join Basic?", answer: "No prior experience is required. The Basic course is built from the ground up — line, form and shading — through fully visual, hands-on classes." },
+  { id: "f3", question: "What's the difference between Online Live and Pre-Recorded classes?", answer: "Online Live mirrors the offline schedule with real-time instructor feedback over 24 weeks. Pre-Recorded gives you 70+ hours of structured lessons across 12 weeks with lifetime access, so you can learn at your own pace." },
+  { id: "f4", question: "Is a certificate provided for every course?", answer: "Yes — Basic, Advanced, Pro, Online Live and Pre-Recorded courses all include a certificate of completion." },
+  { id: "f5", question: "How large are the batches?", answer: "We intentionally cap batches at 15 students so every student gets real, individual attention from instructors." },
+  { id: "f6", question: "Is there a minimum fee to be paid at admission?", answer: "Yes — every new student pays a minimum of 3 months' course fees at the time of admission." },
+  { id: "f7", question: "Where are your classes held?", answer: "We run offline classes from our Bangalore studio as well as live online classes, so you can choose whichever fits your schedule. Offline batches are ₹200/month more than online to cover studio costs." },
+  { id: "f8", question: "Can Zayith Academy host a workshop at our community, school or office?", answer: "Absolutely — we regularly run workshops at gated communities, apartment associations, schools, IT parks and colleges. Use the Collaboration form to share your event details and our team will get back to you." },
+  { id: "f9", question: "Do you offer materials, or do I need to buy my own?", answer: "Our Art Store stocks a complete Materials Kit — charcoal pencils, brush sets, drawing paper and more — so you can get started without hunting for supplies." },
 ];
 
 export const counters: CounterStat[] = [

@@ -26,7 +26,7 @@ export default function Workshop() {
             highlight="Workshops"
             description="Hands-on, practical sessions designed to get your hands dirty — literally. Limited seats, real materials, real feedback."
           />
-          <Button size="md" variant="outline" className="shrink-0 border-sage-300/50 text-sage-700 hover:bg-sage-100/50 dark:border-white/20 dark:text-white dark:hover:bg-white/10 h-11 sm:h-12">
+          <Button size="md" variant="outline" className="shrink-0 border-sage-300/50 text-sage-700 hover:bg-sage-100/50 dark:border-white/20 dark:hover:bg-white/10 h-11 sm:h-12">
             <Bell className="h-4 w-4" /> Register Now
           </Button>
         </div>
@@ -58,13 +58,13 @@ export default function Workshop() {
                 </div>
               </div>
               <div className="space-y-2 p-5 sm:p-6">
-                <div className="flex items-center gap-2 text-sm text-ink-600 dark:text-ink-300">
+                <div className="flex items-center gap-2 text-sm text-charcoal-600 dark:text-charcoal-300">
                   <MapPin className="h-4 w-4 text-sage-600 shrink-0" /> {w.venue}
                 </div>
-                <div className="flex items-center gap-2 text-sm text-ink-600 dark:text-ink-300">
+                <div className="flex items-center gap-2 text-sm text-charcoal-600 dark:text-charcoal-300">
                   <CalendarDays className="h-4 w-4 text-sage-600 shrink-0" /> {w.date}
                 </div>
-                <Button variant="dark" size="sm" className="mt-4 w-full justify-center h-11 bg-ink-900 hover:bg-ink-800 dark:bg-white dark:text-ink-900 dark:hover:bg-white/90">
+                <Button variant="dark" size="sm" className="mt-4 w-full justify-center h-11 bg-ink-900 hover:bg-ink-800 dark:bg-white dark:text-charcoal-900 dark:hover:bg-white/90">
                   Register Now
                 </Button>
               </div>

@@ -35,8 +35,8 @@ export default function Testimonials() {
               ))}
             </div>
             <div>
-              <div className="font-display text-lg sm:text-xl font-semibold text-ink-900 dark:text-white">{avg} / 5.0</div>
-              <div className="text-xs text-ink-500 dark:text-ink-400">Average Rating</div>
+              <div className="font-display text-lg sm:text-xl font-semibold text-charcoal-900">{avg} / 5.0</div>
+              <div className="text-xs text-charcoal-500 dark:text-charcoal-400">Average Rating</div>
             </div>
           </div>
         </div>
@@ -52,14 +52,14 @@ export default function Testimonials() {
               className="card-hover flex flex-col rounded-4xl border border-sage-200/40 bg-white/60 p-5 sm:p-6 lg:p-7 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-lg dark:border-white/10 dark:bg-ink-900/60"
             >
               <Quote className="h-6 sm:h-7 w-6 sm:w-7 text-sage-400 dark:text-sage-500" />
-              <p className="mt-3 sm:mt-4 flex-1 text-sm leading-relaxed text-ink-700 dark:text-ink-300">&ldquo;{t.quote}&rdquo;</p>
+              <p className="mt-3 sm:mt-4 flex-1 text-sm leading-relaxed text-charcoal-700 dark:text-charcoal-300">&ldquo;{t.quote}&rdquo;</p>
               <div className="mt-5 sm:mt-6 flex items-center gap-3">
                 <div className="relative h-10 sm:h-11 w-10 sm:w-11 overflow-hidden rounded-full ring-2 ring-sage-200/50 dark:ring-sage-500/30 flex-shrink-0">
                   <Image src={t.image} alt={t.name} fill className="object-cover" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-sm font-semibold text-ink-900 dark:text-white truncate">{t.name}</div>
-                  <Badge variant="outline" className="mt-0.5 border-sage-300/50 text-sage-700 dark:border-white/20 dark:text-white text-xs">
+                  <div className="text-sm font-semibold text-charcoal-900 truncate">{t.name}</div>
+                  <Badge variant="outline" className="mt-0.5 border-sage-300/50 text-sage-700 dark:border-white/20 text-xs">
                     {t.role}
                   </Badge>
                 </div>

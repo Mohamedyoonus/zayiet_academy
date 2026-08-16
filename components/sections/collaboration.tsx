@@ -67,7 +67,7 @@ export default function Collaboration() {
                 <Field label="Email" type="email" placeholder="you@email.com" />
               </div>
               <div className="grid gap-4 sm:gap-5 sm:grid-cols-2">
-                <Field label="Phone" type="tel" placeholder="+91 00000 00000" />
+                <Field label="Mobile" type="tel" placeholder="+91 00000 00000" />
                 <Field label="Purpose" placeholder="Workshop, event, custom art…" />
               </div>
               <div>

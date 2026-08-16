@@ -77,7 +77,7 @@ export default function Navbar() {
           
           {/* Logo Image */}
           <Image 
-            src="/assets/logo.jpeg" 
+            src="/assets/logo_only.png" 
             alt="Zayit Academy Logo"
             width={50}  
             height={50}
@@ -150,7 +150,7 @@ export default function Navbar() {
               {/* Mobile Logo & Name */}
               <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-2 shrink-0">
                 <Image 
-                  src="/assets/logo.jpeg" 
+                  src="/assets/logo_only.png" 
                   alt="Zayit Academy"
                   width={40}
                   height={40}

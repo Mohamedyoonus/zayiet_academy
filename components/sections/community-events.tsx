@@ -54,11 +54,11 @@ export default function CommunityEvents() {
                     <Icon className="h-5 w-5" />
                   </div>
                   <div className="rounded-3xl border border-sage-200/40 bg-white/60 p-5 sm:p-6 shadow-md backdrop-blur-sm transition-all duration-300 hover:shadow-lg dark:border-white/10 dark:bg-ink-900/40">
-                    <Badge variant="outline" className="border-sage-300/50 text-sage-700 dark:border-white/20 dark:text-white">
+                    <Badge variant="outline" className="border-sage-300/50 text-sage-700 dark:border-white/20">
                       {e.category}
                     </Badge>
-                    <h3 className="mt-3 font-display text-lg sm:text-xl font-medium text-ink-900 dark:text-white leading-tight">{e.name}</h3>
-                    <p className="mt-2 text-sm text-ink-600 dark:text-ink-300">{e.description}</p>
+                    <h3 className="mt-3 font-display text-lg sm:text-xl font-medium text-charcoal-900 leading-tight">{e.name}</h3>
+                    <p className="mt-2 text-sm text-charcoal-600 dark:text-charcoal-300">{e.description}</p>
                     <span className="mt-3 inline-block text-xs font-semibold text-sage-600 dark:text-sage-400">{e.year}</span>
                   </div>
                 </motion.div>
