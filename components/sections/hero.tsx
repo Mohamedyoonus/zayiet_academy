@@ -1,6 +1,13 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+} from "framer-motion";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,9 +20,86 @@ const stats = [
   ["18", "Awards Won"],
 ];
 
+// Shared spring feel for every parallax layer — quick but never jittery.
+const PARALLAX_SPRING = { stiffness: 120, damping: 22, mass: 0.5 };
+
 export default function Hero() {
+  const prefersReducedMotion = useReducedMotion();
+  const [parallaxEnabled, setParallaxEnabled] = useState(false);
+
+  useEffect(() => {
+    const isFinePointer = window.matchMedia("(pointer: fine)").matches;
+    setParallaxEnabled(isFinePointer && !prefersReducedMotion);
+  }, [prefersReducedMotion]);
+
+  // Normalized cursor position relative to the hero: -1 (top/left) to 1 (bottom/right).
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  // Raw pixel position, used only to place the cursor-light glow.
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  // 0 -> 1 while the cursor is inside the hero, drives hover-only effects.
+  const hoverMV = useMotionValue(0);
+
+  const springX = useSpring(mouseX, PARALLAX_SPRING);
+  const springY = useSpring(mouseY, PARALLAX_SPRING);
+  const springRawX = useSpring(rawX, PARALLAX_SPRING);
+  const springRawY = useSpring(rawY, PARALLAX_SPRING);
+  const hoverSpring = useSpring(hoverMV, PARALLAX_SPRING);
+
+  // Layer 1 — background atmosphere: barely moves.
+  const bgX = useTransform(springX, (v) => v * 3);
+  const bgY = useTransform(springY, (v) => v * 2);
+  const bgScale = useTransform(hoverSpring, [0, 1], [1, 1.02]);
+
+  // Layer 2 — text composition: a light drift for cohesion.
+  const textX = useTransform(springX, (v) => v * 4);
+  const textY = useTransform(springY, (v) => v * 3);
+
+  // Layer 3 — the artwork itself: the strongest, most deliberate move.
+  const imgX = useTransform(springX, (v) => v * 12);
+  const imgY = useTransform(springY, (v) => v * 8);
+  const imgRotateY = useTransform(springX, (v) => v * 1.5);
+  const imgRotateX = useTransform(springY, (v) => v * -1.5);
+
+  // Layer 4/5 — small decorative accents: most reactive of all.
+  const decorAX = useTransform(springX, (v) => v * 18);
+  const decorAY = useTransform(springY, (v) => v * 12);
+  const decorARotate = useTransform(springX, (v) => v * 4);
+  const decorBX = useTransform(springX, (v) => v * -10);
+  const decorBY = useTransform(springY, (v) => v * -7);
+
+  // Soft cursor-following light.
+  const lightX = useTransform(springRawX, (v) => v - 210);
+  const lightY = useTransform(springRawY, (v) => v - 210);
+  const lightOpacity = useTransform(hoverSpring, [0, 1], [0, 1]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    if (!parallaxEnabled) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+    mouseX.set((px / rect.width) * 2 - 1);
+    mouseY.set((py / rect.height) * 2 - 1);
+    rawX.set(px);
+    rawY.set(py);
+  };
+
+  const handlePointerEnter = () => {
+    if (parallaxEnabled) hoverMV.set(1);
+  };
+
+  const handlePointerLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+    hoverMV.set(0);
+  };
+
   return (
     <section
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handlePointerEnter}
+      onMouseLeave={handlePointerLeave}
       className="
         relative
         overflow-hidden
@@ -31,35 +115,61 @@ export default function Hero() {
           BACKGROUND GLOW
       ====================================================== */}
 
-      <div
-        className="
-          pointer-events-none
-          absolute
-          -left-32
-          top-[76px]
-          h-[22rem]
-          w-[22rem]
-          rounded-full
-          bg-sage-200/40
-          blur-[110px]
+      <motion.div
+        aria-hidden
+        style={{ x: bgX, y: bgY, scale: bgScale }}
+        className="pointer-events-none absolute inset-0"
+      >
+        <div
+          className="
+            absolute
+            -left-32
+            top-[76px]
+            h-[22rem]
+            w-[22rem]
+            rounded-full
+            bg-sage-200/40
+            blur-[110px]
 
-          lg:top-[100px]
-        "
-      />
+            lg:top-[100px]
+          "
+        />
 
-      <div
-        className="
-          pointer-events-none
-          absolute
-          -right-24
-          bottom-0
-          h-[18rem]
-          w-[18rem]
-          rounded-full
-          bg-sage-100/60
-          blur-[120px]
-        "
-      />
+        <div
+          className="
+            absolute
+            -right-24
+            bottom-0
+            h-[18rem]
+            w-[18rem]
+            rounded-full
+            bg-sage-100/60
+            blur-[120px]
+          "
+        />
+      </motion.div>
+
+      {/* Soft cursor-following light — desktop only, fades in on hover */}
+      {parallaxEnabled && (
+        <motion.div
+          aria-hidden
+          style={{ x: lightX, y: lightY, opacity: lightOpacity }}
+          className="
+            pointer-events-none
+            absolute
+            left-0
+            top-0
+            hidden
+            h-[420px]
+            w-[420px]
+            rounded-full
+            bg-[radial-gradient(circle,rgba(124,139,111,0.16)_0%,rgba(124,139,111,0)_70%)]
+            blur-2xl
+
+            lg:block
+          "
+        />
+      )}
 
       {/* =====================================================
           MAIN HERO CONTAINER
@@ -98,7 +208,8 @@ export default function Hero() {
             LEFT CONTENT
         ====================================================== */}
 
-        <div
+        <motion.div
+          style={{ x: textX, y: textY }}
           className="
             flex
             flex-col
@@ -331,7 +442,7 @@ xl:pt-3
               </div>
             ))}
           </motion.div>
-        </div>
+        </motion.div>
 
         {/* =====================================================
             RIGHT IMAGE
@@ -339,68 +450,127 @@ xl:pt-3
             Starts below navbar and stays inside hero.
         ====================================================== */}
 
-        <motion.div
-          initial={{
-            opacity: 0,
-            scale: 0.98,
-          }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-          }}
-          transition={{
-            duration: 0.9,
-            delay: 0.15,
-            ease,
-          }}
+        <div
           className="
             relative
             hidden
-            self-start
-            overflow-hidden
-            rounded-[1.5rem]
 
-            lg:mt-2
             lg:block
+            lg:mt-2
             lg:h-[90%]
             lg:min-h-0
 
             xl:mt-3
             xl:h-[90%]
-            xl:rounded-[1.75rem]
           "
         >
-          <Image
-            src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=1400&auto=format&fit=crop"
-            alt="Student painting at Zayith Academy"
-            fill
-            priority
-            sizes="
-              (min-width: 1536px) 42vw,
-              (min-width: 1280px) 44vw,
-              (min-width: 1024px) 45vw,
-              100vw
-            "
+          <motion.div
+            initial={{
+              opacity: 0,
+              scale: 0.98,
+            }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+            }}
+            transition={{
+              duration: 0.9,
+              delay: 0.15,
+              ease,
+            }}
+            style={{
+              x: imgX,
+              y: imgY,
+              rotateX: imgRotateX,
+              rotateY: imgRotateY,
+              transformPerspective: 1000,
+            }}
             className="
-              object-cover
-              object-center
+              relative
+              h-full
+              w-full
+              overflow-hidden
+              rounded-[1.5rem]
+
+              xl:rounded-[1.75rem]
             "
-          />
+          >
+            <Image
+              src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=1400&auto=format&fit=crop"
+              alt="Student painting at Zayith Academy"
+              fill
+              priority
+              sizes="
+                (min-width: 1536px) 42vw,
+                (min-width: 1280px) 44vw,
+                (min-width: 1024px) 45vw,
+                100vw
+              "
+              className="
+                object-cover
+                object-center
+              "
+            />
 
-          {/* Image overlay */}
+            {/* Image overlay */}
 
-          <div
+            <div
+              className="
+                pointer-events-none
+                absolute
+                inset-0
+                bg-gradient-to-t
+                from-charcoal-900/20
+                via-transparent
+                to-transparent
+              "
+            />
+          </motion.div>
+
+          {/* Decorative floating accents — react more than the artwork itself */}
+
+          <motion.div
+            aria-hidden
+            style={{ x: decorAX, y: decorAY, rotate: decorARotate }}
             className="
               pointer-events-none
               absolute
-              inset-0
-              bg-gradient-to-t
-              from-charcoal-900/20
-              via-transparent
-              to-transparent
+              -right-3
+              -top-3
+              h-16
+              w-16
+              rounded-full
+              border
+              border-sage-300/50
+
+              xl:-right-4
+              xl:-top-4
+              xl:h-20
+              xl:w-20
             "
           />
-        </motion.div>
+
+          <motion.div
+            aria-hidden
+            style={{ x: decorBX, y: decorBY }}
+            className="
+              pointer-events-none
+              absolute
+              -bottom-4
+              -left-4
+              h-10
+              w-10
+              rounded-full
+              bg-sage-400/30
+              blur-md
+
+              xl:-bottom-5
+              xl:-left-5
+              xl:h-12
+              xl:w-12
+            "
+          />
+        </div>
       </div>
     </section>
   );

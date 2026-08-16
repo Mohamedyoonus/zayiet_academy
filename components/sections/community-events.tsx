@@ -46,7 +46,11 @@ export default function CommunityEvents() {
                     isRight ? "sm:ml-auto sm:pl-12" : "sm:pr-12 sm:text-right"
                   }`}
                 >
-                  <div className="absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-sage-500 to-sage-600 text-white shadow-lg shadow-sage-200/50 sm:left-auto sm:right-full sm:translate-x-6 sm:top-0">
+                  <div
+                    className={`absolute left-0 top-0 grid h-12 w-12 place-items-center rounded-full bg-gradient-to-br from-sage-500 to-sage-600 text-white shadow-lg shadow-sage-200/50 sm:top-0 ${
+                      isRight ? "sm:left-auto sm:right-full sm:translate-x-6" : "sm:left-full sm:-translate-x-6"
+                    }`}
+                  >
                     <Icon className="h-5 w-5" />
                   </div>
                   <div className="rounded-3xl border border-sage-200/40 bg-white/60 p-5 sm:p-6 shadow-md backdrop-blur-sm transition-all duration-300 hover:shadow-lg dark:border-white/10 dark:bg-ink-900/40">

@@ -11,11 +11,11 @@ export default function Collaboration() {
   const [submitted, setSubmitted] = useState(false);
 
   return (
-    <section id="collaboration" className="relative overflow-hidden bg-gradient-to-br from-ink-950 via-sage-950 to-ink-950 py-28 text-white">
+    <section id="collaboration" className="relative overflow-hidden bg-gradient-to-br from-charcoal-950 via-sage-900 to-charcoal-950 py-28 text-white">
       {/* Soft botanical wash - matching all sections with dark theme */}
       <div className="pointer-events-none absolute -left-32 top-10 h-[26rem] w-[26rem] rounded-full bg-sage-500/20 blur-[120px]" />
       <div className="pointer-events-none absolute -right-24 bottom-0 h-[22rem] w-[22rem] rounded-full bg-sage-400/15 blur-[130px]" />
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[30rem] w-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ember-500/10 blur-[140px]" />
+      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[30rem] w-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-moss-500/10 blur-[140px]" />
       
       {/* Subtle gradient overlay for depth */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-sage-500/5" />

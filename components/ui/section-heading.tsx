@@ -46,7 +46,7 @@ export default function SectionHeading({
       >
         {title}{" "}
         {highlight && (
-          <span className="brush-underline italic text-sage-700">
+          <span className={cn("brush-underline italic", light ? "text-sage-300" : "text-sage-700")}>
             {highlight}
             <svg viewBox="0 0 200 20" preserveAspectRatio="none" fill="none">
               <path
