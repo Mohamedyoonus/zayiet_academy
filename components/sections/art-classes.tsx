@@ -36,7 +36,7 @@ export default function ArtClasses() {
         </div>
 
         {/* Course tier cards - ULTRA COMPACT */}
-        <div className="mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto no-scrollbar -mx-4 px-6 pb-2 sm:-mx-5 sm:px-7 sm:gap-4 md:-mx-6 md:px-8 lg:mx-0 lg:mt-10 lg:grid lg:grid-cols-3 lg:overflow-visible lg:snap-none lg:px-0 lg:pb-0">
+        <div className="mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-hidden no-scrollbar scroll-pl-8 -mx-4 px-8 pb-2 sm:-mx-5 sm:px-9 sm:scroll-pl-9 sm:gap-4 md:-mx-6 md:px-10 md:scroll-pl-10 lg:mx-0 lg:mt-10 lg:grid lg:grid-cols-3 lg:overflow-visible lg:snap-none lg:px-0 lg:pb-0">
           {courses.map((course, i) => (
             <motion.div
               key={course.id}
@@ -133,7 +133,7 @@ export default function ArtClasses() {
         {/* Delivery modes comparison - ULTRA COMPACT */}
         <div className="mt-12 sm:mt-14 lg:mt-16">
           <SectionHeading eyebrow="How You Learn" title="Choose your" highlight="format" align="left" />
-          <div className="mt-5 sm:mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto no-scrollbar -mx-4 px-6 pb-2 sm:-mx-5 sm:px-7 sm:gap-4 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:snap-none md:px-0 md:pb-0">
+          <div className="mt-5 sm:mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-hidden no-scrollbar scroll-pl-8 -mx-4 px-8 pb-2 sm:-mx-5 sm:px-9 sm:scroll-pl-9 sm:gap-4 md:mx-0 md:scroll-pl-0 md:grid md:grid-cols-3 md:overflow-visible md:snap-none md:px-0 md:pb-0">
             {deliveryModes.map((mode, i) => {
               const Icon = modeIcons[mode.icon as keyof typeof modeIcons];
               return (

@@ -168,18 +168,18 @@ export const otherServices: ServiceCard[] = [
 ];
 
 export const galleryItems: GalleryItem[] = [
-  { id: "g1", category: "Portrait", image: "https://images.unsplash.com/photo-1549289524-06cf8837ace5?q=80&w=800&auto=format&fit=crop", title: "Study in Graphite", height: 420 },
-  { id: "g2", category: "Landscape", image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=800&auto=format&fit=crop", title: "Hills at Dusk", height: 320 },
-  { id: "g3", category: "Sketch", image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800&auto=format&fit=crop", title: "Quick Figure Sketch", height: 380 },
-  { id: "g4", category: "Painting", image: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?q=80&w=800&auto=format&fit=crop", title: "Abstract in Ember", height: 460 },
-  { id: "g5", category: "Workshop", image: "https://images.unsplash.com/photo-1522205408450-add114ad53fe?q=80&w=800&auto=format&fit=crop", title: "Saturday Studio Session", height: 340 },
-  { id: "g6", category: "Students", image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=800&auto=format&fit=crop", title: "Basic Batch 12", height: 400 },
-  { id: "g7", category: "Painting", image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=800&auto=format&fit=crop", title: "Sunset Study", height: 300 },
-  { id: "g8", category: "Landscape", image: "https://images.unsplash.com/photo-1519638399535-1b036603ac77?q=80&w=800&auto=format&fit=crop", title: "River Bend", height: 440 },
-  { id: "g9", category: "Portrait", image: "https://images.unsplash.com/photo-1580136579312-94651dfd596d?q=80&w=800&auto=format&fit=crop", title: "Charcoal Portrait", height: 360 },
-  { id: "g10", category: "Sketch", image: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=800&auto=format&fit=crop", title: "Hands Study", height: 320 },
-  { id: "g11", category: "Workshop", image: "https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?q=80&w=800&auto=format&fit=crop", title: "Live Demo Day", height: 420 },
-  { id: "g12", category: "Students", image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800&auto=format&fit=crop", title: "Pro Batch Showcase", height: 380 },
+  { id: "g1", category: "Portrait", image: "https://images.unsplash.com/photo-1549289524-06cf8837ace5?q=80&w=800&auto=format&fit=crop", title: "Study in Graphite" },
+  { id: "g2", category: "Landscape", image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=800&auto=format&fit=crop", title: "Hills at Dusk" },
+  { id: "g3", category: "Sketch", image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800&auto=format&fit=crop", title: "Quick Figure Sketch" },
+  { id: "g4", category: "Painting", image: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?q=80&w=800&auto=format&fit=crop", title: "Abstract in Ember" },
+  { id: "g5", category: "Workshop", image: "https://images.unsplash.com/photo-1522205408450-add114ad53fe?q=80&w=800&auto=format&fit=crop", title: "Saturday Studio Session" },
+  { id: "g6", category: "Students", image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=800&auto=format&fit=crop", title: "Basic Batch 12" },
+  { id: "g7", category: "Painting", image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=800&auto=format&fit=crop", title: "Sunset Study" },
+  { id: "g8", category: "Landscape", image: "https://images.unsplash.com/photo-1519638399535-1b036603ac77?q=80&w=800&auto=format&fit=crop", title: "River Bend" },
+  { id: "g9", category: "Portrait", image: "https://images.unsplash.com/photo-1580136579312-94651dfd596d?q=80&w=800&auto=format&fit=crop", title: "Charcoal Portrait" },
+  { id: "g10", category: "Sketch", image: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=800&auto=format&fit=crop", title: "Hands Study" },
+  { id: "g11", category: "Workshop", image: "https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?q=80&w=800&auto=format&fit=crop", title: "Live Demo Day" },
+  { id: "g12", category: "Students", image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800&auto=format&fit=crop", title: "Pro Batch Showcase" },
 ];
 
 export const testimonials: Testimonial[] = [

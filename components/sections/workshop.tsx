@@ -31,7 +31,7 @@ export default function Workshop() {
           </Button>
         </div>
 
-        <div className="mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto no-scrollbar -mx-4 px-6 pb-2 sm:-mx-5 sm:px-7 sm:gap-6 md:-mx-6 md:px-8 lg:mx-0 lg:mt-14 lg:grid lg:grid-cols-3 lg:overflow-visible lg:snap-none lg:px-0 lg:pb-0">
+        <div className="mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden no-scrollbar scroll-pl-8 -mx-4 px-8 pb-2 sm:-mx-5 sm:px-9 sm:scroll-pl-9 sm:gap-6 md:-mx-6 md:px-10 md:scroll-pl-10 lg:mx-0 lg:mt-14 lg:grid lg:grid-cols-3 lg:overflow-visible lg:snap-none lg:px-0 lg:pb-0">
           {workshops.map((w, i) => (
             <motion.div
               key={w.id}

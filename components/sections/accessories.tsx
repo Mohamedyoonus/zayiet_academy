@@ -31,7 +31,7 @@ export default function Accessories() {
           </Button>
         </div>
 
-        <div className="mt-12 flex snap-x snap-mandatory gap-3 overflow-x-auto no-scrollbar -mx-4 px-6 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:snap-none sm:px-0 sm:pb-0 lg:mt-14 lg:grid-cols-4 lg:gap-5">
+        <div className="mt-12 flex snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-hidden no-scrollbar scroll-pl-8 -mx-4 px-8 pb-2 sm:mx-0 sm:scroll-pl-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:snap-none sm:px-0 sm:pb-0 lg:mt-14 lg:grid-cols-4 lg:gap-5">
           {accessories.map((a, i) => (
             <motion.div
               key={a.id}

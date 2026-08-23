@@ -71,7 +71,6 @@ export interface GalleryItem {
   category: "Portrait" | "Landscape" | "Sketch" | "Painting" | "Workshop" | "Students";
   image: string;
   title: string;
-  height: number;
 }
 
 export interface Testimonial {

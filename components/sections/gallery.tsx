@@ -55,20 +55,21 @@ export default function Gallery() {
 
         <motion.div
           layout
-          className="mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto no-scrollbar -mx-4 px-6 pb-2 sm:mx-0 sm:block sm:columns-2 sm:gap-5 sm:overflow-visible sm:snap-none sm:px-0 sm:pb-0 md:columns-3 lg:columns-4"
+          className="mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden no-scrollbar scroll-pl-8 -mx-4 px-8 pb-2 sm:mx-0 sm:scroll-pl-0 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible sm:snap-none sm:px-0 sm:pb-0 md:grid-cols-3 lg:grid-cols-4"
         >
           <AnimatePresence>
-            {items.map((item) => (
+            {items.map((item, i) => (
               <motion.button
                 layout
                 key={item.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-60px" }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4 }}
+                transition={{ duration: 0.6, delay: (i % 4) * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ y: -6, transition: { type: "spring", stiffness: 300, damping: 22 } }}
                 onClick={() => setSelected(item)}
-                className="group relative block w-[70%] shrink-0 snap-start overflow-hidden rounded-3xl shadow-md transition-all duration-300 hover:shadow-xl sm:mb-4 sm:w-full sm:shrink sm:snap-none"
-                style={{ height: item.height }}
+                className="group relative block aspect-[4/5] w-[70%] shrink-0 snap-start overflow-hidden rounded-3xl shadow-md transition-shadow duration-300 hover:shadow-xl sm:w-full sm:shrink sm:snap-none"
               >
                 <Image src={item.image} alt={item.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
                 <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/70 via-black/20 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
