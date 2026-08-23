@@ -42,7 +42,7 @@ export default function FloatingActions() {
             whileTap={{ scale: 0.95 }}
             aria-label="Back to top"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="grid h-12 w-12 place-items-center rounded-full bg-ink-900 text-white shadow-lg transition-colors hover:bg-ink-800 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+            className="grid h-12 w-12 place-items-center rounded-full bg-charcoal-900 text-white shadow-lg transition-colors hover:bg-charcoal-800 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
           >
             <ArrowUp className="h-5 w-5" />
           </motion.button>
@@ -54,7 +54,7 @@ export default function FloatingActions() {
         aria-label="Call us"
         whileHover={{ y: -3 }}
         whileTap={{ scale: 0.95 }}
-        className="grid h-12 w-12 place-items-center rounded-full bg-ink-900 text-white shadow-lg transition-colors hover:bg-ink-800 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+        className="grid h-12 w-12 place-items-center rounded-full bg-charcoal-900 text-white shadow-lg transition-colors hover:bg-charcoal-800 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
       >
         <Phone className="h-5 w-5" />
       </motion.a>

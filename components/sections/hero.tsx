@@ -211,12 +211,19 @@ export default function Hero() {
         <motion.div
           style={{ x: textX, y: textY }}
           className="
+            order-2
             flex
             flex-col
+            items-center
             justify-start
+            text-center
 
-           lg:pt-1
-xl:pt-3
+            lg:order-none
+            lg:items-start
+            lg:pt-1
+            lg:text-left
+
+           xl:pt-3
           "
         >
           {/* Eyebrow */}
@@ -453,10 +460,15 @@ xl:pt-3
         <div
           className="
             relative
-            hidden
+            order-1
+            aspect-[4/3]
+            w-full
 
-            lg:block
+            sm:aspect-[16/10]
+
+            lg:order-none
             lg:mt-2
+            lg:aspect-auto
             lg:h-[90%]
             lg:min-h-0
 
@@ -496,8 +508,8 @@ xl:pt-3
             "
           >
             <Image
-              src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=1400&auto=format&fit=crop"
-              alt="Student painting at Zayith Academy"
+              src="/assets/hero.PNG"
+              alt="Students painting together at the Zayith Academy studio"
               fill
               priority
               sizes="

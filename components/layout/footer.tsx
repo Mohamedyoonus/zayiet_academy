@@ -88,16 +88,16 @@ export default function Footer() {
         <div>
           <h4 className="font-display text-sm sm:text-base font-semibold text-white">Stay Inspired</h4>
           <p className="mt-3 sm:mt-5 text-xs sm:text-sm text-white/60">Get workshop dates, new store drops and student features in your inbox.</p>
-          <form className="mt-4 flex flex-col sm:flex-row gap-2 sm:gap-3" onSubmit={(e) => e.preventDefault()}>
+          <form className="mt-4 flex flex-row items-center gap-2 sm:gap-3" onSubmit={(e) => e.preventDefault()}>
             <input
               type="email"
               required
               placeholder="you@email.com"
-              className="h-11 sm:h-12 flex-1 rounded-full border border-white/15 bg-white/5 px-4 sm:px-5 text-sm text-white placeholder:text-white/40 transition-all duration-300 focus:border-sage-400 focus:bg-white/10 focus:outline-none focus:ring-2 focus:ring-sage-400/20"
+              className="h-11 sm:h-12 min-w-0 flex-1 rounded-full border border-white/15 bg-white/5 px-4 sm:px-5 text-sm text-white placeholder:text-white/40 transition-all duration-300 focus:border-sage-400 focus:bg-white/10 focus:outline-none focus:ring-2 focus:ring-sage-400/20"
             />
-            <Button 
-              size="md" 
-              className="!h-11 sm:!h-12 !w-11 sm:!w-12 !p-0 bg-sage-500 hover:bg-sage-600 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-sage-500/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 flex-shrink-0" 
+            <Button
+              size="md"
+              className="!h-11 sm:!h-12 !w-11 sm:!w-12 !p-0 bg-sage-500 hover:bg-sage-600 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-sage-500/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 shrink-0"
               aria-label="Subscribe"
             >
               <Send className="h-4 w-4" />
