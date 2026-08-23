@@ -36,7 +36,7 @@ export default function ArtClasses() {
         </div>
 
         {/* Course tier cards - ULTRA COMPACT */}
-        <div className="mt-8 grid gap-3 sm:gap-4 lg:mt-10 lg:grid-cols-3">
+        <div className="mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto no-scrollbar -mx-4 px-6 pb-2 sm:-mx-5 sm:px-7 sm:gap-4 md:-mx-6 md:px-8 lg:mx-0 lg:mt-10 lg:grid lg:grid-cols-3 lg:overflow-visible lg:snap-none lg:px-0 lg:pb-0">
           {courses.map((course, i) => (
             <motion.div
               key={course.id}
@@ -44,7 +44,7 @@ export default function ArtClasses() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="card-hover group relative flex flex-col overflow-hidden rounded-2xl border border-sage-300/30 bg-white/80 shadow-lg shadow-sage-200/20 backdrop-blur-sm transition-all duration-300 hover:shadow-xl dark:border-white/10 dark:bg-ink-900/90"
+              className="card-hover group relative flex w-[85%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-sage-300/30 bg-white/80 shadow-lg shadow-sage-200/20 backdrop-blur-sm transition-all duration-300 hover:shadow-xl dark:border-white/10 dark:bg-ink-900/90 sm:w-[55%] md:w-[42%] lg:w-auto"
             >
               <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-sage-400 via-ember-gold to-sage-400" />
 
@@ -133,7 +133,7 @@ export default function ArtClasses() {
         {/* Delivery modes comparison - ULTRA COMPACT */}
         <div className="mt-12 sm:mt-14 lg:mt-16">
           <SectionHeading eyebrow="How You Learn" title="Choose your" highlight="format" align="left" />
-          <div className="mt-5 sm:mt-6 grid gap-3 sm:gap-4 md:grid-cols-3">
+          <div className="mt-5 sm:mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto no-scrollbar -mx-4 px-6 pb-2 sm:-mx-5 sm:px-7 sm:gap-4 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:snap-none md:px-0 md:pb-0">
             {deliveryModes.map((mode, i) => {
               const Icon = modeIcons[mode.icon as keyof typeof modeIcons];
               return (
@@ -143,7 +143,7 @@ export default function ArtClasses() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className="card-hover rounded-2xl border border-sage-200/40 bg-white/60 p-3.5 sm:p-4 lg:p-5 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-md dark:border-white/10 dark:bg-ink-900/40"
+                  className="card-hover w-[85%] shrink-0 snap-start rounded-2xl border border-sage-200/40 bg-white/60 p-3.5 sm:p-4 sm:w-[55%] md:w-auto lg:p-5 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-md dark:border-white/10 dark:bg-ink-900/40"
                 >
                   <div className="grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-xl bg-gradient-to-br from-sage-500 to-sage-600 text-white shadow-lg shadow-sage-200/40">
                     <Icon className="h-4 w-4 sm:h-5 sm:w-5" />

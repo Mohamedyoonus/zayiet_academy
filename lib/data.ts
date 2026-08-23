@@ -173,7 +173,7 @@ export const galleryItems: GalleryItem[] = [
   { id: "g3", category: "Sketch", image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800&auto=format&fit=crop", title: "Quick Figure Sketch", height: 380 },
   { id: "g4", category: "Painting", image: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?q=80&w=800&auto=format&fit=crop", title: "Abstract in Ember", height: 460 },
   { id: "g5", category: "Workshop", image: "https://images.unsplash.com/photo-1522205408450-add114ad53fe?q=80&w=800&auto=format&fit=crop", title: "Saturday Studio Session", height: 340 },
-  { id: "g6", category: "Students", image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=800&auto=format&fit=crop", title: "Foundation Batch 12", height: 400 },
+  { id: "g6", category: "Students", image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=800&auto=format&fit=crop", title: "Basic Batch 12", height: 400 },
   { id: "g7", category: "Painting", image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=800&auto=format&fit=crop", title: "Sunset Study", height: 300 },
   { id: "g8", category: "Landscape", image: "https://images.unsplash.com/photo-1519638399535-1b036603ac77?q=80&w=800&auto=format&fit=crop", title: "River Bend", height: 440 },
   { id: "g9", category: "Portrait", image: "https://images.unsplash.com/photo-1580136579312-94651dfd596d?q=80&w=800&auto=format&fit=crop", title: "Charcoal Portrait", height: 360 },
@@ -183,7 +183,7 @@ export const galleryItems: GalleryItem[] = [
 ];
 
 export const testimonials: Testimonial[] = [
-  { id: "t1", name: "Priya Ramesh", role: "Parent", rating: 5, quote: "My daughter joined the Foundation course hesitant to even hold a pencil with confidence. Six months later, her sketchbook is full and so is her confidence.", image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop" },
+  { id: "t1", name: "Priya Ramesh", role: "Parent", rating: 5, quote: "My daughter joined the Basic course hesitant to even hold a pencil with confidence. Six months later, her sketchbook is full and so is her confidence.", image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop" },
   { id: "t2", name: "Arjun Vel", role: "Student", rating: 5, quote: "The Pro batch is where I actually built a portfolio worth showing. The mentoring felt personal, not like a classroom of thirty.", image: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=200&auto=format&fit=crop" },
   { id: "t3", name: "Meena Sundaram", role: "Parent", rating: 5, quote: "Small batch sizes made all the difference. Every class felt like personal attention, not a crowd.", image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=200&auto=format&fit=crop" },
   { id: "t4", name: "Karthik R", role: "Student", rating: 4, quote: "Loved the pre-recorded track — I could learn at 11pm after work and still keep up with lifetime access to every lesson.", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop" },

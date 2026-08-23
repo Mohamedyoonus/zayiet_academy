@@ -41,7 +41,7 @@ export default function Testimonials() {
           </div>
         </div>
 
-        <div className="mt-12 grid gap-5 sm:gap-6 lg:mt-14 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto no-scrollbar -mx-4 px-6 pb-2 sm:mx-0 sm:mt-14 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:snap-none sm:px-0 sm:pb-0 lg:grid-cols-4">
           {testimonials.map((t, i) => (
             <motion.div
               key={t.id}
@@ -49,7 +49,7 @@ export default function Testimonials() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="card-hover flex flex-col rounded-4xl border border-sage-200/40 bg-white/60 p-5 sm:p-6 lg:p-7 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-lg dark:border-white/10 dark:bg-ink-900/60"
+              className="card-hover flex w-[80%] shrink-0 snap-start flex-col rounded-4xl border border-sage-200/40 bg-white/60 p-5 sm:w-auto sm:p-6 lg:p-7 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-lg dark:border-white/10 dark:bg-ink-900/60"
             >
               <Quote className="h-6 sm:h-7 w-6 sm:w-7 text-sage-400 dark:text-sage-500" />
               <p className="mt-3 sm:mt-4 flex-1 text-sm leading-relaxed text-charcoal-700 dark:text-charcoal-300">&ldquo;{t.quote}&rdquo;</p>

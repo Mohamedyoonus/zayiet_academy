@@ -53,7 +53,10 @@ export default function Gallery() {
           ))}
         </div>
 
-        <motion.div layout className="mt-12 columns-1 gap-4 sm:columns-2 md:columns-3 lg:columns-4 sm:gap-5">
+        <motion.div
+          layout
+          className="mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto no-scrollbar -mx-4 px-6 pb-2 sm:mx-0 sm:block sm:columns-2 sm:gap-5 sm:overflow-visible sm:snap-none sm:px-0 sm:pb-0 md:columns-3 lg:columns-4"
+        >
           <AnimatePresence>
             {items.map((item) => (
               <motion.button
@@ -64,7 +67,7 @@ export default function Gallery() {
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.4 }}
                 onClick={() => setSelected(item)}
-                className="group relative mb-4 block w-full overflow-hidden rounded-3xl shadow-md transition-all duration-300 hover:shadow-xl"
+                className="group relative block w-[70%] shrink-0 snap-start overflow-hidden rounded-3xl shadow-md transition-all duration-300 hover:shadow-xl sm:mb-4 sm:w-full sm:shrink sm:snap-none"
                 style={{ height: item.height }}
               >
                 <Image src={item.image} alt={item.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />

@@ -31,7 +31,7 @@ export default function Accessories() {
           </Button>
         </div>
 
-        <div className="mt-12 grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 lg:mt-14 lg:grid-cols-4 lg:gap-5">
+        <div className="mt-12 flex snap-x snap-mandatory gap-3 overflow-x-auto no-scrollbar -mx-4 px-6 pb-2 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:overflow-visible sm:snap-none sm:px-0 sm:pb-0 lg:mt-14 lg:grid-cols-4 lg:gap-5">
           {accessories.map((a, i) => (
             <motion.div
               key={a.id}
@@ -39,7 +39,7 @@ export default function Accessories() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5, delay: i * 0.06 }}
-              className="card-hover group relative aspect-[4/5] overflow-hidden rounded-3xl shadow-md transition-all duration-300 hover:shadow-lg"
+              className="card-hover group relative aspect-[4/5] w-[46%] shrink-0 snap-start overflow-hidden rounded-3xl shadow-md transition-all duration-300 hover:shadow-lg sm:w-auto"
             >
               <Image src={a.image} alt={a.name} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />

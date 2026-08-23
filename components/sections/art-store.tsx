@@ -28,7 +28,7 @@ export default function ArtStore() {
           description="Original framed pieces from our students and instructors, plus everything you need to start creating today."
         />
 
-        <div className="mt-12 grid gap-5 sm:gap-6 lg:mt-14 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto no-scrollbar -mx-4 px-6 pb-2 sm:mx-0 sm:mt-14 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:snap-none sm:px-0 sm:pb-0 lg:grid-cols-3">
           {products.map((p, i) => (
             <motion.div
               key={p.id}
@@ -36,7 +36,7 @@ export default function ArtStore() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5, delay: i * 0.07 }}
-              className="card-hover group relative overflow-hidden rounded-4xl border border-sage-200/40 bg-white/60 shadow-md backdrop-blur-sm transition-all duration-300 hover:shadow-lg dark:border-white/10 dark:bg-ink-900/60"
+              className="card-hover group relative w-[80%] shrink-0 snap-start overflow-hidden rounded-4xl border border-sage-200/40 bg-white/60 shadow-md backdrop-blur-sm transition-all duration-300 hover:shadow-lg dark:border-white/10 dark:bg-ink-900/60 sm:w-auto"
             >
               <div className="relative h-48 sm:h-56 overflow-hidden bg-ink-50 dark:bg-ink-800">
                 <Image

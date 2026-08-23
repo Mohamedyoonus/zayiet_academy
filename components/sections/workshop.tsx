@@ -31,7 +31,7 @@ export default function Workshop() {
           </Button>
         </div>
 
-        <div className="mt-12 grid gap-5 sm:gap-6 lg:mt-14 lg:grid-cols-3">
+        <div className="mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto no-scrollbar -mx-4 px-6 pb-2 sm:-mx-5 sm:px-7 sm:gap-6 md:-mx-6 md:px-8 lg:mx-0 lg:mt-14 lg:grid lg:grid-cols-3 lg:overflow-visible lg:snap-none lg:px-0 lg:pb-0">
           {workshops.map((w, i) => (
             <motion.div
               key={w.id}
@@ -39,7 +39,7 @@ export default function Workshop() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="card-hover group relative overflow-hidden rounded-4xl border border-sage-200/40 bg-white/60 shadow-md backdrop-blur-sm transition-all duration-300 hover:shadow-lg dark:border-white/10 dark:bg-ink-900/60"
+              className="card-hover group relative w-[85%] shrink-0 snap-start overflow-hidden rounded-4xl border border-sage-200/40 bg-white/60 shadow-md backdrop-blur-sm transition-all duration-300 hover:shadow-lg dark:border-white/10 dark:bg-ink-900/60 sm:w-[55%] md:w-[42%] lg:w-auto"
             >
               <div className="relative h-48 sm:h-56 lg:h-64 overflow-hidden">
                 <Image src={w.image} alt={w.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />

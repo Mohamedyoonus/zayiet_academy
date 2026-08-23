@@ -111,6 +111,16 @@ main {
   mask-image: linear-gradient(90deg, black 85%, transparent 100%);
 }
 
+/* Horizontal scroll-snap card rows (Apple-style mobile carousels) */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;

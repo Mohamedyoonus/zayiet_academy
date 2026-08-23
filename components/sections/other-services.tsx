@@ -26,7 +26,7 @@ export default function OtherServices() {
           description="Murals, wall art and custom commissions — we bring the studio to you." 
         />
 
-        <div className="mt-12 grid gap-5 sm:gap-6 lg:mt-16 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto no-scrollbar -mx-4 px-6 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:snap-none sm:px-0 sm:pb-0 lg:mt-16 lg:grid-cols-3">
           {otherServices.map((s, i) => (
             <motion.div
               key={s.id}
@@ -34,7 +34,7 @@ export default function OtherServices() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="card-hover group relative aspect-[4/5] overflow-hidden rounded-4xl shadow-md transition-all duration-300 hover:shadow-lg"
+              className="card-hover group relative aspect-[4/5] w-[80%] shrink-0 snap-start overflow-hidden rounded-4xl shadow-md transition-all duration-300 hover:shadow-lg sm:w-auto"
             >
               <Image src={s.image} alt={s.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
