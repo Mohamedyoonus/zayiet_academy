@@ -17,6 +17,7 @@ export const nav = [
   { label: "Classes", href: "/#classes" },
   { label: "Workshop", href: "/#workshop" },
   { label: "Gallery", href: "/#gallery" },
+  { label: "Fun Zone", href: "/fun-zone" },
   { label: "Store", href: "/store" },
   { label: "Events", href: "/events" },
   { label: "Collaboration", href: "/collaboration" },

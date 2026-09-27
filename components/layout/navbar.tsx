@@ -133,7 +133,7 @@ export default function Navbar() {
 
         {/* Desktop Navigation */}
         <nav
-          className="hidden items-center gap-1 lg:flex"
+          className="hidden items-center gap-0.5 xl:flex 2xl:gap-1"
           onMouseLeave={() => setHovered(null)}
         >
           {nav.map((item) => (
@@ -145,7 +145,7 @@ export default function Navbar() {
               onMouseEnter={() => setHovered(item.href)}
               onFocus={() => setHovered(item.href)}
               onBlur={() => setHovered(null)}
-              className="relative isolate rounded-full px-4 py-2 text-sm font-medium tracking-wide text-[#2D2D2D] transition-colors hover:text-[#4F5E3C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+              className="relative isolate whitespace-nowrap rounded-full px-3 py-2 text-sm 2xl:px-4 font-medium tracking-wide text-[#2D2D2D] transition-colors hover:text-[#4F5E3C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
             >
               {(hovered ?? active) === item.href && (
                 <motion.span
@@ -169,7 +169,7 @@ export default function Navbar() {
           </Button>
           <button
             aria-label="Open menu"
-            className="grid h-10 w-10 place-items-center rounded-full text-[#2D2D2D] transition-colors hover:bg-charcoal-800/5 active:bg-charcoal-800/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 lg:hidden"
+            className="grid h-10 w-10 place-items-center rounded-full text-[#2D2D2D] transition-colors hover:bg-charcoal-800/5 active:bg-charcoal-800/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 xl:hidden"
             onClick={() => setOpen(true)}
           >
             <Menu className="h-6 w-6" />
@@ -185,7 +185,7 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-[60] bg-[#FDFBF5] lg:hidden"
+            className="fixed inset-0 z-[60] bg-[#FDFBF5] xl:hidden"
             onClick={() => setOpen(false)}
           >
             <div 

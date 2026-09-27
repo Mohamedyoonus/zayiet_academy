@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Palette, Sparkles } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -483,9 +483,14 @@ export default function LittleArtists() {
           <p className="font-display text-lg italic text-charcoal-700 sm:text-xl">
             Your little one could be our next artist.
           </p>
-          <Link href="/enroll" className={buttonVariants({ size: "md" })}>
-            Enroll your child <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link href="/enroll" className={buttonVariants({ size: "md" })}>
+              Enroll your child <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link href="/fun-zone" className={buttonVariants({ size: "md", variant: "outline" })}>
+              <Palette className="h-4 w-4" /> Try the Fun Zone
+            </Link>
+          </div>
         </motion.div>
       </div>
     </section>
