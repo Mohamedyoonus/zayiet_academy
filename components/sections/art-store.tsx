@@ -22,6 +22,7 @@ export default function ArtStore() {
 
       <div className="container-academy relative z-10">
         <SectionHeading
+          align="center"
           eyebrow="Art Store"
           title="Framed artwork &"
           highlight="materials"

@@ -23,7 +23,7 @@ export default function SectionHeading({
   className,
 }: SectionHeadingProps) {
   return (
-    <div className={cn("max-w-2xl", align === "center" && "mx-auto text-center", className)}>
+    <div className={cn(align === "center" ? "mx-auto max-w-4xl text-center" : "max-w-2xl", className)}>
       <motion.span
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -40,7 +40,8 @@ export default function SectionHeading({
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.7, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
-          "mt-4 font-display text-3xl font-medium leading-[1.12] tracking-tight sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl",
+          // Fluid size: scales with viewport width between 28px and 52px
+          "mt-4 text-balance font-display text-[clamp(1.75rem,1.1rem+2vw,3.25rem)] font-medium leading-[1.12] tracking-tight",
           light ? "text-cream" : "text-charcoal-900"
         )}
       >
@@ -65,7 +66,11 @@ export default function SectionHeading({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className={cn("mt-4 text-base sm:text-lg leading-relaxed", light ? "text-cream/70" : "text-charcoal-500")}
+          className={cn(
+            "mt-4 text-base leading-relaxed sm:text-lg",
+            align === "center" && "mx-auto max-w-2xl",
+            light ? "text-cream/70" : "text-charcoal-500"
+          )}
         >
           {description}
         </motion.p>

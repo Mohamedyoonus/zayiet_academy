@@ -26,8 +26,9 @@ export default function ArtClasses() {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-sage-200/10" />
 
       <div className="container-academy relative z-10">
-        <div className="flex flex-col items-start justify-between gap-4 lg:flex-row lg:items-end">
+        <div className="flex flex-col items-center gap-4">
           <SectionHeading
+            align="center"
             eyebrow="Art Classes"
             title="A course for"
             highlight="every stage"
@@ -132,7 +133,7 @@ export default function ArtClasses() {
 
         {/* Delivery modes comparison - ULTRA COMPACT */}
         <div className="mt-12 sm:mt-14 lg:mt-16">
-          <SectionHeading eyebrow="How You Learn" title="Choose your" highlight="format" align="left" />
+          <SectionHeading eyebrow="How You Learn" title="Choose your" highlight="format" align="center" />
           <div className="mt-5 sm:mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-hidden no-scrollbar scroll-pl-8 -mx-4 px-8 pb-2 sm:-mx-5 sm:px-9 sm:scroll-pl-9 sm:gap-4 md:mx-0 md:scroll-pl-0 md:grid md:grid-cols-3 md:overflow-visible md:snap-none md:px-0 md:pb-0">
             {deliveryModes.map((mode, i) => {
               const Icon = modeIcons[mode.icon as keyof typeof modeIcons];

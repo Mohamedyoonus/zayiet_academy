@@ -47,8 +47,8 @@ export default function About() {
       {/* Subtle gradient overlay for depth */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-sage-200/10" />
 
-      <div className="container-academy relative z-10 grid gap-16 lg:grid-cols-2 lg:items-center">
-        <div className="relative">
+      <div className="container-academy relative z-10 grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-16">
+        <div className="relative mx-auto w-full max-w-sm lg:max-w-md">
           <div className="relative aspect-[4/5] overflow-hidden rounded-5xl shadow-xl">
             <Image
               src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1200&auto=format&fit=crop"

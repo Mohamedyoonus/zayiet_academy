@@ -19,8 +19,9 @@ export default function Workshop() {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-sage-200/10" />
 
       <div className="container-academy relative z-10">
-        <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-end">
+        <div className="flex flex-col items-center gap-6">
           <SectionHeading
+            align="center"
             eyebrow="Workshops"
             title="Creative"
             highlight="Workshops"

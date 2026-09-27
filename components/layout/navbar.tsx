@@ -14,14 +14,48 @@ import { useHashScroll } from "@/hooks/use-hash-scroll";
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [hovered, setHovered] = useState<string | null>(null);
+  const [active, setActive] = useState<string | null>(null);
   const pathname = usePathname();
 
   useHashScroll();
+
+  // Sync the active bubble with the current route (and hash on the home page)
+  useEffect(() => {
+    const hash = window.location.hash;
+    const current = pathname === "/" && hash ? `/${hash}` : pathname;
+    const match =
+      nav.find((n) => n.href === current) ?? nav.find((n) => n.href === pathname);
+    setActive(match?.href ?? null);
+  }, [pathname]);
+
+  // Scroll spy on the home page: move the bubble to whichever section is in view
+  useEffect(() => {
+    if (pathname !== "/") return;
+    const sectionLinks = nav.filter((n) => n.href.startsWith("/#"));
+
+    const onScroll = () => {
+      const line = window.innerHeight * 0.4;
+      const atBottom =
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      let current = "/";
+      for (const link of sectionLinks) {
+        const el = document.getElementById(link.href.slice(2));
+        if (el && (el.getBoundingClientRect().top <= line || atBottom)) current = link.href;
+      }
+      setActive(current);
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [pathname]);
 
   // If already on the target page, smooth-scroll immediately; otherwise let
   // the Link's own navigation happen and useHashScroll picks it up on arrival.
   const handleNavClick = (href: string) => {
     setOpen(false);
+    setActive(href);
     if (!href.includes("#")) return;
     const [path, hash] = href.split("#");
     const targetPath = path || "/";
@@ -98,17 +132,29 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav
+          className="hidden items-center gap-1 lg:flex"
+          onMouseLeave={() => setHovered(null)}
+        >
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               scroll={item.href.includes("#") ? false : undefined}
               onClick={() => handleNavClick(item.href)}
-              className="group relative px-4 py-2 text-sm font-medium tracking-wide text-[#2D2D2D] transition-colors hover:text-[#A8BA8E] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+              onMouseEnter={() => setHovered(item.href)}
+              onFocus={() => setHovered(item.href)}
+              onBlur={() => setHovered(null)}
+              className="relative isolate rounded-full px-4 py-2 text-sm font-medium tracking-wide text-[#2D2D2D] transition-colors hover:text-[#4F5E3C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
             >
+              {(hovered ?? active) === item.href && (
+                <motion.span
+                  layoutId="nav-bubble"
+                  className="absolute inset-0 -z-10 rounded-full bg-[#A8BA8E]/25"
+                  transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                />
+              )}
               {item.label}
-              <span className="absolute inset-x-4 -bottom-0.5 h-px origin-left scale-x-0 bg-[#A8BA8E] transition-transform duration-300 group-hover:scale-x-100" />
             </Link>
           ))}
         </nav>

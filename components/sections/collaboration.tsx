@@ -29,7 +29,7 @@ export default function Collaboration() {
             description="Bring Zayith Academy to your school, workplace, or community. Tell us what you're planning and our team will reach out."
             light
           />
-          <div className="relative mt-10 hidden aspect-square max-w-md overflow-hidden rounded-5xl lg:block">
+          <div className="relative mt-10 hidden aspect-[4/3] max-w-sm overflow-hidden rounded-5xl lg:block">
             <Image
               src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=1000&auto=format&fit=crop"
               alt="Instructor collaborating with students"

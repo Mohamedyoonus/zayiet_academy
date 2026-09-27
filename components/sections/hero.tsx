@@ -11,8 +11,58 @@ import {
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { usePaintTrail } from "@/hooks/use-paint-trail";
 
 const ease = [0.16, 1, 0.3, 1] as const;
+
+// Crayon palette shared by the doodles and paint trail
+const CRAYON = {
+  yellow: "#E8B04B",
+  coral: "#D9695F",
+  blue: "#6B9AC4",
+  sage: "#93A57D",
+};
+
+// A hand-drawn doodle that "draws itself" on load, then floats gently.
+function Doodle({
+  d,
+  color,
+  className,
+  delay = 0,
+  viewBox = "0 0 40 40",
+  strokeWidth = 2.5,
+}: {
+  d: string;
+  color: string;
+  className?: string;
+  delay?: number;
+  viewBox?: string;
+  strokeWidth?: number;
+}) {
+  return (
+    <motion.svg
+      aria-hidden
+      viewBox={viewBox}
+      fill="none"
+      className={cn("pointer-events-none absolute", className)}
+      animate={{ y: [0, -5, 0], rotate: [0, 4, 0] }}
+      transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay }}
+    >
+      <motion.path
+        d={d}
+        stroke={color}
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        initial={{ pathLength: 0, opacity: 0 }}
+        animate={{ pathLength: 1, opacity: 1 }}
+        transition={{ duration: 1.1, delay: 0.6 + delay, ease: "easeInOut" }}
+      />
+    </motion.svg>
+  );
+}
+
 
 const stats = [
   ["1200+", "Students Trained"],
@@ -74,6 +124,8 @@ export default function Hero() {
   const lightY = useTransform(springRawY, (v) => v - 210);
   const lightOpacity = useTransform(hoverSpring, [0, 1], [0, 1]);
 
+  const { spawn: spawnDrop, trail } = usePaintTrail();
+
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (!parallaxEnabled) return;
     const rect = e.currentTarget.getBoundingClientRect();
@@ -83,6 +135,7 @@ export default function Hero() {
     mouseY.set((py / rect.height) * 2 - 1);
     rawX.set(px);
     rawY.set(py);
+    spawnDrop(px, py);
   };
 
   const handlePointerEnter = () => {
@@ -171,6 +224,9 @@ export default function Hero() {
         />
       )}
 
+      {/* Paint trail — sits behind the content */}
+      {trail}
+
       {/* =====================================================
           MAIN HERO CONTAINER
       ====================================================== */}
@@ -211,6 +267,7 @@ export default function Hero() {
         <motion.div
           style={{ x: textX, y: textY }}
           className="
+            relative
             order-2
             flex
             flex-col
@@ -226,6 +283,25 @@ export default function Hero() {
            xl:pt-3
           "
         >
+          {/* Crayon doodles */}
+          <Doodle
+            d="M20 3 L24.5 14.5 L37 15.5 L27.5 23.5 L30.5 36 L20 29 L9.5 36 L12.5 23.5 L3 15.5 L15.5 14.5 Z"
+            color={CRAYON.yellow}
+            className="right-[8%] top-0 h-9 w-9 sm:h-11 sm:w-11 lg:right-[14%] lg:top-2"
+          />
+          <Doodle
+            d="M20 34 C 6 24 4 14 10 9 C 15 5 20 9 20 13 C 20 9 25 5 30 9 C 36 14 34 24 20 34 Z"
+            color={CRAYON.coral}
+            delay={0.3}
+            className="right-[4%] top-[48%] hidden h-9 w-9 lg:block"
+          />
+          <Doodle
+            d="M20 20 a3 3 0 1 1 4 3 a7 7 0 1 1 -10 -6 a11 11 0 1 1 15 13"
+            color={CRAYON.blue}
+            delay={0.6}
+            className="bottom-2 right-[10%] hidden h-10 w-10 sm:block lg:right-[16%]"
+          />
+
           {/* Eyebrow */}
 
           <motion.span
@@ -280,7 +356,28 @@ export default function Hero() {
             "
           >
             Discover the{" "}
-            <span className="italic text-sage-700">artist</span> within you
+            <span className="relative inline-block italic text-sage-700">
+              artist
+              <svg
+                aria-hidden
+                viewBox="0 0 120 12"
+                preserveAspectRatio="none"
+                fill="none"
+                className="pointer-events-none absolute -bottom-1 left-0 h-2.5 w-full"
+              >
+                <motion.path
+                  d="M2 8 Q 12 2 22 8 T 42 8 T 62 8 T 82 8 T 102 8 T 118 7"
+                  stroke={CRAYON.coral}
+                  strokeWidth={3}
+                  strokeLinecap="round"
+                  vectorEffect="non-scaling-stroke"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.9, delay: 0.7, ease: "easeInOut" }}
+                />
+              </svg>
+            </span>{" "}
+            within you
           </motion.h1>
 
           {/* Description */}
@@ -581,6 +678,21 @@ export default function Hero() {
               xl:h-12
               xl:w-12
             "
+          />
+
+          {/* Sun + sparkle doodles around the artwork */}
+          <Doodle
+            d="M20 13 a7 7 0 1 0 0.01 0 M20 3 v4 M20 33 v4 M3 20 h4 M33 20 h4 M8 8 l3 3 M29 29 l3 3 M8 32 l3 -3 M29 11 l3 -3"
+            color={CRAYON.yellow}
+            delay={0.9}
+            className="-bottom-7 right-[22%] z-20 hidden h-12 w-12 lg:block"
+          />
+          <Doodle
+            d="M10 2 v16 M2 10 h16 M26 22 v10 M21 27 h10"
+            viewBox="0 0 34 34"
+            color={CRAYON.sage}
+            delay={1.1}
+            className="-left-6 top-[38%] z-20 hidden h-8 w-8 lg:block"
           />
         </div>
       </div>
