@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Brush, Download, Eraser, Rainbow, Stamp, Trash2, Undo2 } from "lucide-react";
+import { Brush, Download, Eraser, Rainbow, Share2, Stamp, Trash2, Undo2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Palette, { PALETTE } from "./palette";
 import ToolButton from "./tool-button";
+import { downloadBlob, shareArtwork, SHARE_BUTTON } from "./share";
+
+const FILENAME = "zayit-my-drawing.png";
 
 // Fixed internal resolution; the canvas is scaled to fit its container with CSS
 const W = 1200;
@@ -148,12 +151,13 @@ export default function DrawingBoard() {
     clearPaper(ctx());
   };
 
-  const download = () => {
-    const a = document.createElement("a");
-    a.download = "zayit-my-drawing.png";
-    a.href = canvasRef.current!.toDataURL("image/png");
-    a.click();
-  };
+  const toBlob = () =>
+    new Promise<Blob>((resolve, reject) =>
+      canvasRef.current!.toBlob((b) => (b ? resolve(b) : reject(new Error("Could not export drawing"))), "image/png")
+    );
+
+  const download = async () => downloadBlob(await toBlob(), FILENAME);
+  const share = async () => shareArtwork(await toBlob(), FILENAME);
 
   const lastIsClear = actions.current[actions.current.length - 1] === "clear";
 
@@ -181,6 +185,7 @@ export default function DrawingBoard() {
           <ToolButton onClick={undo} disabled={!actionCount} icon={Undo2} label="Undo" />
           <ToolButton onClick={clearAll} disabled={!actionCount || lastIsClear} icon={Trash2} label="Clear" />
           <ToolButton onClick={download} icon={Download} label="Download" primary />
+          <ToolButton onClick={share} icon={Share2} label="Share" className={SHARE_BUTTON} />
         </div>
       </div>
 

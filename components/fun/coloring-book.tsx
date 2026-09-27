@@ -2,11 +2,12 @@
 
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Download, RotateCcw, Shuffle, Undo2 } from "lucide-react";
+import { Download, RotateCcw, Share2, Shuffle, Undo2 } from "lucide-react";
 import { coloringPages, type ColoringPage } from "@/lib/coloring-pages";
 import { cn } from "@/lib/utils";
 import Palette, { PALETTE } from "./palette";
 import ToolButton from "./tool-button";
+import { downloadBlob, shareArtwork, SHARE_BUTTON } from "./share";
 
 type Fills = Record<string, string>;
 type HistoryEntry = { regionId: string; prev?: string } | { reset: Fills };
@@ -68,7 +69,7 @@ function Picture({
   );
 }
 
-async function downloadSvgAsPng(svg: SVGSVGElement, filename: string) {
+async function svgToPngBlob(svg: SVGSVGElement): Promise<Blob> {
   const markup = new XMLSerializer().serializeToString(svg);
   const url = URL.createObjectURL(new Blob([markup], { type: "image/svg+xml;charset=utf-8" }));
   const img = new Image();
@@ -82,10 +83,9 @@ async function downloadSvgAsPng(svg: SVGSVGElement, filename: string) {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
   URL.revokeObjectURL(url);
-  const a = document.createElement("a");
-  a.download = filename;
-  a.href = canvas.toDataURL("image/png");
-  a.click();
+  return new Promise((resolve, reject) =>
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("Could not export picture"))), "image/png")
+  );
 }
 
 export default function ColoringBook() {
@@ -97,6 +97,7 @@ export default function ColoringBook() {
   const svgRef = useRef<SVGSVGElement>(null);
 
   const page = coloringPages.find((p) => p.id === pageId)!;
+  const filename = `zayit-${page.id}.png`;
   const pageFills = fills[pageId] ?? {};
   const pageHistory = history[pageId] ?? [];
 
@@ -154,10 +155,16 @@ export default function ColoringBook() {
             label="Start over"
           />
           <ToolButton
-            onClick={() => svgRef.current && downloadSvgAsPng(svgRef.current, `zayit-${page.id}.png`)}
+            onClick={async () => svgRef.current && downloadBlob(await svgToPngBlob(svgRef.current), filename)}
             icon={Download}
             label="Download"
             primary
+          />
+          <ToolButton
+            onClick={async () => svgRef.current && shareArtwork(await svgToPngBlob(svgRef.current), filename)}
+            icon={Share2}
+            label="Share"
+            className={SHARE_BUTTON}
           />
         </div>
       </div>

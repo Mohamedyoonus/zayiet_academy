@@ -46,7 +46,9 @@ export default function Enroll() {
   const initialCourseId = courses.find((c) => c.id === preselected)?.id ?? courses[0].id;
 
   const [courseId, setCourseId] = useState(initialCourseId);
-  const [mode, setMode] = useState<"offline" | "online">("offline");
+  const [mode, setMode] = useState<"offline" | "online">(
+    searchParams.get("mode") === "online" ? "online" : "offline"
+  );
   const [submitted, setSubmitted] = useState(false);
 
   const course = courses.find((c) => c.id === courseId) ?? courses[0];

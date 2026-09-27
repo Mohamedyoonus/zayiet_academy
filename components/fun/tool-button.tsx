@@ -10,6 +10,7 @@ export default function ToolButton({
   disabled,
   active,
   primary,
+  className,
 }: {
   icon: LucideIcon;
   label: string;
@@ -17,6 +18,7 @@ export default function ToolButton({
   disabled?: boolean;
   active?: boolean;
   primary?: boolean;
+  className?: string;
 }) {
   return (
     <button
@@ -30,7 +32,8 @@ export default function ToolButton({
           ? "border-transparent bg-charcoal-800 text-cream hover:bg-sage-700"
           : active
             ? "border-sage-500 bg-sage-100 text-sage-800"
-            : "border-charcoal-800/15 bg-white text-charcoal-700 hover:border-sage-400 hover:text-sage-700"
+            : "border-charcoal-800/15 bg-white text-charcoal-700 hover:border-sage-400 hover:text-sage-700",
+        className
       )}
     >
       <Icon className="h-4 w-4" />
