@@ -1,5 +1,3 @@
-const SHARE_TEXT = "Look what I made in the Zayit Academy Fun Zone! 🎨";
-
 // WhatsApp-green styling for the Share tool button
 export const SHARE_BUTTON = "border-transparent bg-[#25D366] text-white hover:bg-[#1EBE5A] hover:text-white";
 
@@ -15,16 +13,17 @@ export function downloadBlob(blob: Blob, filename: string) {
 /**
  * Share a finished artwork. Phones get the native share sheet with the picture
  * attached (WhatsApp, Instagram…); anywhere else the picture is saved and
- * WhatsApp opens with a ready message so it can be attached.
+ * WhatsApp opens with a ready message so it can be attached. `text` and
+ * `title` come from the dictionary, so the message is in the page language.
  */
-export async function shareArtwork(blob: Blob, filename: string) {
+export async function shareArtwork(blob: Blob, filename: string, copy: { text: string; title: string }) {
   const link = `${window.location.origin}/fun-zone`;
-  const message = `${SHARE_TEXT} ${link}`;
+  const message = `${copy.text} ${link}`;
   const file = new File([blob], filename, { type: "image/png" });
 
   if (navigator.canShare?.({ files: [file] })) {
     try {
-      await navigator.share({ files: [file], title: "My artwork", text: message });
+      await navigator.share({ files: [file], title: copy.title, text: message });
       return;
     } catch (err) {
       // Closing the share sheet is not an error worth falling back from

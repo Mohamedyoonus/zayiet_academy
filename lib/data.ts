@@ -12,18 +12,19 @@ import {
   CounterStat,
 } from "@/types";
 
+// `key` picks the translated label from the dictionary (lib/i18n)
 export const nav = [
-  { label: "Home", href: "/" },
-  { label: "Classes", href: "/#classes" },
-  { label: "Workshop", href: "/#workshop" },
-  { label: "Gallery", href: "/#gallery" },
-  { label: "Fun Zone", href: "/fun-zone" },
-  { label: "Store", href: "/store" },
-  { label: "Events", href: "/events" },
-  { label: "Collaboration", href: "/collaboration" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
-];
+  { key: "home", label: "Home", href: "/" },
+  { key: "classes", label: "Classes", href: "/#classes" },
+  { key: "workshop", label: "Workshop", href: "/#workshop" },
+  { key: "gallery", label: "Gallery", href: "/#gallery" },
+  { key: "funZone", label: "Fun Zone", href: "/fun-zone" },
+  { key: "store", label: "Store", href: "/store" },
+  { key: "events", label: "Events", href: "/events" },
+  { key: "collaboration", label: "Collaboration", href: "/collaboration" },
+  { key: "about", label: "About", href: "/about" },
+  { key: "contact", label: "Contact", href: "/contact" },
+] as const;
 
 export const courses: Course[] = [
   {

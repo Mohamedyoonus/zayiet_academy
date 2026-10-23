@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import "./globals.css";
-import { ThemeProvider } from "@/hooks/use-theme";
+import { SettingsProvider } from "@/hooks/use-settings";
+import { I18nProvider } from "@/hooks/use-i18n";
+import { settingsBootScript } from "@/lib/settings";
+import { loadDictionary } from "@/lib/i18n";
+import { DEFAULT_LOCALE, LOCALE_COOKIE, getLanguage, isLocale, scriptFontHref } from "@/lib/i18n/config";
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
 import FloatingActions from "@/components/layout/floating-actions";
@@ -31,16 +36,32 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // The visitor's language (chosen on /settings) is kept in a cookie, so pages
+  // render in it on the server instead of flashing English first
+  const cookieLocale = (await cookies()).get(LOCALE_COOKIE)?.value;
+  const locale = isLocale(cookieLocale) ? cookieLocale : DEFAULT_LOCALE;
+  const language = getLanguage(locale);
+  const dictionary = await loadDictionary(locale);
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} dir={language.dir} suppressHydrationWarning>
+      <head>
+        {/* Applies saved theme / text size before first paint (no flash of the default) */}
+        <script dangerouslySetInnerHTML={{ __html: settingsBootScript }} />
+        {language.font && (
+          <link id={`font-script-${locale}`} rel="stylesheet" href={scriptFontHref(language.font)} />
+        )}
+      </head>
       <body className="font-body overflow-x-hidden">
-        <ThemeProvider>
-          <Navbar />
-          <main className="overflow-x-hidden">{children}</main>
-          <Footer />
-          <FloatingActions />
-        </ThemeProvider>
+        <SettingsProvider>
+          <I18nProvider initialLocale={locale} initialDictionary={dictionary}>
+            <Navbar />
+            <main className="overflow-x-hidden">{children}</main>
+            <Footer />
+            <FloatingActions />
+          </I18nProvider>
+        </SettingsProvider>
       </body>
     </html>
   );

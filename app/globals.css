@@ -13,8 +13,234 @@
 :root {
   --header-h: 76px;
   --header-h-lg: 84px;
-  --font-fraunces: "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
-  --font-jakarta: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* --font-script is set per language below; when unset, the fallback keeps the original stacks */
+  --font-fraunces: "Fraunces", var(--font-script, ui-serif), Georgia, "Times New Roman", serif;
+  --font-jakarta: "Plus Jakarta Sans", var(--font-script, ui-sans-serif), system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* =====================================================================
+   LANGUAGES (chosen on /settings)
+   Latin text keeps the site fonts; other scripts fall through to Noto.
+   ===================================================================== */
+html[lang="kn"] { --font-script: "Noto Sans Kannada"; }
+html[lang="ta"] { --font-script: "Noto Sans Tamil"; }
+html[lang="te"] { --font-script: "Noto Sans Telugu"; }
+html[lang="ml"] { --font-script: "Noto Sans Malayalam"; }
+html[lang="hi"] { --font-script: "Noto Sans Devanagari"; }
+html[lang="ar"] { --font-script: "Noto Sans Arabic"; }
+
+/* These scripts need taller lines, no letter-spacing (it breaks Arabic joins)
+   and no synthetic italics */
+html:is([lang="kn"], [lang="ta"], [lang="te"], [lang="ml"], [lang="hi"], [lang="ar"]) body * {
+  letter-spacing: normal !important;
+}
+html:is([lang="kn"], [lang="ta"], [lang="te"], [lang="ml"], [lang="hi"], [lang="ar"]) :is(h1, h2, h3, h4) {
+  line-height: 1.35 !important;
+}
+html:is([lang="kn"], [lang="ta"], [lang="te"], [lang="ml"], [lang="hi"], [lang="ar"]) .italic {
+  font-style: normal;
+}
+
+/* Right-to-left: point direction arrows the other way */
+[dir="rtl"] :is(.lucide-arrow-right, .lucide-arrow-left, .lucide-arrow-up-right, .lucide-send) {
+  transform: scaleX(-1);
+}
+
+/* =====================================================================
+   COLOR THEMES (chosen on /settings)
+   Colors are "R G B" channels so Tailwind opacity modifiers keep working.
+   The default (:root / sage) values are the original design, unchanged.
+   Other themes keep the original lightness & softness, only the hue moves.
+   ===================================================================== */
+:root,
+[data-theme="sage"] {
+  --c-charcoal-50: 245 246 243;
+  --c-charcoal-100: 231 233 227;
+  --c-charcoal-200: 203 207 195;
+  --c-charcoal-300: 166 172 154;
+  --c-charcoal-400: 124 130 113;
+  --c-charcoal-500: 92 97 82;
+  --c-charcoal-600: 71 76 63;
+  --c-charcoal-700: 56 60 51;
+  --c-charcoal-800: 42 46 40;
+  --c-charcoal-900: 28 31 26;
+  --c-charcoal-950: 17 19 16;
+  --c-sage-50: 244 246 241;
+  --c-sage-100: 230 235 222;
+  --c-sage-200: 205 216 190;
+  --c-sage-300: 175 191 156;
+  --c-sage-400: 147 165 125;
+  --c-sage-500: 124 139 111;
+  --c-sage-600: 100 113 90;
+  --c-sage-700: 79 89 71;
+  --c-sage-800: 62 69 56;
+  --c-sage-900: 49 54 45;
+  --c-moss-400: 122 140 108;
+  --c-moss-500: 91 107 79;
+  --c-moss-600: 72 84 64;
+  --c-brand: 168 186 142;
+  --c-brand-ink: 79 94 60;
+  --c-ivory-50: 255 255 255;
+  --c-ivory-100: 251 248 242;
+  --c-ivory-200: 245 240 229;
+  --c-ivory-300: 238 231 214;
+  --c-cream: 251 248 242;
+  --c-surface: 245 241 232;
+  --c-paper: 255 255 255;
+  --c-header: 253 251 245;
+  --c-header-ink: 45 45 45;
+}
+
+[data-theme="ocean"] {
+  --c-sage-50: 240 246 251;
+  --c-sage-100: 219 236 247;
+  --c-sage-200: 182 217 239;
+  --c-sage-300: 143 192 222;
+  --c-sage-400: 109 165 200;
+  --c-sage-500: 99 139 164;
+  --c-sage-600: 80 113 133;
+  --c-sage-700: 63 89 105;
+  --c-sage-800: 51 69 81;
+  --c-sage-900: 41 54 62;
+  --c-moss-400: 93 140 168;
+  --c-moss-500: 65 107 132;
+  --c-moss-600: 54 84 102;
+  --c-brand: 126 187 224;
+  --c-brand-ink: 43 94 123;
+  --c-ivory-50: 255 255 255;
+  --c-ivory-100: 243 249 254;
+  --c-ivory-200: 230 243 251;
+  --c-ivory-300: 216 235 247;
+  --c-cream: 243 249 254;
+  --c-surface: 233 243 250;
+  --c-paper: 255 255 255;
+  --c-header: 246 252 255;
+}
+
+[data-theme="sunset"] {
+  --c-sage-50: 251 243 240;
+  --c-sage-100: 247 228 220;
+  --c-sage-200: 240 202 186;
+  --c-sage-300: 222 171 150;
+  --c-sage-400: 199 142 118;
+  --c-sage-500: 164 122 105;
+  --c-sage-600: 133 99 85;
+  --c-sage-700: 105 78 67;
+  --c-sage-800: 81 61 53;
+  --c-sage-900: 62 49 43;
+  --c-moss-400: 168 120 101;
+  --c-moss-500: 131 90 72;
+  --c-moss-600: 102 71 59;
+  --c-brand: 224 161 136;
+  --c-brand-ink: 122 74 54;
+  --c-ivory-50: 255 255 255;
+  --c-ivory-100: 254 246 243;
+  --c-ivory-200: 251 237 231;
+  --c-ivory-300: 248 226 218;
+  --c-cream: 254 246 243;
+  --c-surface: 250 239 234;
+  --c-paper: 255 255 255;
+  --c-header: 255 249 246;
+}
+
+[data-theme="lavender"] {
+  --c-sage-50: 245 244 251;
+  --c-sage-100: 234 230 247;
+  --c-sage-200: 213 205 240;
+  --c-sage-300: 188 176 223;
+  --c-sage-400: 162 148 201;
+  --c-sage-500: 136 126 165;
+  --c-sage-600: 110 102 134;
+  --c-sage-700: 87 81 106;
+  --c-sage-800: 68 63 81;
+  --c-sage-900: 53 50 62;
+  --c-moss-400: 136 125 169;
+  --c-moss-500: 104 94 132;
+  --c-moss-600: 82 75 102;
+  --c-brand: 183 168 225;
+  --c-brand-ink: 92 79 124;
+  --c-ivory-50: 255 255 255;
+  --c-ivory-100: 249 247 254;
+  --c-ivory-200: 241 238 251;
+  --c-ivory-300: 233 228 248;
+  --c-cream: 249 247 254;
+  --c-surface: 242 240 250;
+  --c-paper: 255 255 255;
+  --c-header: 251 250 255;
+}
+
+[data-theme="rose"] {
+  --c-sage-50: 251 243 244;
+  --c-sage-100: 248 227 230;
+  --c-sage-200: 240 199 207;
+  --c-sage-300: 222 167 178;
+  --c-sage-400: 200 137 151;
+  --c-sage-500: 164 119 128;
+  --c-sage-600: 134 96 104;
+  --c-sage-700: 105 76 82;
+  --c-sage-800: 81 60 64;
+  --c-sage-900: 62 48 50;
+  --c-moss-400: 168 117 127;
+  --c-moss-500: 131 86 96;
+  --c-moss-600: 102 69 76;
+  --c-brand: 224 156 171;
+  --c-brand-ink: 122 70 82;
+  --c-ivory-50: 255 255 255;
+  --c-ivory-100: 254 246 247;
+  --c-ivory-200: 251 236 239;
+  --c-ivory-300: 248 225 229;
+  --c-cream: 254 246 247;
+  --c-surface: 250 238 240;
+  --c-paper: 255 255 255;
+  --c-header: 255 249 250;
+}
+
+[data-theme="golden"] {
+  --c-sage-50: 248 245 239;
+  --c-sage-100: 240 232 216;
+  --c-sage-200: 227 209 176;
+  --c-sage-300: 205 181 135;
+  --c-sage-400: 181 154 100;
+  --c-sage-500: 150 130 93;
+  --c-sage-600: 122 106 75;
+  --c-sage-700: 96 83 59;
+  --c-sage-800: 74 65 48;
+  --c-sage-900: 58 51 39;
+  --c-moss-400: 153 130 86;
+  --c-moss-500: 118 98 59;
+  --c-moss-600: 92 77 50;
+  --c-brand: 204 174 116;
+  --c-brand-ink: 107 84 36;
+  --c-ivory-50: 255 255 255;
+  --c-ivory-100: 251 248 241;
+  --c-ivory-200: 246 240 228;
+  --c-ivory-300: 240 230 212;
+  --c-cream: 251 248 241;
+  --c-surface: 246 241 231;
+  --c-paper: 255 255 255;
+  --c-header: 254 251 244;
+}
+
+/* =====================================================================
+   READING & ACCESSIBILITY SETTINGS (set as data-* on <html>)
+   ===================================================================== */
+html[data-text-size="sm"] { font-size: 87.5%; }
+html[data-text-size="lg"] { font-size: 112.5%; }
+html[data-text-size="xl"] { font-size: 125%; }
+
+/* Heading typeface — the default stays Fraunces */
+html[data-font="modern"] {
+  --font-fraunces: var(--font-jakarta);
+}
+html[data-font="playful"] {
+  --font-fraunces: "Fredoka", var(--font-script, ui-rounded), "Plus Jakarta Sans", system-ui, sans-serif;
+}
+
+/* Stronger muted text for easier reading */
+html[data-contrast="high"] {
+  --c-charcoal-300: 124 130 113;
+  --c-charcoal-400: 84 89 76;
+  --c-charcoal-500: 62 66 55;
 }
 
 * {
@@ -53,8 +279,8 @@ main {
 }
 
 ::selection {
-  background-color: #CDD8BE;
-  color: #2A2E28;
+  background-color: rgb(var(--c-sage-200));
+  color: rgb(var(--c-charcoal-800));
 }
 
 /* Custom scrollbar */
@@ -65,7 +291,7 @@ main {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #AFBF9C;
+  background: rgb(var(--c-sage-300));
   border-radius: 999px;
 }
 
@@ -94,7 +320,7 @@ main {
 
 /* Warm, cream-toned glass for the sticky header */
 .glass {
-  background: rgba(251, 248, 242, 0.82);
+  background: rgb(var(--c-cream) / 0.82);
   backdrop-filter: blur(20px) saturate(140%);
   -webkit-backdrop-filter: blur(20px) saturate(140%);
   border-bottom: 1px solid rgba(42, 46, 40, 0.06);
@@ -128,4 +354,12 @@ main {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Same as above, when chosen on the settings page */
+html[data-motion="reduce"] * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
 }

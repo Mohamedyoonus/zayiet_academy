@@ -6,10 +6,13 @@ import { Heart, ShoppingBag, Star, Package } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
 import Badge from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { products, materialsKit } from "@/lib/data";
 import { formatINR } from "@/lib/utils";
+import { useData, useT } from "@/hooks/use-i18n";
 
 export default function ArtStore() {
+  const t = useT();
+  const { products, materialsKit } = useData();
+
   return (
     <section id="store" className="relative overflow-hidden bg-sage-50/40 py-28 dark:bg-ink-950">
       {/* Soft botanical wash - matching all sections */}
@@ -23,10 +26,10 @@ export default function ArtStore() {
       <div className="container-academy relative z-10">
         <SectionHeading
           align="center"
-          eyebrow="Art Store"
-          title="Framed artwork &"
-          highlight="materials"
-          description="Original framed pieces from our students and instructors, plus everything you need to start creating today."
+          eyebrow={t.store.eyebrow}
+          title={t.store.title}
+          highlight={t.store.highlight}
+          description={t.store.description}
         />
 
         <div className="mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden no-scrollbar scroll-pl-8 -mx-4 px-8 pb-2 sm:mx-0 sm:scroll-pl-0 sm:mt-14 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:snap-none sm:px-0 sm:pb-0 lg:grid-cols-3">
@@ -47,7 +50,7 @@ export default function ArtStore() {
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <button
-                  aria-label="Add to wishlist"
+                  aria-label={t.store.addToWishlist}
                   className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full bg-white/90 text-charcoal-700 opacity-0 shadow-md transition-all duration-300 group-hover:opacity-100 hover:text-ember-500 dark:bg-ink-800/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
                 >
                   <Heart className="h-4 w-4" />
@@ -71,7 +74,7 @@ export default function ArtStore() {
                     {p.oldPrice && <span className="mr-2 text-sm text-charcoal-400 line-through">{formatINR(p.oldPrice)}</span>}
                     <span className="font-display text-xl font-semibold text-charcoal-900">{formatINR(p.price)}</span>
                   </div>
-                  <Button size="sm" className="!h-10 !w-10 !p-0 bg-sage-600 hover:bg-sage-700 dark:bg-sage-500 dark:hover:bg-sage-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500" aria-label="Buy now">
+                  <Button size="sm" className="!h-10 !w-10 !p-0 bg-sage-600 hover:bg-sage-700 dark:bg-sage-500 dark:hover:bg-sage-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500" aria-label={t.store.buyNow}>
                     <ShoppingBag className="h-4 w-4" />
                   </Button>
                 </div>
@@ -98,13 +101,13 @@ export default function ArtStore() {
                 <Package className="h-6 w-6" />
               </div>
               <h3 className="mt-4 font-display text-2xl sm:text-3xl font-medium text-white">
-                Everything Included <br className="hidden sm:block" />Materials Kit
+                {t.store.kitTitleLine1} <br className="hidden sm:block" />{t.store.kitTitleLine2}
               </h3>
               <p className="mt-3 text-white/80 text-sm sm:text-base leading-relaxed">
-                Everything a beginner needs in one box — sourced and packed by us.
+                {t.store.kitDescription}
               </p>
               <Button className="mt-6 bg-white text-sage-800 hover:bg-sage-100 dark:bg-white dark:text-sage-800 dark:hover:bg-sage-100 font-semibold">
-                Shop the Kit →
+                {t.store.shopKit}
               </Button>
             </div>
 

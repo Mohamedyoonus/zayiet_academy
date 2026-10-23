@@ -5,10 +5,12 @@ import Image from "next/image";
 import { Star, Quote } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
 import Badge from "@/components/ui/badge";
-import { testimonials } from "@/lib/data";
+import { useData, useT } from "@/hooks/use-i18n";
 
 export default function Testimonials() {
-  const avg = (testimonials.reduce((a, t) => a + t.rating, 0) / testimonials.length).toFixed(1);
+  const t = useT();
+  const { testimonials } = useData();
+  const avg = (testimonials.reduce((sum, r) => sum + r.rating, 0) / testimonials.length).toFixed(1);
 
   return (
     <section className="relative overflow-hidden bg-sage-50/40 py-28 dark:bg-ink-950">
@@ -24,10 +26,10 @@ export default function Testimonials() {
         <div className="flex flex-col items-center gap-6">
           <SectionHeading
             align="center"
-            eyebrow="Testimonials"
-            title="Loved by students" 
-            highlight="& parents" 
-            description="Real stories from our community of artists, creators, and dreamers."
+            eyebrow={t.testimonials.eyebrow}
+            title={t.testimonials.title}
+            highlight={t.testimonials.highlight}
+            description={t.testimonials.description}
           />
           <div className="flex items-center gap-3 rounded-3xl border border-sage-200/40 bg-white/60 px-5 sm:px-6 py-3 sm:py-4 backdrop-blur-sm shadow-sm dark:border-white/10 dark:bg-ink-900/60">
             <div className="flex text-gold-500">
@@ -37,15 +39,15 @@ export default function Testimonials() {
             </div>
             <div>
               <div className="font-display text-lg sm:text-xl font-semibold text-charcoal-900">{avg} / 5.0</div>
-              <div className="text-xs text-charcoal-500 dark:text-charcoal-400">Average Rating</div>
+              <div className="text-xs text-charcoal-500 dark:text-charcoal-400">{t.testimonials.averageRating}</div>
             </div>
           </div>
         </div>
 
         <div className="mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden no-scrollbar scroll-pl-8 -mx-4 px-8 pb-2 sm:mx-0 sm:scroll-pl-0 sm:mt-14 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:snap-none sm:px-0 sm:pb-0 lg:grid-cols-4">
-          {testimonials.map((t, i) => (
+          {testimonials.map((item, i) => (
             <motion.div
-              key={t.id}
+              key={item.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
@@ -53,21 +55,21 @@ export default function Testimonials() {
               className="card-hover flex w-[80%] shrink-0 snap-start flex-col rounded-4xl border border-sage-200/40 bg-white/60 p-5 sm:w-auto sm:p-6 lg:p-7 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-lg dark:border-white/10 dark:bg-ink-900/60"
             >
               <Quote className="h-6 sm:h-7 w-6 sm:w-7 text-sage-400 dark:text-sage-500" />
-              <p className="mt-3 sm:mt-4 flex-1 text-sm leading-relaxed text-charcoal-700 dark:text-charcoal-300">&ldquo;{t.quote}&rdquo;</p>
+              <p className="mt-3 sm:mt-4 flex-1 text-sm leading-relaxed text-charcoal-700 dark:text-charcoal-300">&ldquo;{item.quote}&rdquo;</p>
               <div className="mt-5 sm:mt-6 flex items-center gap-3">
                 <div className="relative h-10 sm:h-11 w-10 sm:w-11 overflow-hidden rounded-full ring-2 ring-sage-200/50 dark:ring-sage-500/30 flex-shrink-0">
-                  <Image src={t.image} alt={t.name} fill className="object-cover" />
+                  <Image src={item.image} alt={item.name} fill className="object-cover" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-sm font-semibold text-charcoal-900 truncate">{t.name}</div>
+                  <div className="text-sm font-semibold text-charcoal-900 truncate">{item.name}</div>
                   <Badge variant="outline" className="mt-0.5 border-sage-300/50 text-sage-700 dark:border-white/20 text-xs">
-                    {t.role}
+                    {item.roleLabel}
                   </Badge>
                 </div>
               </div>
               <div className="mt-4 flex text-gold-500">
                 {Array.from({ length: 5 }).map((_, idx) => (
-                  <Star key={idx} className="h-3.5 w-3.5" fill={idx < t.rating ? "currentColor" : "none"} />
+                  <Star key={idx} className="h-3.5 w-3.5" fill={idx < item.rating ? "currentColor" : "none"} />
                 ))}
               </div>
             </motion.div>

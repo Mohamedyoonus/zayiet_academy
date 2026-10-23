@@ -5,9 +5,13 @@ import Image from "next/image";
 import { MapPin, CalendarDays, Bell } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
 import { Button } from "@/components/ui/button";
-import { workshops } from "@/lib/data";
+import { useData, useT } from "@/hooks/use-i18n";
+import { fmt } from "@/lib/i18n";
 
 export default function Workshop() {
+  const t = useT();
+  const { workshops } = useData();
+
   return (
     <section id="workshop" className="relative overflow-hidden bg-ivory-200 py-10 sm:py-16 lg:py-28 dark:bg-ink-950">
       {/* Soft botanical wash - matching Hero and ArtClasses */}
@@ -22,13 +26,13 @@ export default function Workshop() {
         <div className="flex flex-col items-center gap-6">
           <SectionHeading
             align="center"
-            eyebrow="Workshops"
-            title="Creative"
-            highlight="Workshops"
-            description="Hands-on, practical sessions designed to get your hands dirty — literally. Limited seats, real materials, real feedback."
+            eyebrow={t.workshop.eyebrow}
+            title={t.workshop.title}
+            highlight={t.workshop.highlight}
+            description={t.workshop.description}
           />
           <Button size="md" variant="outline" className="shrink-0 border-sage-300/50 text-sage-700 hover:bg-sage-100/50 dark:border-white/20 dark:hover:bg-white/10 h-11 sm:h-12">
-            <Bell className="h-4 w-4" /> Register Now
+            <Bell className="h-4 w-4" /> {t.common.registerNow}
           </Button>
         </div>
 
@@ -51,7 +55,7 @@ export default function Workshop() {
                     transition={{ repeat: Infinity, duration: 1.6 }}
                     className="absolute right-4 top-4 rounded-full bg-ember-500 px-3 py-1 text-xs font-bold text-white shadow-lg shadow-ember-500/30"
                   >
-                    Only {w.seatsLeft} seats left
+                    {fmt(t.workshop.seatsLeft, { count: w.seatsLeft })}
                   </motion.div>
                 )}
                 <div className="absolute bottom-4 sm:bottom-5 left-4 sm:left-5 right-4 sm:right-5 text-white">
@@ -66,7 +70,7 @@ export default function Workshop() {
                   <CalendarDays className="h-4 w-4 text-sage-600 shrink-0" /> {w.date}
                 </div>
                 <Button variant="dark" size="sm" className="mt-4 w-full justify-center h-11 bg-ink-900 hover:bg-ink-800 dark:bg-white dark:text-charcoal-900 dark:hover:bg-white/90">
-                  Register Now
+                  {t.common.registerNow}
                 </Button>
               </div>
             </motion.div>

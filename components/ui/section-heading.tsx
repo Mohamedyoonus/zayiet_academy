@@ -52,7 +52,7 @@ export default function SectionHeading({
             <svg viewBox="0 0 200 20" preserveAspectRatio="none" fill="none">
               <path
                 d="M2 14C40 6 90 4 100 9C110 14 150 17 198 8"
-                stroke="#AFBF9C"
+                className="stroke-sage-300"
                 strokeWidth="5"
                 strokeLinecap="round"
               />

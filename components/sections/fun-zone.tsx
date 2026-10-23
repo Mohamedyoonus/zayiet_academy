@@ -7,15 +7,18 @@ import SectionHeading from "@/components/ui/section-heading";
 import ColoringBook from "@/components/fun/coloring-book";
 import DrawingBoard from "@/components/fun/drawing-board";
 import { cn } from "@/lib/utils";
+import { useT } from "@/hooks/use-i18n";
 
+// `label` is the dictionary key for the tab name
 const modes = [
-  { id: "color", label: "Color a picture", icon: PaintBucket },
-  { id: "draw", label: "Free drawing", icon: Paintbrush },
+  { id: "color", label: "modeColor", icon: PaintBucket },
+  { id: "draw", label: "modeDraw", icon: Paintbrush },
 ] as const;
 
 type Mode = (typeof modes)[number]["id"];
 
 export default function FunZone() {
+  const t = useT().funZone;
   const [mode, setMode] = useState<Mode>("color");
 
   return (
@@ -26,10 +29,10 @@ export default function FunZone() {
       <div className="container-academy relative z-10">
         <SectionHeading
           align="center"
-          eyebrow="Student Fun Zone"
-          title="Let's color and"
-          highlight="create"
-          description="Pick a picture and fill it with your favourite colors, or grab a brush and draw anything you like. Save it and show your family!"
+          eyebrow={t.eyebrow}
+          title={t.title}
+          highlight={t.highlight}
+          description={t.description}
         />
 
         {/* Mode switcher */}
@@ -54,7 +57,7 @@ export default function FunZone() {
                   />
                 )}
                 <m.icon className="h-4 w-4" />
-                {m.label}
+                {t[m.label]}
               </button>
             ))}
           </div>

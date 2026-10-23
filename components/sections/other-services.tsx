@@ -4,9 +4,12 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
-import { otherServices } from "@/lib/data";
+import { useData, useT } from "@/hooks/use-i18n";
 
 export default function OtherServices() {
+  const t = useT();
+  const { otherServices } = useData();
+
   return (
     <section className="relative overflow-hidden bg-sage-50/40 py-28 dark:bg-ink-950">
       {/* Soft botanical wash - matching all sections */}
@@ -19,11 +22,11 @@ export default function OtherServices() {
 
       <div className="container-academy relative z-10">
         <SectionHeading 
-          eyebrow="Other Services" 
-          title="Beyond the" 
-          highlight="classroom" 
-          align="center" 
-          description="Murals, wall art and custom commissions — we bring the studio to you." 
+          eyebrow={t.services.eyebrow}
+          title={t.services.title}
+          highlight={t.services.highlight}
+          align="center"
+          description={t.services.description}
         />
 
         <div className="mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden no-scrollbar scroll-pl-8 -mx-4 px-8 pb-2 sm:mx-0 sm:scroll-pl-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:snap-none sm:px-0 sm:pb-0 lg:mt-16 lg:grid-cols-3">

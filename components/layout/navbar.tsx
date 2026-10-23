@@ -4,16 +4,24 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Menu, Palette, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Menu, Palette, Settings as SettingsIcon, X } from "lucide-react";
 import { nav } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { cn, scrollToHash } from "@/lib/utils";
 import { useHashScroll } from "@/hooks/use-hash-scroll";
+import { useEffectEnabled } from "@/hooks/use-settings";
+import { useData, useI18n } from "@/hooks/use-i18n";
 
 type Splash = { id: number; href: string; scope: "desktop" | "mobile"; x: number; y: number };
 
-const SPLASH_COLORS = ["#A8BA8E", "#93A57D", "#7C8B6F", "#BFCDA8"];
+// Theme-aware: brand (#A8BA8E), sage-400 (#93A57D), sage-500 (#7C8B6F) and a light brand tint (~#BFCDA8)
+const SPLASH_COLORS = [
+  "rgb(var(--c-brand))",
+  "rgb(var(--c-sage-400))",
+  "rgb(var(--c-sage-500))",
+  "color-mix(in srgb, rgb(var(--c-brand)) 72%, white)",
+];
 
 // Irregular liquid splat, drawn around (0,0) in a 100x100 box
 const SPLAT_PATH =
@@ -48,7 +56,7 @@ function BubbleSplash({ x, y, rounded }: { x: number; y: number; rounded: string
       {/* Bubble squash-and-stretch, then burst */}
       <motion.span
         aria-hidden
-        className={cn("pointer-events-none absolute inset-0 -z-10 bg-[#A8BA8E]/50", rounded)}
+        className={cn("pointer-events-none absolute inset-0 -z-10 bg-brand/50", rounded)}
         initial={{ scaleX: 1, scaleY: 1, opacity: 1 }}
         animate={{ scaleX: [1, 1.16, 0.94, 1.3], scaleY: [1, 0.82, 1.1, 1.3], opacity: [1, 1, 1, 0] }}
         transition={{ duration: 0.5, times: [0, 0.25, 0.5, 1], ease: "easeOut" }}
@@ -63,10 +71,10 @@ function BubbleSplash({ x, y, rounded }: { x: number; y: number; rounded: string
           animate={{ scale: [0, 1.15, 1], opacity: [0.85, 0.6, 0] }}
           transition={{ duration: 0.75, times: [0, 0.3, 1], delay: 0.08, ease: "easeOut" }}
         >
-          <path d={SPLAT_PATH} fill="#A8BA8E" />
-          <circle cx={-40} cy={-34} r={5} fill="#93A57D" />
-          <circle cx={44} cy={-30} r={4} fill="#A8BA8E" />
-          <circle cx={-44} cy={30} r={3.5} fill="#7C8B6F" />
+          <path d={SPLAT_PATH} className="fill-brand" />
+          <circle cx={-40} cy={-34} r={5} className="fill-sage-400" />
+          <circle cx={44} cy={-30} r={4} className="fill-brand" />
+          <circle cx={-44} cy={30} r={3.5} className="fill-sage-500" />
         </motion.svg>
 
         {/* Flying droplets */}
@@ -104,11 +112,15 @@ export default function Navbar() {
   const [active, setActive] = useState<string | null>(null);
   const [splashes, setSplashes] = useState<Splash[]>([]);
   const splashId = useRef(0);
-  const reduceMotion = useReducedMotion();
+  const splashEnabled = useEffectEnabled("splash");
   const pathname = usePathname();
+  const { t, locale } = useI18n();
+  const { nav: navItems } = useData();
+  // Translated labels run longer than English, so the full menu needs a wider screen
+  const wide = locale !== "en";
 
   const triggerSplash = (e: React.MouseEvent<HTMLElement>, href: string, scope: Splash["scope"]) => {
-    if (reduceMotion) return;
+    if (!splashEnabled) return;
     const rect = e.currentTarget.getBoundingClientRect();
     // Keyboard "clicks" have no pointer position, so burst from the center
     const fromPointer = e.detail > 0;
@@ -210,7 +222,7 @@ export default function Navbar() {
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-        scrolled ? "bg-[#FDFBF5] shadow-sm" : "bg-[#FDFBF5]"
+        scrolled ? "bg-header shadow-sm" : "bg-header"
       )}
     >
       <div className="container-academy flex h-[76px] items-center justify-between px-4 sm:px-6">
@@ -219,9 +231,9 @@ export default function Navbar() {
         <Link href="/" className="flex items-center gap-2 sm:gap-3 shrink-0">
           
           {/* Logo Image */}
-          <Image 
-            src="/assets/logo_only.png" 
-            alt="Zayit Academy Logo"
+          <Image
+            src="/assets/logo_only.png"
+            alt={t.nav.logoAlt}
             width={50}  
             height={50}
             priority
@@ -229,11 +241,11 @@ export default function Navbar() {
           />
           
           {/* Company Text - NOW VISIBLE ON MOBILE TOO */}
-          <div className="flex flex-col leading-tight border-l-2 border-[#A8BA8E]/60 pl-2 sm:pl-3">
-            <span className="font-serif text-[1rem] sm:text-[1.1rem] font-semibold tracking-wide text-[#2D2D2D]">
+          <div className="flex flex-col leading-tight border-l-2 border-brand/60 pl-2 sm:pl-3">
+            <span className="font-serif text-[1rem] sm:text-[1.1rem] font-semibold tracking-wide text-header-ink">
               Zayit
             </span>
-            <span className="font-serif text-[0.75rem] sm:text-[0.85rem] font-normal italic tracking-wider text-[#A8BA8E]">
+            <span className="font-serif text-[0.75rem] sm:text-[0.85rem] font-normal italic tracking-wider text-brand">
               Academy
             </span>
           </div>
@@ -242,10 +254,10 @@ export default function Navbar() {
 
         {/* Desktop Navigation */}
         <nav
-          className="hidden items-center gap-0.5 xl:flex 2xl:gap-1"
+          className={cn("hidden items-center gap-0.5 2xl:gap-1", wide ? "2xl:flex" : "xl:flex")}
           onMouseLeave={() => setHovered(null)}
         >
-          {nav.map((item) => (
+          {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -257,12 +269,12 @@ export default function Navbar() {
               onMouseEnter={() => setHovered(item.href)}
               onFocus={() => setHovered(item.href)}
               onBlur={() => setHovered(null)}
-              className="relative isolate whitespace-nowrap rounded-full px-3 py-2 text-sm 2xl:px-4 font-medium tracking-wide text-[#2D2D2D] transition-colors hover:text-[#4F5E3C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+              className="relative isolate whitespace-nowrap rounded-full px-3 py-2 text-sm 2xl:px-4 font-medium tracking-wide text-header-ink transition-colors hover:text-brand-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
             >
               {(hovered ?? active) === item.href && (
                 <motion.span
                   layoutId="nav-bubble"
-                  className="absolute inset-0 -z-10 rounded-full bg-[#A8BA8E]/25"
+                  className="absolute inset-0 -z-10 rounded-full bg-brand/25"
                   transition={{ type: "spring", stiffness: 380, damping: 32 }}
                 />
               )}
@@ -279,21 +291,39 @@ export default function Navbar() {
           <Link
             href="/fun-zone"
             onClick={() => handleNavClick("/fun-zone")}
-            className="inline-flex h-9 items-center gap-1.5 rounded-full bg-[linear-gradient(135deg,#E8B04B,#D9695F,#6B9AC4)] px-3 text-xs font-semibold text-white shadow-sm transition-transform active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 sm:text-sm xl:hidden"
+            className={cn(
+              "inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full bg-[linear-gradient(135deg,#E8B04B,#D9695F,#6B9AC4)] px-3 text-xs font-semibold text-white shadow-sm transition-transform active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 sm:text-sm",
+              wide ? "2xl:hidden" : "xl:hidden"
+            )}
           >
-            <Palette className="h-4 w-4" />
-            Fun Zone
+            <Palette className="h-4 w-4 shrink-0" />
+            {t.nav.funZone}
+          </Link>
+          <Link
+            href="/settings"
+            aria-label={t.nav.settings}
+            title={t.nav.settings}
+            onClick={() => handleNavClick("/settings")}
+            className={cn(
+              "group hidden h-10 w-10 place-items-center rounded-full text-header-ink transition-colors hover:bg-brand/25 hover:text-brand-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 min-[380px]:grid",
+              pathname === "/settings" && "bg-brand/25 text-brand-ink"
+            )}
+          >
+            <SettingsIcon className="h-5 w-5 transition-transform duration-500 group-hover:rotate-90" />
           </Link>
           <Button
             size="sm"
-            className="hidden sm:inline-flex bg-[#A8BA8E] text-[#FDFBF5] hover:bg-[#A8BA8E]/90"
+            className="hidden sm:inline-flex bg-brand text-header hover:bg-brand/90"
             onClick={() => (window.location.href = "/contact")}
           >
-            Enquire
+            {t.common.enquire}
           </Button>
           <button
-            aria-label="Open menu"
-            className="grid h-10 w-10 place-items-center rounded-full text-[#2D2D2D] transition-colors hover:bg-charcoal-800/5 active:bg-charcoal-800/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 xl:hidden"
+            aria-label={t.nav.openMenu}
+            className={cn(
+              "grid h-10 w-10 place-items-center rounded-full text-header-ink transition-colors hover:bg-charcoal-800/5 active:bg-charcoal-800/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500",
+              wide ? "2xl:hidden" : "xl:hidden"
+            )}
             onClick={() => setOpen(true)}
           >
             <Menu className="h-6 w-6" />
@@ -309,7 +339,7 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-[60] bg-[#FDFBF5] xl:hidden"
+            className={cn("fixed inset-0 z-[60] bg-header", wide ? "2xl:hidden" : "xl:hidden")}
             onClick={() => setOpen(false)}
           >
             <div 
@@ -320,26 +350,26 @@ export default function Navbar() {
               {/* Mobile Logo & Name */}
               <Link href="/" onClick={() => setOpen(false)} className="flex items-center gap-2 shrink-0">
                 <Image 
-                  src="/assets/logo_only.png" 
-                  alt="Zayit Academy"
+                  src="/assets/logo_only.png"
+                  alt={t.nav.logoAlt}
                   width={40}
                   height={40}
                   className="object-contain h-[40px] w-auto"
                 />
-                <div className="flex flex-col leading-none border-l-2 border-[#A8BA8E]/60 pl-2">
-                  <span className="font-serif text-base font-semibold text-[#2D2D2D]">
+                <div className="flex flex-col leading-none border-l-2 border-brand/60 pl-2">
+                  <span className="font-serif text-base font-semibold text-header-ink">
                     Zayit
                   </span>
-                  <span className="font-serif text-xs italic text-[#A8BA8E]">
+                  <span className="font-serif text-xs italic text-brand">
                     Academy
                   </span>
                 </div>
               </Link>
 
               <button
-                aria-label="Close menu"
+                aria-label={t.nav.closeMenu}
                 onClick={() => setOpen(false)}
-                className="grid h-10 w-10 place-items-center rounded-full text-[#2D2D2D] transition-colors hover:bg-charcoal-800/5 active:bg-charcoal-800/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+                className="grid h-10 w-10 place-items-center rounded-full text-header-ink transition-colors hover:bg-charcoal-800/5 active:bg-charcoal-800/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
               >
                 <X className="h-6 w-6" />
               </button>
@@ -349,7 +379,7 @@ export default function Navbar() {
               className="flex flex-col gap-1 px-4 py-4 sm:px-6 max-h-[calc(100vh-76px-60px)] overflow-y-auto"
               onPointerLeave={() => setMobileHovered(null)}
             >
-              {nav.map((item, i) => (
+              {navItems.map((item, i) => (
                 <motion.div
                   key={item.href}
                   initial={{ opacity: 0, y: 12 }}
@@ -363,7 +393,7 @@ export default function Navbar() {
                       // Keep the menu open a beat so the splash is visible before it closes
                       e.stopPropagation();
                       triggerSplash(e, item.href, "mobile");
-                      window.setTimeout(() => handleNavClick(item.href), reduceMotion ? 0 : 320);
+                      window.setTimeout(() => handleNavClick(item.href), splashEnabled ? 320 : 0);
                     }}
                     // Mouse: follow hover. Touch: slide the bubble to the tapped item.
                     onPointerEnter={(e) => e.pointerType === "mouse" && setMobileHovered(item.href)}
@@ -371,13 +401,13 @@ export default function Navbar() {
                     onFocus={() => setMobileHovered(item.href)}
                     className={cn(
                       "relative isolate flex items-center gap-2 rounded-2xl px-4 py-3.5 font-display text-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500",
-                      (mobileHovered ?? active) === item.href ? "text-[#4F5E3C]" : "text-[#2D2D2D]"
+                      (mobileHovered ?? active) === item.href ? "text-brand-ink" : "text-header-ink"
                     )}
                   >
                     {(mobileHovered ?? active) === item.href && (
                       <motion.span
                         layoutId="mobile-nav-bubble"
-                        className="absolute inset-0 -z-10 rounded-2xl bg-[#A8BA8E]/25"
+                        className="absolute inset-0 -z-10 rounded-2xl bg-brand/25"
                         transition={{ type: "spring", stiffness: 380, damping: 32 }}
                       />
                     )}
@@ -387,17 +417,49 @@ export default function Navbar() {
                     {item.label}
                     {item.href === "/fun-zone" && (
                       <span className="rounded-full bg-[#D9695F] px-2 py-0.5 font-body text-[10px] font-bold uppercase tracking-wider text-white">
-                        New
+                        {t.common.newBadge}
                       </span>
                     )}
                   </Link>
                 </motion.div>
               ))}
-              <Button 
-                className="mt-6 w-full bg-[#A8BA8E] text-[#FDFBF5] hover:bg-[#A8BA8E]/90" 
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 + navItems.length * 0.04, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <Link
+                  href="/settings"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleNavClick("/settings");
+                  }}
+                  onPointerEnter={(e) => e.pointerType === "mouse" && setMobileHovered("/settings")}
+                  onPointerDown={() => setMobileHovered("/settings")}
+                  onFocus={() => setMobileHovered("/settings")}
+                  className={cn(
+                    "relative isolate flex items-center gap-2 rounded-2xl px-4 py-3.5 font-display text-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500",
+                    (mobileHovered ?? (pathname === "/settings" ? "/settings" : active)) === "/settings"
+                      ? "text-brand-ink"
+                      : "text-header-ink"
+                  )}
+                >
+                  {(mobileHovered ?? (pathname === "/settings" ? "/settings" : active)) === "/settings" && (
+                    <motion.span
+                      layoutId="mobile-nav-bubble"
+                      className="absolute inset-0 -z-10 rounded-2xl bg-brand/25"
+                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                    />
+                  )}
+                  <SettingsIcon className="h-5 w-5" />
+                  {t.nav.settings}
+                </Link>
+              </motion.div>
+              <Button
+                className="mt-6 w-full bg-brand text-header hover:bg-brand/90"
                 onClick={() => setOpen(false)}
               >
-                Enquire
+                {t.common.enquire}
               </Button>
             </nav>
           </motion.div>

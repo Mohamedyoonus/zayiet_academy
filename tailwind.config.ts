@@ -1,5 +1,9 @@
 import type { Config } from "tailwindcss";
 
+// Colors come from CSS variables (see app/globals.css) so themes chosen on
+// /settings can recolor the site. The default values are the original palette.
+const v = (name: string) => `rgb(var(--c-${name}) / <alpha-value>)`;
+
 const config: Config = {
   darkMode: "class",
   content: [
@@ -9,53 +13,63 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Deep charcoal — primary text / ink
+        // Deep charcoal — primary text / ink (#2A2E28 … #111310)
         charcoal: {
-          DEFAULT: "#2A2E28",
-          50: "#F5F6F3",
-          100: "#E7E9E3",
-          200: "#CBCFC3",
-          300: "#A6AC9A",
-          400: "#7C8271",
-          500: "#5C6152",
-          600: "#474C3F",
-          700: "#383C33",
-          800: "#2A2E28",
-          900: "#1C1F1A",
-          950: "#111310",
+          DEFAULT: v("charcoal-800"),
+          50: v("charcoal-50"),
+          100: v("charcoal-100"),
+          200: v("charcoal-200"),
+          300: v("charcoal-300"),
+          400: v("charcoal-400"),
+          500: v("charcoal-500"),
+          600: v("charcoal-600"),
+          700: v("charcoal-700"),
+          800: v("charcoal-800"),
+          900: v("charcoal-900"),
+          950: v("charcoal-950"),
         },
-        // Sage green — primary accent, from the logo's botanical elements
+        // Sage green — primary accent, from the logo's botanical elements (500 = #7C8B6F)
         sage: {
-          DEFAULT: "#7C8B6F",
-          50: "#F4F6F1",
-          100: "#E6EBDE",
-          200: "#CDD8BE",
-          300: "#AFBF9C",
-          400: "#93A57D",
-          500: "#7C8B6F", // primary
-          600: "#64715A",
-          700: "#4F5947",
-          800: "#3E4538",
-          900: "#31362D",
+          DEFAULT: v("sage-500"),
+          50: v("sage-50"),
+          100: v("sage-100"),
+          200: v("sage-200"),
+          300: v("sage-300"),
+          400: v("sage-400"),
+          500: v("sage-500"), // primary
+          600: v("sage-600"),
+          700: v("sage-700"),
+          800: v("sage-800"),
+          900: v("sage-900"),
         },
         // Muted natural / secondary botanical green
         moss: {
-          DEFAULT: "#5B6B4F",
-          400: "#7A8C6C",
-          500: "#5B6B4F",
-          600: "#485440",
+          DEFAULT: v("moss-500"),
+          400: v("moss-400"),
+          500: v("moss-500"),
+          600: v("moss-600"),
         },
         // Warm ivory / cream — background & surfaces
         ivory: {
-          DEFAULT: "#FBF8F2",
-          50: "#FFFFFF",
-          100: "#FBF8F2",
-          200: "#F5F0E5",
-          300: "#EEE7D6",
+          DEFAULT: v("ivory-100"),
+          50: v("ivory-50"),
+          100: v("ivory-100"),
+          200: v("ivory-200"),
+          300: v("ivory-300"),
         },
-        cream: "#FBF8F2",
-        surface: "#F5F1E8",
-        paper: "#FFFFFF",
+        cream: v("cream"),
+        surface: v("surface"),
+        paper: v("paper"),
+        // Header chrome: logo accent / nav bubble (#A8BA8E), hover text (#4F5E3C)
+        brand: {
+          DEFAULT: v("brand"),
+          ink: v("brand-ink"),
+        },
+        // Header background (#FDFBF5) and nav text (#2D2D2D)
+        header: {
+          DEFAULT: v("header"),
+          ink: v("header-ink"),
+        },
       },
       fontFamily: {
         display: ["var(--font-fraunces)", "Georgia", "serif"],

@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Phone, ArrowUp, MessageCircle } from "lucide-react";
+import { useT } from "@/hooks/use-i18n";
 
 export default function FloatingActions() {
+  const t = useT();
   const [showTop, setShowTop] = useState(false);
   const [isDesktop, setIsDesktop] = useState(true);
 
@@ -40,7 +42,7 @@ export default function FloatingActions() {
             exit={{ opacity: 0, scale: 0.6 }}
             whileHover={{ y: -3 }}
             whileTap={{ scale: 0.95 }}
-            aria-label="Back to top"
+            aria-label={t.floating.backToTop}
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="grid h-12 w-12 place-items-center rounded-full bg-charcoal-900 text-white shadow-lg transition-colors hover:bg-charcoal-800 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
           >
@@ -51,7 +53,7 @@ export default function FloatingActions() {
 
       <motion.a
         href="tel:+910000000000"
-        aria-label="Call us"
+        aria-label={t.floating.callUs}
         whileHover={{ y: -3 }}
         whileTap={{ scale: 0.95 }}
         className="grid h-12 w-12 place-items-center rounded-full bg-charcoal-900 text-white shadow-lg transition-colors hover:bg-charcoal-800 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
@@ -63,7 +65,7 @@ export default function FloatingActions() {
         href="https://wa.me/910000000000"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Chat on WhatsApp"
+        aria-label={t.floating.whatsapp}
         whileHover={{ y: -3 }}
         whileTap={{ scale: 0.95 }}
         animate={{ boxShadow: ["0 0 0 0 rgba(34,197,94,0.5)", "0 0 0 14px rgba(34,197,94,0)"] }}

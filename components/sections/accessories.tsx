@@ -5,9 +5,13 @@ import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
 import { Button } from "@/components/ui/button";
-import { accessories } from "@/lib/data";
+import { useData, useT } from "@/hooks/use-i18n";
+import { fmt } from "@/lib/i18n";
 
 export default function Accessories() {
+  const t = useT();
+  const { accessories } = useData();
+
   return (
     <section className="relative overflow-hidden bg-sage-50/40 py-28 dark:bg-ink-950">
       {/* Soft botanical wash - matching all sections */}
@@ -22,13 +26,13 @@ export default function Accessories() {
         <div className="flex flex-col items-center gap-6">
           <SectionHeading
             align="center"
-            eyebrow="Accessories"
-            title="Stock up on the" 
-            highlight="essentials" 
-            description="Quality art supplies and tools curated for every creative journey."
+            eyebrow={t.accessories.eyebrow}
+            title={t.accessories.title}
+            highlight={t.accessories.highlight}
+            description={t.accessories.description}
           />
           <Button variant="outline" className="border-sage-300/50 text-sage-700 hover:bg-sage-100/50 dark:border-white/20 dark:hover:bg-white/10 h-11 sm:h-12">
-            View All <ArrowUpRight className="h-4 w-4" />
+            {t.accessories.viewAll} <ArrowUpRight className="h-4 w-4" />
           </Button>
         </div>
 
@@ -50,7 +54,7 @@ export default function Accessories() {
               
               <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
                 <h3 className="font-display text-base sm:text-lg font-medium text-white">{a.name}</h3>
-                <p className="text-xs text-white/60">{a.itemCount} items</p>
+                <p className="text-xs text-white/60">{fmt(t.accessories.items, { count: a.itemCount })}</p>
               </div>
             </motion.div>
           ))}

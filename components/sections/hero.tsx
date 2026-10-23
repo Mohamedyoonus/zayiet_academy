@@ -4,15 +4,17 @@ import { useEffect, useState } from "react";
 import {
   motion,
   useMotionValue,
-  useReducedMotion,
   useSpring,
   useTransform,
 } from "framer-motion";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import VenomButton from "@/components/ui/venom-button";
 import { cn } from "@/lib/utils";
 import { usePaintTrail } from "@/hooks/use-paint-trail";
+import { useMotionReduced, useSettings } from "@/hooks/use-settings";
+import { useT } from "@/hooks/use-i18n";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -40,6 +42,9 @@ function Doodle({
   viewBox?: string;
   strokeWidth?: number;
 }) {
+  const { settings } = useSettings();
+  if (!settings.effects.doodles) return null;
+
   return (
     <motion.svg
       aria-hidden
@@ -64,17 +69,17 @@ function Doodle({
 }
 
 
-const stats = [
-  ["1200+", "Students Trained"],
-  ["9+", "Years of Teaching"],
-  ["18", "Awards Won"],
-];
-
 // Shared spring feel for every parallax layer — quick but never jittery.
 const PARALLAX_SPRING = { stiffness: 120, damping: 22, mass: 0.5 };
 
 export default function Hero() {
-  const prefersReducedMotion = useReducedMotion();
+  const t = useT();
+  const stats = [
+    ["1200+", t.hero.statStudents],
+    ["9+", t.hero.statYears],
+    ["18", t.hero.statAwards],
+  ];
+  const prefersReducedMotion = useMotionReduced();
   const [parallaxEnabled, setParallaxEnabled] = useState(false);
 
   useEffect(() => {
@@ -318,7 +323,7 @@ export default function Hero() {
             "
           >
             <span className="h-1 w-1 rounded-full bg-sage-500" />
-            Zayith Academy
+            {t.hero.eyebrow}
           </motion.span>
 
           {/* Heading */}
@@ -355,9 +360,9 @@ export default function Hero() {
               2xl:text-[4.25rem]
             "
           >
-            Discover the{" "}
+            {t.hero.titleBefore && <>{t.hero.titleBefore} </>}
             <span className="relative inline-block italic text-sage-700">
-              artist
+              {t.hero.titleHighlight}
               <svg
                 aria-hidden
                 viewBox="0 0 120 12"
@@ -376,8 +381,8 @@ export default function Hero() {
                   transition={{ duration: 0.9, delay: 0.7, ease: "easeInOut" }}
                 />
               </svg>
-            </span>{" "}
-            within you
+            </span>
+            {t.hero.titleAfter && <> {t.hero.titleAfter}</>}
           </motion.h1>
 
           {/* Description */}
@@ -408,8 +413,7 @@ export default function Hero() {
               xl:text-[1.05rem]
             "
           >
-            Professional art education for children aged 5–16 — offline in
-            Bangalore or live online, in small batches, with real mentorship.
+            {t.hero.description}
           </motion.p>
 
           {/* Buttons */}
@@ -434,8 +438,8 @@ export default function Hero() {
               lg:mt-6
             "
           >
-            <Button
-              size="lg"
+            {/* Symbiote goo reaches out of this button when the cursor comes near */}
+            <VenomButton
               className="
                 h-11
                 px-5
@@ -453,9 +457,9 @@ export default function Hero() {
                   })
               }
             >
-              Explore Classes
+              {t.hero.exploreClasses}
               <ArrowRight className="h-4 w-4" />
-            </Button>
+            </VenomButton>
 
             <Button
               size="lg"
@@ -477,7 +481,7 @@ export default function Hero() {
                   })
               }
             >
-              View Gallery
+              {t.hero.viewGallery}
             </Button>
           </motion.div>
 
@@ -606,7 +610,7 @@ export default function Hero() {
           >
             <Image
               src="/assets/hero.PNG"
-              alt="Students painting together at the Zayith Academy studio"
+              alt={t.hero.imageAlt}
               fill
               priority
               sizes="

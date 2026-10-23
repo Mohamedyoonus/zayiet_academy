@@ -4,10 +4,12 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
-import { faqs } from "@/lib/data";
 import { cn } from "@/lib/utils";
+import { useData, useT } from "@/hooks/use-i18n";
 
 export default function FAQ() {
+  const t = useT();
+  const { faqs } = useData();
   const [open, setOpen] = useState<string | null>(faqs[0].id);
 
   return (
@@ -22,11 +24,11 @@ export default function FAQ() {
 
       <div className="container-academy relative z-10 max-w-3xl">
         <SectionHeading 
-          eyebrow="FAQ" 
-          title="Questions," 
-          highlight="answered" 
-          align="center" 
-          description="Everything you need to know about our classes, workshops, and more."
+          eyebrow={t.faq.eyebrow}
+          title={t.faq.title}
+          highlight={t.faq.highlight}
+          align="center"
+          description={t.faq.description}
         />
 
         <div className="mt-14 space-y-3">

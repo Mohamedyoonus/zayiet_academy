@@ -5,15 +5,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { X } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
-import { galleryItems } from "@/lib/data";
 import { cn } from "@/lib/utils";
-import { GalleryItem } from "@/types";
+import { useData, useT } from "@/hooks/use-i18n";
 
 const filters = ["All", "Portrait", "Landscape", "Sketch", "Painting", "Workshop", "Students"] as const;
 
 export default function Gallery() {
+  const t = useT();
+  const { galleryItems, galleryCategory } = useData();
   const [filter, setFilter] = useState<(typeof filters)[number]>("All");
-  const [selected, setSelected] = useState<GalleryItem | null>(null);
+  const [selected, setSelected] = useState<(typeof galleryItems)[number] | null>(null);
 
   const items = filter === "All" ? galleryItems : galleryItems.filter((g) => g.category === filter);
 
@@ -29,11 +30,11 @@ export default function Gallery() {
 
       <div className="container-academy relative z-10">
         <SectionHeading 
-          eyebrow="Gallery" 
-          title="A wall of" 
-          highlight="student work" 
-          align="center" 
-          description="Each piece tells a story of growth, creativity, and the unique voice of every artist."
+          eyebrow={t.gallery.eyebrow}
+          title={t.gallery.title}
+          highlight={t.gallery.highlight}
+          align="center"
+          description={t.gallery.description}
         />
 
         <div className="mt-10 flex flex-wrap justify-center gap-2 sm:gap-3">
@@ -48,7 +49,7 @@ export default function Gallery() {
                   : "bg-white/60 text-charcoal-600 backdrop-blur-sm hover:bg-sage-100/50 dark:bg-ink-900/60 dark:text-charcoal-300 dark:hover:bg-white/10"
               )}
             >
-              {f}
+              {f === "All" ? t.gallery.all : galleryCategory(f)}
             </button>
           ))}
         </div>
@@ -75,7 +76,7 @@ export default function Gallery() {
                 <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/70 via-black/20 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                   <div className="flex items-center gap-3">
                     <span className="text-sm font-medium text-white">{item.title}</span>
-                    <span className="text-xs text-white/60 bg-white/10 px-2 py-0.5 rounded-full">{item.category}</span>
+                    <span className="text-xs text-white/60 bg-white/10 px-2 py-0.5 rounded-full">{item.categoryLabel}</span>
                   </div>
                 </div>
               </motion.button>
@@ -94,7 +95,7 @@ export default function Gallery() {
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 sm:p-6 backdrop-blur-sm"
           >
             <button
-              aria-label="Close"
+              aria-label={t.common.close}
               className="absolute right-4 top-4 sm:right-6 sm:top-6 grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/20 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
               onClick={() => setSelected(null)}
             >
@@ -110,7 +111,7 @@ export default function Gallery() {
               <Image src={selected.image} alt={selected.title} fill className="object-cover" />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 sm:p-6">
                 <span className="text-base sm:text-lg font-medium text-white">{selected.title}</span>
-                <span className="ml-2 sm:ml-3 text-xs sm:text-sm text-white/60 bg-white/10 px-2 sm:px-3 py-0.5 rounded-full">{selected.category}</span>
+                <span className="ml-2 sm:ml-3 text-xs sm:text-sm text-white/60 bg-white/10 px-2 sm:px-3 py-0.5 rounded-full">{selected.categoryLabel}</span>
               </div>
             </motion.div>
           </motion.div>

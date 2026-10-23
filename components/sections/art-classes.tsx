@@ -7,13 +7,15 @@ import { Check, Clock, Users, Award, Star, Video, PlayCircle, School } from "luc
 import SectionHeading from "@/components/ui/section-heading";
 import Badge from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { courses, deliveryModes, admissionNote } from "@/lib/data";
 import { formatINR, cn } from "@/lib/utils";
+import { useData, useT } from "@/hooks/use-i18n";
 
 const modeIcons = { school: School, video: Video, play: PlayCircle } as const;
 
 export default function ArtClasses() {
   const router = useRouter();
+  const t = useT();
+  const { courses, deliveryModes, admissionNote } = useData();
 
   return (
     <section id="classes" className="relative bg-sage-50 py-8 sm:py-14 lg:py-20 dark:bg-ink-950">
@@ -29,10 +31,10 @@ export default function ArtClasses() {
         <div className="flex flex-col items-center gap-4">
           <SectionHeading
             align="center"
-            eyebrow="Art Classes"
-            title="A course for"
-            highlight="every stage"
-            description="From your very first pencil stroke to a portfolio ready for the world — three tiers, built to grow with you."
+            eyebrow={t.classes.eyebrow}
+            title={t.classes.title}
+            highlight={t.classes.highlight}
+            description={t.classes.description}
           />
         </div>
 
@@ -59,7 +61,7 @@ export default function ArtClasses() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                 <Badge variant="gold" className="absolute left-2.5 top-2.5 sm:left-3 sm:top-3 text-[10px] sm:text-xs px-2 py-0.5">
-                  {course.tier}
+                  {course.tierLabel}
                 </Badge>
               </div>
 
@@ -76,21 +78,21 @@ export default function ArtClasses() {
                     <Clock className="mt-0.5 h-3 w-3 shrink-0 text-sage-600" />
                     <div>
                       <div className="font-semibold text-charcoal-900 text-[11px]">{course.duration}</div>
-                      <div className="text-[9px] text-charcoal-500">Duration</div>
+                      <div className="text-[9px] text-charcoal-500">{t.classes.duration}</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-1.5">
                     <Users className="mt-0.5 h-3 w-3 shrink-0 text-sage-600" />
                     <div>
                       <div className="font-semibold text-charcoal-900 text-[11px]">{course.batchSize}</div>
-                      <div className="text-[9px] text-charcoal-500">Batch</div>
+                      <div className="text-[9px] text-charcoal-500">{t.classes.batch}</div>
                     </div>
                   </div>
                   <div className="col-span-2 flex items-start gap-1.5">
                     <Award className="mt-0.5 h-3 w-3 shrink-0 text-sage-600" />
                     <div>
                       <div className="font-semibold text-charcoal-900 text-[11px]">{course.schedule}</div>
-                      <div className="text-[9px] text-charcoal-500">Weekly Schedule</div>
+                      <div className="text-[9px] text-charcoal-500">{t.classes.weeklySchedule}</div>
                     </div>
                   </div>
                 </div>
@@ -110,9 +112,9 @@ export default function ArtClasses() {
                   <div>
                     <div className="flex items-baseline gap-1">
                       <span className="font-display text-lg sm:text-xl font-semibold text-charcoal-900">{formatINR(course.feeOffline)}</span>
-                      <span className="text-[10px] text-charcoal-400">/mo Offline</span>
+                      <span className="text-[10px] text-charcoal-400">{t.classes.perMonthOffline}</span>
                     </div>
-                    <div className="text-[10px] text-charcoal-400">{formatINR(course.feeOnline)}/mo Online</div>
+                    <div className="text-[10px] text-charcoal-400">{formatINR(course.feeOnline)}{t.classes.perMonthOnline}</div>
                   </div>
 
                   {/* Ultra compact button */}
@@ -121,7 +123,7 @@ export default function ArtClasses() {
                     className="h-8 sm:h-9 text-xs px-4 sm:px-5"
                     onClick={() => router.push(`/enroll?course=${course.id}`)}
                   >
-                    Enroll
+                    {t.common.enroll}
                   </Button>
                 </div>
               </div>
@@ -133,7 +135,7 @@ export default function ArtClasses() {
 
         {/* Delivery modes comparison - ULTRA COMPACT */}
         <div className="mt-12 sm:mt-14 lg:mt-16">
-          <SectionHeading eyebrow="How You Learn" title="Choose your" highlight="format" align="center" />
+          <SectionHeading eyebrow={t.classes.howEyebrow} title={t.classes.howTitle} highlight={t.classes.howHighlight} align="center" />
           <div className="mt-5 sm:mt-6 flex snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-hidden no-scrollbar scroll-pl-8 -mx-4 px-8 pb-2 sm:-mx-5 sm:px-9 sm:scroll-pl-9 sm:gap-4 md:mx-0 md:scroll-pl-0 md:grid md:grid-cols-3 md:overflow-visible md:snap-none md:px-0 md:pb-0">
             {deliveryModes.map((mode, i) => {
               const Icon = modeIcons[mode.icon as keyof typeof modeIcons];

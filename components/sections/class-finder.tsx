@@ -23,43 +23,46 @@ import {
 } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
 import { buttonVariants } from "@/components/ui/button";
-import { admissionNote, courses } from "@/lib/data";
 import { cn, formatINR } from "@/lib/utils";
+import { useData, useT } from "@/hooks/use-i18n";
+import { fmt, type Dictionary } from "@/lib/i18n";
 
 type Option = { value: string; label: string; hint?: string; icon: LucideIcon };
 type Question = { id: "age" | "experience" | "mode"; title: string; options: Option[] };
 type Answers = Partial<Record<Question["id"], string>>;
 
-const questions: Question[] = [
-  {
-    id: "age",
-    title: "How old is your child?",
-    options: [
-      { value: "5-8", label: "5 – 8 years", icon: Smile },
-      { value: "9-12", label: "9 – 12 years", icon: Sparkles },
-      { value: "13-16", label: "13 – 16 years", icon: Palette },
-      { value: "16+", label: "Older than 16", icon: GraduationCap },
-    ],
-  },
-  {
-    // Courses build on each other: Basic → Advanced → Pro
-    id: "experience",
-    title: "How much art have they learned so far?",
-    options: [
-      { value: "basic", label: "Just starting out", hint: "No formal art classes yet", icon: Pencil },
-      { value: "advanced", label: "Finished a beginner course", hint: "Comfortable with pencil & shading", icon: Brush },
-      { value: "pro", label: "Finished an advanced course", hint: "Ready to build a portfolio", icon: Award },
-    ],
-  },
-  {
-    id: "mode",
-    title: "Where would they like to learn?",
-    options: [
-      { value: "offline", label: "In our Bangalore studio", hint: "Offline, in-person classes", icon: School },
-      { value: "online", label: "Live online from home", hint: "Live video classes", icon: MonitorPlay },
-    ],
-  },
-];
+function buildQuestions(t: Dictionary["classFinder"]): Question[] {
+  return [
+    {
+      id: "age",
+      title: t.ageTitle,
+      options: [
+        { value: "5-8", label: t.age5to8, icon: Smile },
+        { value: "9-12", label: t.age9to12, icon: Sparkles },
+        { value: "13-16", label: t.age13to16, icon: Palette },
+        { value: "16+", label: t.ageOver16, icon: GraduationCap },
+      ],
+    },
+    {
+      // Courses build on each other: Basic → Advanced → Pro
+      id: "experience",
+      title: t.experienceTitle,
+      options: [
+        { value: "basic", label: t.expBasic, hint: t.expBasicHint, icon: Pencil },
+        { value: "advanced", label: t.expAdvanced, hint: t.expAdvancedHint, icon: Brush },
+        { value: "pro", label: t.expPro, hint: t.expProHint, icon: Award },
+      ],
+    },
+    {
+      id: "mode",
+      title: t.modeTitle,
+      options: [
+        { value: "offline", label: t.modeOffline, hint: t.modeOfflineHint, icon: School },
+        { value: "online", label: t.modeOnline, hint: t.modeOnlineHint, icon: MonitorPlay },
+      ],
+    },
+  ];
+}
 
 // Full class names so Tailwind can see them
 const GRID_COLS: Record<number, string> = {
@@ -76,25 +79,24 @@ const slide = {
 } as const;
 
 function Result({ answers, onRestart }: { answers: Answers; onRestart: () => void }) {
+  const t = useT().classFinder;
+  const { courses, admissionNote } = useData();
+
   if (answers.age === "16+") {
     return (
       <div className="text-center">
         <span className="eyebrow justify-center">
           <span className="h-1 w-1 rounded-full bg-sage-500" />
-          Let&apos;s talk
+          {t.talkEyebrow}
         </span>
-        <h3 className="mt-3 font-display text-2xl font-medium text-charcoal-900 sm:text-3xl">
-          Our courses are built for ages 5–16
-        </h3>
-        <p className="mx-auto mt-3 max-w-md text-charcoal-500">
-          Reach out and we&apos;ll help you find a workshop or session that suits an older learner.
-        </p>
+        <h3 className="mt-3 font-display text-2xl font-medium text-charcoal-900 sm:text-3xl">{t.olderTitle}</h3>
+        <p className="mx-auto mt-3 max-w-md text-charcoal-500">{t.olderText}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Link href="/contact" className={buttonVariants({ size: "md" })}>
-            Contact us <ArrowRight className="h-4 w-4" />
+            {t.contactUs} <ArrowRight className="h-4 w-4" />
           </Link>
           <button type="button" onClick={onRestart} className={buttonVariants({ size: "md", variant: "outline" })}>
-            <RotateCcw className="h-4 w-4" /> Retake quiz
+            <RotateCcw className="h-4 w-4" /> {t.retake}
           </button>
         </div>
       </div>
@@ -109,7 +111,7 @@ function Result({ answers, onRestart }: { answers: Answers; onRestart: () => voi
     { icon: CalendarDays, text: course.duration },
     { icon: Clock, text: course.schedule },
     { icon: Users, text: course.batchSize },
-    ...(course.certificate ? [{ icon: Award, text: "Certificate included" }] : []),
+    ...(course.certificate ? [{ icon: Award, text: t.certificate }] : []),
   ];
 
   return (
@@ -117,7 +119,7 @@ function Result({ answers, onRestart }: { answers: Answers; onRestart: () => voi
       <div>
         <span className="eyebrow">
           <span className="h-1 w-1 rounded-full bg-sage-500" />
-          Our pick for your child
+          {t.pickEyebrow}
         </span>
         <motion.h3
           initial={{ opacity: 0, scale: 0.9 }}
@@ -140,22 +142,22 @@ function Result({ answers, onRestart }: { answers: Answers; onRestart: () => voi
 
       <div className="rounded-4xl bg-sage-50 p-5 text-center sm:p-6">
         <p className="text-xs font-semibold uppercase tracking-widest2 text-sage-600">
-          {mode === "online" ? "Live online" : "Studio · Bangalore"}
+          {mode === "online" ? t.liveOnline : t.studio}
         </p>
         <p className="mt-2 font-display text-4xl font-medium text-charcoal-900">{formatINR(fee)}</p>
-        <p className="text-sm text-charcoal-500">per month</p>
+        <p className="text-sm text-charcoal-500">{t.perMonth}</p>
         <Link
           href={`/enroll?course=${course.id}&mode=${mode}`}
           className={cn(buttonVariants({ size: "md" }), "mt-5 w-full")}
         >
-          Enroll in {course.tier} <ArrowRight className="h-4 w-4" />
+          {fmt(t.enrollIn, { tier: course.tierLabel })} <ArrowRight className="h-4 w-4" />
         </Link>
         <button
           type="button"
           onClick={onRestart}
           className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-charcoal-500 transition-colors hover:text-sage-700"
         >
-          <RotateCcw className="h-3.5 w-3.5" /> Retake quiz
+          <RotateCcw className="h-3.5 w-3.5" /> {t.retake}
         </button>
         <p className="mt-4 text-[11px] leading-relaxed text-charcoal-400">{admissionNote}</p>
       </div>
@@ -164,6 +166,8 @@ function Result({ answers, onRestart }: { answers: Answers; onRestart: () => voi
 }
 
 export default function ClassFinder() {
+  const t = useT();
+  const questions = buildQuestions(t.classFinder);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const advancing = useRef(false);
@@ -196,10 +200,10 @@ export default function ClassFinder() {
       <div className="container-academy relative z-10">
         <SectionHeading
           align="center"
-          eyebrow="Class Finder"
-          title="Not sure where to"
-          highlight="start?"
-          description="Answer three quick questions and we'll suggest the right course for your child."
+          eyebrow={t.classFinder.eyebrow}
+          title={t.classFinder.title}
+          highlight={t.classFinder.highlight}
+          description={t.classFinder.description}
         />
 
         <div className="mx-auto mt-10 max-w-3xl overflow-hidden rounded-5xl border border-sage-200/60 bg-white/80 shadow-lg shadow-sage-500/5 backdrop-blur-sm lg:mt-12">
@@ -222,7 +226,7 @@ export default function ClassFinder() {
                 <motion.div key={question.id} {...slide}>
                   <div className="flex items-center justify-between gap-4">
                     <p className="text-xs font-semibold uppercase tracking-widest2 text-sage-600">
-                      Question {step + 1} of {questions.length}
+                      {fmt(t.classFinder.questionOf, { n: step + 1, total: questions.length })}
                     </p>
                     {step > 0 && (
                       <button
@@ -230,7 +234,7 @@ export default function ClassFinder() {
                         onClick={() => setStep((s) => s - 1)}
                         className="inline-flex items-center gap-1 text-sm font-medium text-charcoal-500 transition-colors hover:text-sage-700"
                       >
-                        <ArrowLeft className="h-4 w-4" /> Back
+                        <ArrowLeft className="h-4 w-4" /> {t.common.back}
                       </button>
                     )}
                   </div>

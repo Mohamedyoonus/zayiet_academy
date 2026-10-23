@@ -6,7 +6,7 @@ import { useRef } from "react";
 import Image from "next/image";
 import { Target, Eye } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
-import { counters } from "@/lib/data";
+import { useData, useT } from "@/hooks/use-i18n";
 
 function Counter({ value, suffix }: { value: number; suffix: string }) {
   const ref = useRef(null);
@@ -37,6 +37,9 @@ function Counter({ value, suffix }: { value: number; suffix: string }) {
 }
 
 export default function About() {
+  const t = useT().about;
+  const { counters } = useData();
+
   return (
     <section id="about" className="relative overflow-hidden bg-sage-50/40 py-28 dark:bg-ink-950">
       {/* Soft botanical wash - matching all sections */}
@@ -52,7 +55,7 @@ export default function About() {
           <div className="relative aspect-[4/5] overflow-hidden rounded-5xl shadow-xl">
             <Image
               src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1200&auto=format&fit=crop"
-              alt="Founder mentoring a student at the easel"
+              alt={t.imageAlt}
               fill
               className="object-cover"
             />
@@ -67,28 +70,28 @@ export default function About() {
             className="absolute -bottom-6 -right-4 hidden w-48 sm:w-56 rounded-3xl bg-gradient-to-br from-sage-500 to-sage-600 p-4 sm:p-6 text-white shadow-2xl shadow-sage-200/50 sm:block"
           >
             <p className="font-display text-base sm:text-lg leading-snug">
-              &ldquo;Every child who walks in unsure leaves knowing they can create.&rdquo;
+              &ldquo;{t.quote}&rdquo;
             </p>
-            <p className="mt-2 sm:mt-3 text-xs font-semibold text-white/80">— Founder, Zayith Academy</p>
+            <p className="mt-2 sm:mt-3 text-xs font-semibold text-white/80">{t.quoteBy}</p>
           </motion.div>
         </div>
 
         <div>
-          <SectionHeading eyebrow="About Zayith Academy" title="Built on a" highlight="simple belief" />
+          <SectionHeading eyebrow={t.eyebrow} title={t.title} highlight={t.highlight} />
           <p className="mt-4 text-sm sm:text-base text-charcoal-600 dark:text-charcoal-300 leading-relaxed">
-            Zayith Academy began with one instructor, a small room and a conviction that art training should feel personal — not mass-produced. Today we run offline classes from our Bangalore studio and live online classes for children aged 5–16 — that same belief still shapes every batch we run.
+            {t.story}
           </p>
 
           <div className="mt-8 sm:mt-10 grid gap-4 sm:gap-5 sm:grid-cols-2">
             <div className="rounded-3xl border border-sage-200/40 bg-white/60 p-4 sm:p-6 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-md dark:border-white/10 dark:bg-ink-900/40">
               <Target className="h-5 sm:h-6 w-5 sm:w-6 text-sage-600" />
-              <h4 className="mt-3 font-display text-base sm:text-lg font-medium text-charcoal-900">Our Mission</h4>
-              <p className="mt-2 text-xs sm:text-sm text-charcoal-600 dark:text-charcoal-300">Make quality art education accessible to every child aged 5–16, without diluting the craft.</p>
+              <h4 className="mt-3 font-display text-base sm:text-lg font-medium text-charcoal-900">{t.missionTitle}</h4>
+              <p className="mt-2 text-xs sm:text-sm text-charcoal-600 dark:text-charcoal-300">{t.mission}</p>
             </div>
             <div className="rounded-3xl border border-sage-200/40 bg-white/60 p-4 sm:p-6 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-md dark:border-white/10 dark:bg-ink-900/40">
               <Eye className="h-5 sm:h-6 w-5 sm:w-6 text-sage-600" />
-              <h4 className="mt-3 font-display text-base sm:text-lg font-medium text-charcoal-900">Our Vision</h4>
-              <p className="mt-2 text-xs sm:text-sm text-charcoal-600 dark:text-charcoal-300">A community where every student sees themselves as a working artist, not just a hobbyist.</p>
+              <h4 className="mt-3 font-display text-base sm:text-lg font-medium text-charcoal-900">{t.visionTitle}</h4>
+              <p className="mt-2 text-xs sm:text-sm text-charcoal-600 dark:text-charcoal-300">{t.vision}</p>
             </div>
           </div>
 

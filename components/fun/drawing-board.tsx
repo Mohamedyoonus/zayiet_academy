@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import Palette, { PALETTE } from "./palette";
 import ToolButton from "./tool-button";
 import { downloadBlob, shareArtwork, SHARE_BUTTON } from "./share";
+import { useT } from "@/hooks/use-i18n";
 
 const FILENAME = "zayit-my-drawing.png";
 
@@ -19,12 +20,13 @@ type Point = { x: number; y: number };
 type Stroke = { tool: Tool; color: string; size: number; hue0: number; stamp: string; points: Point[] };
 type Action = Stroke | "clear";
 
+// `label` is the dictionary key for the size name
 const SIZES = [
-  { label: "Small", px: 6 },
-  { label: "Medium", px: 14 },
-  { label: "Large", px: 28 },
-  { label: "Huge", px: 48 },
-];
+  { label: "sizeSmall", px: 6 },
+  { label: "sizeMedium", px: 14 },
+  { label: "sizeLarge", px: 28 },
+  { label: "sizeHuge", px: 48 },
+] as const;
 
 const STAMPS = ["⭐", "❤️", "🌸", "🦋", "🌈", "☀️", "🐟", "🎨"];
 
@@ -69,6 +71,7 @@ function drawStroke(ctx: CanvasRenderingContext2D, s: Stroke) {
 }
 
 export default function DrawingBoard() {
+  const t = useT().funZone;
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const actions = useRef<Action[]>([]);
   const current = useRef<Stroke | null>(null);
@@ -76,7 +79,7 @@ export default function DrawingBoard() {
 
   const [tool, setTool] = useState<Tool>("brush");
   const [color, setColor] = useState(PALETTE[6]);
-  const [size, setSize] = useState(SIZES[1].px);
+  const [size, setSize] = useState<number>(SIZES[1].px);
   const [stamp, setStamp] = useState(STAMPS[0]);
   const [actionCount, setActionCount] = useState(0);
 
@@ -157,7 +160,7 @@ export default function DrawingBoard() {
     );
 
   const download = async () => downloadBlob(await toBlob(), FILENAME);
-  const share = async () => shareArtwork(await toBlob(), FILENAME);
+  const share = async () => shareArtwork(await toBlob(), FILENAME, { text: t.shareText, title: t.shareTitle });
 
   const lastIsClear = actions.current[actions.current.length - 1] === "clear";
 
@@ -177,40 +180,40 @@ export default function DrawingBoard() {
               "block aspect-[4/3] h-auto w-full touch-none rounded-3xl",
               tool === "stamp" ? "cursor-copy" : "cursor-crosshair"
             )}
-            aria-label="Drawing canvas"
+            aria-label={t.canvasLabel}
           />
         </div>
 
         <div className="mt-4 flex flex-wrap justify-center gap-2 sm:justify-start">
-          <ToolButton onClick={undo} disabled={!actionCount} icon={Undo2} label="Undo" />
-          <ToolButton onClick={clearAll} disabled={!actionCount || lastIsClear} icon={Trash2} label="Clear" />
-          <ToolButton onClick={download} icon={Download} label="Download" primary />
-          <ToolButton onClick={share} icon={Share2} label="Share" className={SHARE_BUTTON} />
+          <ToolButton onClick={undo} disabled={!actionCount} icon={Undo2} label={t.undo} />
+          <ToolButton onClick={clearAll} disabled={!actionCount || lastIsClear} icon={Trash2} label={t.clear} />
+          <ToolButton onClick={download} icon={Download} label={t.download} primary />
+          <ToolButton onClick={share} icon={Share2} label={t.share} className={SHARE_BUTTON} />
         </div>
       </div>
 
       <div className="flex flex-col gap-6">
         {/* Tools */}
         <div>
-          <h3 className="text-xs font-semibold uppercase tracking-widest2 text-sage-600">Tools</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-widest2 text-sage-600">{t.tools}</h3>
           <div className="mt-3 flex flex-wrap gap-2">
-            <ToolButton onClick={() => setTool("brush")} active={tool === "brush"} icon={Brush} label="Brush" />
-            <ToolButton onClick={() => setTool("rainbow")} active={tool === "rainbow"} icon={Rainbow} label="Rainbow" />
-            <ToolButton onClick={() => setTool("stamp")} active={tool === "stamp"} icon={Stamp} label="Stamps" />
-            <ToolButton onClick={() => setTool("eraser")} active={tool === "eraser"} icon={Eraser} label="Eraser" />
+            <ToolButton onClick={() => setTool("brush")} active={tool === "brush"} icon={Brush} label={t.brush} />
+            <ToolButton onClick={() => setTool("rainbow")} active={tool === "rainbow"} icon={Rainbow} label={t.rainbow} />
+            <ToolButton onClick={() => setTool("stamp")} active={tool === "stamp"} icon={Stamp} label={t.stamps} />
+            <ToolButton onClick={() => setTool("eraser")} active={tool === "eraser"} icon={Eraser} label={t.eraser} />
           </div>
         </div>
 
         {/* Size */}
         <div>
-          <h3 className="text-xs font-semibold uppercase tracking-widest2 text-sage-600">Size</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-widest2 text-sage-600">{t.size}</h3>
           <div className="mt-3 flex items-center gap-2">
             {SIZES.map((s) => (
               <button
                 key={s.px}
                 type="button"
                 onClick={() => setSize(s.px)}
-                aria-label={s.label}
+                aria-label={t[s.label]}
                 aria-pressed={size === s.px}
                 className={cn(
                   "grid h-11 w-11 place-items-center rounded-full border bg-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500",
@@ -229,7 +232,7 @@ export default function DrawingBoard() {
         {/* Colors or stamps, depending on the tool */}
         {tool === "stamp" ? (
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-widest2 text-sage-600">Pick a stamp</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-widest2 text-sage-600">{t.pickStamp}</h3>
             <div className="mt-3 flex flex-wrap gap-2">
               {STAMPS.map((s) => (
                 <button
@@ -246,15 +249,13 @@ export default function DrawingBoard() {
                 </button>
               ))}
             </div>
-            <p className="mt-3 text-sm text-charcoal-500">Tap the paper to stamp. Size changes the stamp too.</p>
+            <p className="mt-3 text-sm text-charcoal-500">{t.stampHint}</p>
           </div>
         ) : (
           <div className={cn(tool !== "brush" && "pointer-events-none opacity-40")}>
-            <h3 className="text-xs font-semibold uppercase tracking-widest2 text-sage-600">Pick a color</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-widest2 text-sage-600">{t.pickColor}</h3>
             <Palette value={color} onChange={setColor} className="mt-3" />
-            {tool === "rainbow" && (
-              <p className="mt-3 text-sm text-charcoal-500">Rainbow brush picks the colors for you!</p>
-            )}
+            {tool === "rainbow" && <p className="mt-3 text-sm text-charcoal-500">{t.rainbowHint}</p>}
           </div>
         )}
       </div>

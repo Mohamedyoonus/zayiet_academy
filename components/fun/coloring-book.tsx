@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils";
 import Palette, { PALETTE } from "./palette";
 import ToolButton from "./tool-button";
 import { downloadBlob, shareArtwork, SHARE_BUTTON } from "./share";
+import { useT } from "@/hooks/use-i18n";
+import { fmt } from "@/lib/i18n";
 
 type Fills = Record<string, string>;
 type HistoryEntry = { regionId: string; prev?: string } | { reset: Fills };
@@ -15,16 +17,27 @@ type HistoryEntry = { regionId: string; prev?: string } | { reset: Fills };
 const OUTLINE = "#2A2E28";
 const BLANK = "#FFFFFF";
 
+// Dictionary keys for each picture's name
+const PICTURE_NAMES = {
+  butterfly: "pictureButterfly",
+  fish: "pictureFish",
+  house: "pictureHouse",
+  flower: "pictureFlower",
+} as const;
+
 function Picture({
   page,
   fills,
   onFill,
+  label,
   svgRef,
   className,
 }: {
   page: ColoringPage;
   fills: Fills;
   onFill?: (regionId: string) => void;
+  /** Accessible name for the interactive picture */
+  label?: string;
   svgRef?: React.Ref<SVGSVGElement>;
   className?: string;
 }) {
@@ -35,7 +48,7 @@ function Picture({
       viewBox="0 0 400 300"
       className={className}
       role={onFill ? "img" : undefined}
-      aria-label={onFill ? `${page.title} coloring page` : undefined}
+      aria-label={onFill ? label : undefined}
       aria-hidden={onFill ? undefined : true}
     >
       {page.regions.map((r) => (
@@ -89,6 +102,8 @@ async function svgToPngBlob(svg: SVGSVGElement): Promise<Blob> {
 }
 
 export default function ColoringBook() {
+  const t = useT().funZone;
+  const nameOf = (p: ColoringPage) => t[PICTURE_NAMES[p.id as keyof typeof PICTURE_NAMES]] ?? p.title;
   const [pageId, setPageId] = useState(coloringPages[0].id);
   const [color, setColor] = useState(PALETTE[0]);
   // Fills and undo history are kept per picture, so switching pictures keeps progress
@@ -141,29 +156,39 @@ export default function ColoringBook() {
       <div className="min-w-0">
         {/* Canvas */}
         <div className="overflow-hidden rounded-4xl border border-sage-200/60 bg-white p-2 shadow-md sm:p-3">
-          <Picture page={page} fills={pageFills} onFill={fillRegion} svgRef={svgRef} className="h-auto w-full" />
+          <Picture
+            page={page}
+            fills={pageFills}
+            onFill={fillRegion}
+            label={fmt(t.coloringPageLabel, { title: nameOf(page) })}
+            svgRef={svgRef}
+            className="h-auto w-full"
+          />
         </div>
 
         {/* Tools */}
         <div className="mt-4 flex flex-wrap justify-center gap-2 sm:justify-start">
-          <ToolButton onClick={undo} disabled={!pageHistory.length} icon={Undo2} label="Undo" />
-          <ToolButton onClick={surprise} icon={Shuffle} label="Surprise me" />
+          <ToolButton onClick={undo} disabled={!pageHistory.length} icon={Undo2} label={t.undo} />
+          <ToolButton onClick={surprise} icon={Shuffle} label={t.surprise} />
           <ToolButton
             onClick={() => replaceAll({})}
             disabled={!Object.keys(pageFills).length}
             icon={RotateCcw}
-            label="Start over"
+            label={t.startOver}
           />
           <ToolButton
             onClick={async () => svgRef.current && downloadBlob(await svgToPngBlob(svgRef.current), filename)}
             icon={Download}
-            label="Download"
+            label={t.download}
             primary
           />
           <ToolButton
-            onClick={async () => svgRef.current && shareArtwork(await svgToPngBlob(svgRef.current), filename)}
+            onClick={async () =>
+              svgRef.current &&
+              shareArtwork(await svgToPngBlob(svgRef.current), filename, { text: t.shareText, title: t.shareTitle })
+            }
             icon={Share2}
-            label="Share"
+            label={t.share}
             className={SHARE_BUTTON}
           />
         </div>
@@ -172,7 +197,7 @@ export default function ColoringBook() {
       <div className="flex flex-col gap-6">
         {/* Picture chooser */}
         <div>
-          <h3 className="text-xs font-semibold uppercase tracking-widest2 text-sage-600">Choose a picture</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-widest2 text-sage-600">{t.choosePicture}</h3>
           <div className="mt-3 grid grid-cols-4 gap-2 lg:grid-cols-2">
             {coloringPages.map((p) => (
               <button
@@ -186,7 +211,7 @@ export default function ColoringBook() {
                 )}
               >
                 <Picture page={p} fills={fills[p.id] ?? {}} className="h-auto w-full" />
-                <span className="mt-1 block truncate text-[11px] font-medium text-charcoal-600">{p.title}</span>
+                <span className="mt-1 block truncate text-[11px] font-medium text-charcoal-600">{nameOf(p)}</span>
               </button>
             ))}
           </div>
@@ -194,9 +219,9 @@ export default function ColoringBook() {
 
         {/* Colors */}
         <div>
-          <h3 className="text-xs font-semibold uppercase tracking-widest2 text-sage-600">Pick a color</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-widest2 text-sage-600">{t.pickColor}</h3>
           <Palette value={color} onChange={setColor} className="mt-3" />
-          <p className="mt-3 text-sm text-charcoal-500">Tap any part of the picture to fill it.</p>
+          <p className="mt-3 text-sm text-charcoal-500">{t.tapToFill}</p>
         </div>
       </div>
     </div>

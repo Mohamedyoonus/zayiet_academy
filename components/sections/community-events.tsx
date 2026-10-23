@@ -5,11 +5,14 @@ import { School, Building2, GraduationCap, Users } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
 import Badge from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { eventClients } from "@/lib/data";
+import { useData, useT } from "@/hooks/use-i18n";
 
 const categoryIcons = { Schools: School, "IT Parks": Building2, Colleges: GraduationCap, Community: Users };
 
 export default function CommunityEvents() {
+  const t = useT();
+  const { eventClients } = useData();
+
   return (
     <section id="events" className="relative overflow-hidden bg-sage-50/40 py-28 dark:bg-ink-950">
       {/* Soft botanical wash - matching all sections */}
@@ -22,10 +25,10 @@ export default function CommunityEvents() {
 
       <div className="container-academy relative z-10">
         <SectionHeading
-          eyebrow="Community Events"
-          title="Where we've brought"
-          highlight="art to life"
-          description="From school campuses to corporate parks, Zayith Academy travels to bring hands-on creative experiences to your community."
+          eyebrow={t.events.eyebrow}
+          title={t.events.title}
+          highlight={t.events.highlight}
+          description={t.events.description}
           align="center"
         />
 
@@ -55,7 +58,7 @@ export default function CommunityEvents() {
                   </div>
                   <div className="rounded-3xl border border-sage-200/40 bg-white/60 p-5 sm:p-6 shadow-md backdrop-blur-sm transition-all duration-300 hover:shadow-lg dark:border-white/10 dark:bg-ink-900/40">
                     <Badge variant="outline" className="border-sage-300/50 text-sage-700 dark:border-white/20">
-                      {e.category}
+                      {e.categoryLabel}
                     </Badge>
                     <h3 className="mt-3 font-display text-lg sm:text-xl font-medium text-charcoal-900 leading-tight">{e.name}</h3>
                     <p className="mt-2 text-sm text-charcoal-600 dark:text-charcoal-300">{e.description}</p>
@@ -69,7 +72,7 @@ export default function CommunityEvents() {
 
         <div className="mt-16 flex justify-center sm:mt-20 lg:mt-24">
           <Button size="lg" className="bg-sage-600 hover:bg-sage-700 dark:bg-sage-500 dark:hover:bg-sage-600 h-12 sm:h-13">
-            Book an Event
+            {t.events.bookEvent}
           </Button>
         </div>
       </div>

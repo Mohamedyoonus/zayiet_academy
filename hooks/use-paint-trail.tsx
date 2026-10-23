@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { useEffectEnabled } from "@/hooks/use-settings";
 
 const PAINT_DROPS = [
   "rgba(232,176,75,0.55)",
@@ -21,9 +22,11 @@ export function usePaintTrail() {
   const [drops, setDrops] = useState<Drop[]>([]);
   const lastDrop = useRef({ x: -999, y: -999 });
   const dropId = useRef(0);
+  const enabled = useEffectEnabled("trail");
 
   // Drop a blob every ~36px of cursor travel
   const spawn = (x: number, y: number) => {
+    if (!enabled) return;
     if (Math.hypot(x - lastDrop.current.x, y - lastDrop.current.y) < 36) return;
     lastDrop.current = { x, y };
     const id = ++dropId.current;

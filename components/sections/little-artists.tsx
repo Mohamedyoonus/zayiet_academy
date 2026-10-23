@@ -2,18 +2,21 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRight, Palette, Sparkles } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { usePaintTrail } from "@/hooks/use-paint-trail";
+import { useSettings } from "@/hooks/use-settings";
+import { useT } from "@/hooks/use-i18n";
 
 type Stroke = { d: string; color: string; width?: number };
 
 type Kid = {
   name: string;
-  activity: string;
+  /** Dictionary key for what the kid is drawing */
+  activity: "kidAarav" | "kidMeera" | "kidDiya";
   accent: string;
   skin: string;
   hair: string;
@@ -28,7 +31,7 @@ type Kid = {
 const kids: Kid[] = [
   {
     name: "Aarav",
-    activity: "Sketching a home",
+    activity: "kidAarav",
     accent: "#E8B04B",
     skin: "#C68B59",
     hair: "#2A2420",
@@ -47,7 +50,7 @@ const kids: Kid[] = [
   },
   {
     name: "Meera",
-    activity: "Painting a rainbow",
+    activity: "kidMeera",
     accent: "#D9695F",
     skin: "#E0A878",
     hair: "#3B2A20",
@@ -66,7 +69,7 @@ const kids: Kid[] = [
   },
   {
     name: "Diya",
-    activity: "Drawing a flower",
+    activity: "kidDiya",
     accent: "#6B9AC4",
     skin: "#A86B44",
     hair: "#1C1F1A",
@@ -378,11 +381,12 @@ const bgDoodles = [
 
 export default function LittleArtists() {
   const [active, setActive] = useState<number | null>(null);
-  const reduceMotion = useReducedMotion();
+  const { settings } = useSettings();
+  const t = useT();
+  // The trail itself checks the "trail" setting and reduced motion
   const { spawn, trail } = usePaintTrail();
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    if (reduceMotion) return;
     const rect = e.currentTarget.getBoundingClientRect();
     spawn(e.clientX - rect.left, e.clientY - rect.top);
   };
@@ -399,7 +403,7 @@ export default function LittleArtists() {
       <div className="pointer-events-none absolute -right-32 top-10 h-[24rem] w-[24rem] rounded-full bg-sage-200/40 blur-[120px]" />
       <div className="pointer-events-none absolute -left-24 bottom-0 h-[20rem] w-[20rem] rounded-full bg-[#E8B04B]/10 blur-[120px]" />
 
-      {bgDoodles.map((d, i) => (
+      {settings.effects.doodles && bgDoodles.map((d, i) => (
         <motion.svg
           key={i}
           aria-hidden
@@ -416,10 +420,10 @@ export default function LittleArtists() {
       <div className="container-academy relative z-10">
         <SectionHeading
           align="center"
-          eyebrow="Little Artists"
-          title="Every child is an"
-          highlight="artist"
-          description="Hover over our little artists and watch their ideas come to life."
+          eyebrow={t.littleArtists.eyebrow}
+          title={t.littleArtists.title}
+          highlight={t.littleArtists.highlight}
+          description={t.littleArtists.description}
         />
 
         <Clothesline />
@@ -456,7 +460,7 @@ export default function LittleArtists() {
                         : { y: { duration: 2, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }, opacity: { duration: 0.3 } }
                     }
                   >
-                    <Sparkles className="h-3 w-3" /> Watch me draw
+                    <Sparkles className="h-3 w-3" /> {t.littleArtists.watchMeDraw}
                   </motion.span>
                 </span>
 
@@ -464,7 +468,7 @@ export default function LittleArtists() {
                 <div className="mt-3 text-center">
                   <h3 className="font-display text-lg font-medium text-charcoal-900">{kid.name}</h3>
                   <p className="mt-1 text-sm" style={{ color: kid.accent }}>
-                    {kid.activity}
+                    {t.littleArtists[kid.activity]}
                   </p>
                 </div>
               </motion.div>
@@ -481,14 +485,14 @@ export default function LittleArtists() {
           className="mt-10 flex flex-col items-center gap-4 text-center lg:mt-12"
         >
           <p className="font-display text-lg italic text-charcoal-700 sm:text-xl">
-            Your little one could be our next artist.
+            {t.littleArtists.cta}
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Link href="/enroll" className={buttonVariants({ size: "md" })}>
-              Enroll your child <ArrowRight className="h-4 w-4" />
+              {t.littleArtists.enrollChild} <ArrowRight className="h-4 w-4" />
             </Link>
             <Link href="/fun-zone" className={buttonVariants({ size: "md", variant: "outline" })}>
-              <Palette className="h-4 w-4" /> Try the Fun Zone
+              <Palette className="h-4 w-4" /> {t.littleArtists.tryFunZone}
             </Link>
           </div>
         </motion.div>

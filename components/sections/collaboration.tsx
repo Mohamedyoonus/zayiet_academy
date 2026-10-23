@@ -6,8 +6,10 @@ import Image from "next/image";
 import { Send, CheckCircle2 } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
 import { Button } from "@/components/ui/button";
+import { useT } from "@/hooks/use-i18n";
 
 export default function Collaboration() {
+  const t = useT().collaboration;
   const [submitted, setSubmitted] = useState(false);
 
   return (
@@ -23,16 +25,16 @@ export default function Collaboration() {
       <div className="container-academy relative grid gap-16 lg:grid-cols-2 lg:items-center">
         <div>
           <SectionHeading
-            eyebrow="Collaboration"
-            title="Let's Create"
-            highlight="Together"
-            description="Bring Zayith Academy to your school, workplace, or community. Tell us what you're planning and our team will reach out."
+            eyebrow={t.eyebrow}
+            title={t.title}
+            highlight={t.highlight}
+            description={t.description}
             light
           />
           <div className="relative mt-10 hidden aspect-[4/3] max-w-sm overflow-hidden rounded-5xl lg:block">
             <Image
               src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=1000&auto=format&fit=crop"
-              alt="Instructor collaborating with students"
+              alt={t.imageAlt}
               fill
               className="object-cover"
             />
@@ -51,8 +53,8 @@ export default function Collaboration() {
           {submitted ? (
             <div className="flex flex-col items-center justify-center py-12 sm:py-16 text-center">
               <CheckCircle2 className="h-12 sm:h-14 w-12 sm:w-14 text-sage-400" />
-              <h3 className="mt-3 sm:mt-4 font-display text-xl sm:text-2xl">Thank you!</h3>
-              <p className="mt-1 sm:mt-2 text-sm sm:text-base text-white/60">Our team will reach out to you shortly.</p>
+              <h3 className="mt-3 sm:mt-4 font-display text-xl sm:text-2xl">{t.thanks}</h3>
+              <p className="mt-1 sm:mt-2 text-sm sm:text-base text-white/60">{t.thanksText}</p>
             </div>
           ) : (
             <form
@@ -63,24 +65,24 @@ export default function Collaboration() {
               }}
             >
               <div className="grid gap-4 sm:gap-5 sm:grid-cols-2">
-                <Field label="Name" placeholder="Your full name" />
-                <Field label="Email" type="email" placeholder="you@email.com" />
+                <Field label={t.name} placeholder={t.namePlaceholder} />
+                <Field label={t.email} type="email" placeholder="you@email.com" />
               </div>
               <div className="grid gap-4 sm:gap-5 sm:grid-cols-2">
-                <Field label="Mobile" type="tel" placeholder="+91 00000 00000" />
-                <Field label="Purpose" placeholder="Workshop, event, custom art…" />
+                <Field label={t.mobile} type="tel" placeholder="+91 00000 00000" />
+                <Field label={t.purpose} placeholder={t.purposePlaceholder} />
               </div>
               <div>
-                <label className="mb-2 block text-xs sm:text-sm font-medium text-white/70">Message</label>
+                <label className="mb-2 block text-xs sm:text-sm font-medium text-white/70">{t.message}</label>
                 <textarea
                   required
                   rows={4}
-                  placeholder="Tell us more about what you're planning..."
+                  placeholder={t.messagePlaceholder}
                   className="w-full rounded-2xl border border-sage-500/20 bg-white/5 px-4 sm:px-5 py-3 sm:py-4 text-sm text-white placeholder:text-white/30 focus:border-sage-400 focus:outline-none focus:ring-1 focus:ring-sage-400/50"
                 />
               </div>
               <Button type="submit" size="lg" className="w-full justify-center h-11 sm:h-12 bg-sage-500 hover:bg-sage-600 dark:bg-sage-500 dark:hover:bg-sage-600">
-                Send Message <Send className="h-4 w-4" />
+                {t.send} <Send className="h-4 w-4" />
               </Button>
             </form>
           )}

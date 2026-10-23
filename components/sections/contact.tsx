@@ -3,15 +3,17 @@
 import { motion } from "framer-motion";
 import { Phone, Mail, Clock, MapPin, Instagram, Facebook, Youtube } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
-
-const info = [
-  { icon: Phone, label: "Call Us", value: "[Add phone number]" },
-  { icon: Mail, label: "Email Us", value: "[Add email address]" },
-  { icon: Clock, label: "Working Hours", value: "Mon – Sat · 10 AM – 7 PM" },
-  { icon: MapPin, label: "Visit Us", value: "Zayith Studio, Bangalore, Karnataka" },
-];
+import { useT } from "@/hooks/use-i18n";
 
 export default function Contact() {
+  const t = useT().contact;
+  const info = [
+    { icon: Phone, label: t.call, value: t.phoneValue },
+    { icon: Mail, label: t.email, value: t.emailValue },
+    { icon: Clock, label: t.hours, value: t.hoursValue },
+    { icon: MapPin, label: t.visit, value: t.addressValue },
+  ];
+
   return (
     <section id="contact" className="relative overflow-hidden bg-sage-50/40 py-28 dark:bg-ink-950">
       {/* Soft botanical wash - matching all sections */}
@@ -25,10 +27,10 @@ export default function Contact() {
       <div className="container-academy relative z-10 grid gap-12 lg:grid-cols-2">
         <div>
           <SectionHeading 
-            eyebrow="Contact" 
-            title="Come say" 
-            highlight="hello" 
-            description="Have a question before you enroll? Reach out — we're happy to help you pick the right course." 
+            eyebrow={t.eyebrow}
+            title={t.title}
+            highlight={t.highlight}
+            description={t.description}
           />
 
           <div className="mt-10 grid gap-4 sm:gap-5 sm:grid-cols-2">
@@ -71,7 +73,7 @@ export default function Contact() {
           className="relative min-h-[320px] sm:min-h-[380px] overflow-hidden rounded-5xl border border-sage-200/40 bg-white/60 shadow-sm backdrop-blur-sm dark:border-white/10 dark:bg-ink-900/60"
         >
           <iframe
-            title="Zayith Academy Location"
+            title={t.mapTitle}
             src="https://www.google.com/maps?q=Bangalore,Karnataka&output=embed"
             className="absolute inset-0 h-full w-full grayscale transition-all duration-500 hover:grayscale-0"
             loading="lazy"
