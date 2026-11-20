@@ -2,13 +2,15 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { MapPin, CalendarDays, Bell } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { MapPin, CalendarDays, Bell, Users, Clock, Tag } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
 import { Button } from "@/components/ui/button";
 import { useData, useT } from "@/hooks/use-i18n";
 import { fmt } from "@/lib/i18n";
 
 export default function Workshop() {
+  const router = useRouter();
   const t = useT();
   const { workshops } = useData();
 
@@ -31,7 +33,12 @@ export default function Workshop() {
             highlight={t.workshop.highlight}
             description={t.workshop.description}
           />
-          <Button size="md" variant="outline" className="shrink-0 border-sage-300/50 text-sage-700 hover:bg-sage-100/50 dark:border-white/20 dark:hover:bg-white/10 h-11 sm:h-12">
+          <Button
+            size="md"
+            variant="outline"
+            onClick={() => router.push("/collaboration")}
+            className="shrink-0 border-sage-300/50 text-sage-700 hover:bg-sage-100/50 dark:border-white/20 dark:hover:bg-white/10 h-11 sm:h-12"
+          >
             <Bell className="h-4 w-4" /> {t.common.registerNow}
           </Button>
         </div>
@@ -62,14 +69,34 @@ export default function Workshop() {
                   <h3 className="font-display text-lg sm:text-xl font-medium leading-snug">{w.title}</h3>
                 </div>
               </div>
-              <div className="space-y-2 p-5 sm:p-6">
-                <div className="flex items-center gap-2 text-sm text-charcoal-600 dark:text-charcoal-300">
+              <div className="space-y-2.5 p-5 sm:p-6">
+                {w.ageGroup && (
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-charcoal-700 dark:text-charcoal-200 font-medium">
+                    <Users className="h-4 w-4 text-sage-600 shrink-0" /> {w.ageGroup}
+                  </div>
+                )}
+                <div className="flex items-center gap-2 text-xs sm:text-sm text-charcoal-600 dark:text-charcoal-300">
                   <MapPin className="h-4 w-4 text-sage-600 shrink-0" /> {w.venue}
                 </div>
-                <div className="flex items-center gap-2 text-sm text-charcoal-600 dark:text-charcoal-300">
+                <div className="flex items-center gap-2 text-xs sm:text-sm text-charcoal-600 dark:text-charcoal-300">
                   <CalendarDays className="h-4 w-4 text-sage-600 shrink-0" /> {w.date}
                 </div>
-                <Button variant="dark" size="sm" className="mt-4 w-full justify-center h-11 bg-ink-900 hover:bg-ink-800 dark:bg-white dark:text-charcoal-900 dark:hover:bg-white/90">
+                {w.duration && (
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-charcoal-600 dark:text-charcoal-300">
+                    <Clock className="h-4 w-4 text-sage-600 shrink-0" /> {w.duration}
+                  </div>
+                )}
+                {w.fee && (
+                  <div className="flex items-center gap-2 text-xs sm:text-sm text-sage-700 dark:text-sage-300 font-semibold pt-1">
+                    <Tag className="h-4 w-4 text-sage-600 shrink-0" /> {w.fee}
+                  </div>
+                )}
+                <Button
+                  variant="dark"
+                  size="sm"
+                  onClick={() => router.push("/collaboration")}
+                  className="mt-4 w-full justify-center h-11 bg-ink-900 hover:bg-ink-800 dark:bg-white dark:text-charcoal-900 dark:hover:bg-white/90"
+                >
                   {t.common.registerNow}
                 </Button>
               </div>

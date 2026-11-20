@@ -10,7 +10,6 @@ import {
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import VenomButton from "@/components/ui/venom-button";
 import { cn } from "@/lib/utils";
 import { usePaintTrail } from "@/hooks/use-paint-trail";
 import { useMotionReduced, useSettings } from "@/hooks/use-settings";
@@ -438,8 +437,8 @@ export default function Hero() {
               lg:mt-6
             "
           >
-            {/* Symbiote goo reaches out of this button when the cursor comes near */}
-            <VenomButton
+            <Button
+              size="lg"
               className="
                 h-11
                 px-5
@@ -459,7 +458,7 @@ export default function Hero() {
             >
               {t.hero.exploreClasses}
               <ArrowRight className="h-4 w-4" />
-            </VenomButton>
+            </Button>
 
             <Button
               size="lg"
@@ -609,7 +608,7 @@ export default function Hero() {
             "
           >
             <Image
-              src="/assets/hero.PNG"
+              src="/assets/hero.webp"
               alt={t.hero.imageAlt}
               fill
               priority

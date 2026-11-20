@@ -8,7 +8,15 @@ import SectionHeading from "@/components/ui/section-heading";
 import { cn } from "@/lib/utils";
 import { useData, useT } from "@/hooks/use-i18n";
 
-const filters = ["All", "Portrait", "Landscape", "Sketch", "Painting", "Workshop", "Students"] as const;
+const filters = [
+  "All",
+  "Student Artwork",
+  "Drawing and Sketching",
+  "Painting and Mixed Media",
+  "Creative Workshops",
+  "Student Progress",
+  "Community Art",
+] as const;
 
 export default function Gallery() {
   const t = useT();

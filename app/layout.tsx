@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
+import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { SettingsProvider } from "@/hooks/use-settings";
 import { I18nProvider } from "@/hooks/use-i18n";
@@ -10,28 +11,20 @@ import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
 import FloatingActions from "@/components/layout/floating-actions";
 
-/**
- * NOTE: This project is designed to use "Fraunces" (display) and
- * "Plus Jakarta Sans" (body) via next/font/google. In this build
- * sandbox, outbound requests to fonts.googleapis.com are blocked,
- * so next/font is swapped for a CSS @font-face import in globals.css
- * that pulls the same two families. On Vercel / any normal host with
- * open internet access, you can freely switch back to next/font/google:
- *
- *   import { Fraunces, Plus_Jakarta_Sans } from "next/font/google";
- *   const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces" });
- *   const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakarta" });
- *   // then add `${fraunces.variable} ${jakarta.variable}` to the body className below.
- */
+// Self-hosted and preloaded by Next, so text doesn't wait on a chain of Google
+// Fonts requests. globals.css builds --font-fraunces / --font-jakarta on top of
+// these (adding the per-language script fallback), so the classes go on <html>.
+const fraunces = Fraunces({ subsets: ["latin"], axes: ["opsz"], variable: "--font-fraunces-face" });
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakarta-face" });
 
 export const metadata: Metadata = {
-  title: "Zayith Academy — Learn • Create • Inspire",
+  title: "Zayit Academy — Beyond Art. Towards a Better You",
   description:
-    "Zayith Academy is a premium art academy offering foundation to professional art training, workshops, an art store and community events for every age and skill level.",
-  keywords: ["art academy", "art classes", "drawing classes", "painting classes", "Zayith Academy", "art workshop"],
+    "Zayit Academy is a premium art academy offering foundation to professional art training, workshops, an art store and community events for every age and skill level. Beyond Art. Towards a Better You.",
+  keywords: ["art academy", "art classes", "drawing classes", "painting classes", "Zayit Academy", "art workshop"],
   openGraph: {
-    title: "Zayith Academy — Learn • Create • Inspire",
-    description: "Professional art training for every age and skill level.",
+    title: "Zayit Academy — Beyond Art. Towards a Better You",
+    description: "Beyond Art. Towards a Better You. Professional art training for every age and skill level.",
     type: "website",
   },
 };
@@ -45,7 +38,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const dictionary = await loadDictionary(locale);
 
   return (
-    <html lang={locale} dir={language.dir} suppressHydrationWarning>
+    <html
+      lang={locale}
+      dir={language.dir}
+      className={`${fraunces.variable} ${jakarta.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         {/* Applies saved theme / text size before first paint (no flash of the default) */}
         <script dangerouslySetInnerHTML={{ __html: settingsBootScript }} />

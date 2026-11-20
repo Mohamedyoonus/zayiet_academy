@@ -2,20 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
-  Fraunces (editorial serif for headings) + Plus Jakarta Sans (clean sans for UI/body),
-  loaded via @font-face here instead of next/font/google because this sandbox blocks
-  fonts.googleapis.com. On a normal host, swap back to next/font/google in
-  app/layout.tsx and delete this @import.
-*/
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
-
 :root {
   --header-h: 76px;
   --header-h-lg: 84px;
-  /* --font-script is set per language below; when unset, the fallback keeps the original stacks */
-  --font-fraunces: "Fraunces", var(--font-script, ui-serif), Georgia, "Times New Roman", serif;
-  --font-jakarta: "Plus Jakarta Sans", var(--font-script, ui-sans-serif), system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Fraunces (headings) + Plus Jakarta Sans (body) come from next/font in app/layout.tsx.
+     --font-script is set per language below; when unset, the fallback keeps the original stacks */
+  --font-fraunces: var(--font-fraunces-face), var(--font-script, ui-serif), Georgia, "Times New Roman", serif;
+  --font-jakarta: var(--font-jakarta-face), var(--font-script, ui-sans-serif), system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 /* =====================================================================
@@ -233,7 +226,7 @@ html[data-font="modern"] {
   --font-fraunces: var(--font-jakarta);
 }
 html[data-font="playful"] {
-  --font-fraunces: "Fredoka", var(--font-script, ui-rounded), "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-fraunces: "Fredoka", var(--font-script, ui-rounded), var(--font-jakarta-face), system-ui, sans-serif;
 }
 
 /* Stronger muted text for easier reading */

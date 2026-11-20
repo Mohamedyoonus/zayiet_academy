@@ -1,109 +1,108 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import { Target, Eye } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
-import { useData, useT } from "@/hooks/use-i18n";
+import { useT } from "@/hooks/use-i18n";
 
-function Counter({ value, suffix }: { value: number; suffix: string }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
-  const [count, setCount] = useState(0);
+const reveal = {
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-60px" },
+  transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+} as const;
 
-  useEffect(() => {
-    if (!inView) return;
-    let start = 0;
-    const duration = 1600;
-    const startTime = performance.now();
-    function tick(now: number) {
-      const progress = Math.min((now - startTime) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(eased * value));
-      if (progress < 1) requestAnimationFrame(tick);
-      else setCount(value);
-    }
-    requestAnimationFrame(tick);
-  }, [inView, value]);
-
-  return (
-    <span ref={ref} className="font-display text-3xl sm:text-4xl lg:text-5xl font-semibold text-charcoal-900">
-      {count}
-      {suffix}
-    </span>
-  );
-}
+const paragraphs = (text: string) => text.split("\n\n");
 
 export default function About() {
   const t = useT().about;
-  const { counters } = useData();
+  const story = paragraphs(t.story);
+
+  const pillars = [
+    { icon: Target, title: t.missionTitle, tagline: t.missionTagline, text: t.mission },
+    { icon: Eye, title: t.visionTitle, tagline: t.visionTagline, text: t.vision },
+  ];
 
   return (
-    <section id="about" className="relative overflow-hidden bg-sage-50/40 py-28 dark:bg-ink-950">
+    <section id="about" className="relative overflow-hidden bg-sage-50/40 py-20 sm:py-24 lg:py-28 dark:bg-ink-950">
       {/* Soft botanical wash - matching all sections */}
       <div className="pointer-events-none absolute -left-32 top-10 h-[26rem] w-[26rem] rounded-full bg-sage-200/50 blur-[120px]" />
       <div className="pointer-events-none absolute -right-24 bottom-0 h-[22rem] w-[22rem] rounded-full bg-sage-100/70 blur-[130px]" />
       <div className="pointer-events-none absolute left-1/2 top-1/2 h-[30rem] w-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ember-50/30 blur-[140px]" />
-      
-      {/* Subtle gradient overlay for depth */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-sage-200/10" />
 
-      <div className="container-academy relative z-10 grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-16">
-        <div className="relative mx-auto w-full max-w-sm lg:max-w-md">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-5xl shadow-xl">
-            <Image
-              src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1200&auto=format&fit=crop"
-              alt={t.imageAlt}
-              fill
-              className="object-cover"
-            />
-            {/* Sage accent overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-sage-500/10 via-transparent to-transparent" />
+      <div className="container-academy relative z-10">
+        {/* The Founder's Story: photo beside the story */}
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:items-center lg:gap-16">
+          <div className="relative mx-auto w-full max-w-sm lg:max-w-md">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-5xl shadow-xl">
+              {/* Portrait is taller than the frame, so crop from the bottom to keep the face in view */}
+              <Image
+                src="/assets/chalz-simon.webp"
+                alt={t.imageAlt}
+                fill
+                sizes="(min-width: 1024px) 28rem, 24rem"
+                className="object-cover object-top"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-sage-500/10 via-transparent to-transparent" />
+            </div>
           </div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="absolute -bottom-6 -right-4 hidden w-48 sm:w-56 rounded-3xl bg-gradient-to-br from-sage-500 to-sage-600 p-4 sm:p-6 text-white shadow-2xl shadow-sage-200/50 sm:block"
-          >
-            <p className="font-display text-base sm:text-lg leading-snug">
-              &ldquo;{t.quote}&rdquo;
-            </p>
-            <p className="mt-2 sm:mt-3 text-xs font-semibold text-white/80">{t.quoteBy}</p>
-          </motion.div>
+
+          <div>
+            <SectionHeading eyebrow={t.eyebrow} title={t.title} highlight={t.highlight} />
+            <div className="mt-6 space-y-4 text-base leading-relaxed text-charcoal-600 dark:text-charcoal-300 sm:text-lg">
+              {story.map((p, i) => (
+                <p key={i} className={i === story.length - 1 ? "font-medium text-charcoal-900 dark:text-white" : undefined}>
+                  {p}
+                </p>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div>
-          <SectionHeading eyebrow={t.eyebrow} title={t.title} highlight={t.highlight} />
-          <p className="mt-4 text-sm sm:text-base text-charcoal-600 dark:text-charcoal-300 leading-relaxed">
-            {t.story}
-          </p>
-
-          <div className="mt-8 sm:mt-10 grid gap-4 sm:gap-5 sm:grid-cols-2">
-            <div className="rounded-3xl border border-sage-200/40 bg-white/60 p-4 sm:p-6 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-md dark:border-white/10 dark:bg-ink-900/40">
-              <Target className="h-5 sm:h-6 w-5 sm:w-6 text-sage-600" />
-              <h4 className="mt-3 font-display text-base sm:text-lg font-medium text-charcoal-900">{t.missionTitle}</h4>
-              <p className="mt-2 text-xs sm:text-sm text-charcoal-600 dark:text-charcoal-300">{t.mission}</p>
-            </div>
-            <div className="rounded-3xl border border-sage-200/40 bg-white/60 p-4 sm:p-6 shadow-sm backdrop-blur-sm transition-all duration-300 hover:shadow-md dark:border-white/10 dark:bg-ink-900/40">
-              <Eye className="h-5 sm:h-6 w-5 sm:w-6 text-sage-600" />
-              <h4 className="mt-3 font-display text-base sm:text-lg font-medium text-charcoal-900">{t.visionTitle}</h4>
-              <p className="mt-2 text-xs sm:text-sm text-charcoal-600 dark:text-charcoal-300">{t.vision}</p>
-            </div>
-          </div>
-
-          <div className="mt-10 sm:mt-12 grid grid-cols-2 gap-6 sm:gap-8 border-t border-sage-200/30 pt-8 sm:pt-10 dark:border-white/10 sm:grid-cols-4">
-            {counters.map((c) => (
-              <div key={c.label}>
-                <Counter value={c.value} suffix={c.suffix} />
-                <p className="mt-1 text-xs text-charcoal-500 dark:text-charcoal-400">{c.label}</p>
-              </div>
+        {/* About Zayit Academy */}
+        <motion.div {...reveal} className="mx-auto mt-20 max-w-3xl text-center sm:mt-24 lg:mt-28">
+          <h2 className="font-display text-[clamp(1.6rem,1.1rem+1.6vw,2.6rem)] font-medium leading-tight tracking-tight text-charcoal-900 dark:text-white">
+            {t.aboutZayitTitle}
+          </h2>
+          <div className="mt-5 space-y-4 text-base leading-relaxed text-charcoal-600 dark:text-charcoal-300 sm:text-lg">
+            {paragraphs(t.aboutZayitText).map((p, i) => (
+              <p key={i}>{p}</p>
             ))}
           </div>
+          <p className="mt-6 font-display text-lg italic text-sage-700 dark:text-sage-300 sm:text-xl">{t.aboutZayitTagline}</p>
+        </motion.div>
+
+        {/* Mission & Vision */}
+        <div className="mx-auto mt-14 grid max-w-5xl gap-5 sm:mt-16 sm:grid-cols-2 sm:gap-6">
+          {pillars.map(({ icon: Icon, title, tagline, text }, i) => (
+            <motion.div
+              key={title}
+              {...reveal}
+              transition={{ ...reveal.transition, delay: i * 0.1 }}
+              className="rounded-4xl border border-sage-200/40 bg-white/60 p-6 shadow-sm backdrop-blur-sm sm:p-8 dark:border-white/10 dark:bg-ink-900/40"
+            >
+              <div className="flex items-center gap-3">
+                <span className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-sage-500 to-sage-600 text-white">
+                  <Icon className="h-5 w-5" />
+                </span>
+                <h3 className="font-display text-xl font-medium text-charcoal-900 dark:text-white">{title}</h3>
+              </div>
+              <p className="mt-4 font-display text-lg font-medium leading-snug text-sage-700 dark:text-sage-300">{tagline}</p>
+              <p className="mt-2 text-sm leading-relaxed text-charcoal-600 dark:text-charcoal-300 sm:text-base">{text}</p>
+            </motion.div>
+          ))}
         </div>
+
+        {/* Closing statement */}
+        <motion.div {...reveal} className="mx-auto mt-20 max-w-2xl text-center sm:mt-24">
+          <h2 className="font-display text-[clamp(1.6rem,1.1rem+1.6vw,2.6rem)] font-medium leading-tight tracking-tight text-charcoal-900 dark:text-white">
+            {t.closingTitle}
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-charcoal-600 dark:text-charcoal-300 sm:text-lg">{t.closingText}</p>
+          <p className="mt-6 font-display text-lg italic text-sage-700 dark:text-sage-300 sm:text-xl">{t.closingSignature}</p>
+        </motion.div>
       </div>
     </section>
   );

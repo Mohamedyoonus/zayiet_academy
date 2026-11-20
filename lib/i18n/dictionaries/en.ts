@@ -36,18 +36,38 @@ const en = {
   },
 
   hero: {
-    eyebrow: "Zayith Academy",
-    titleBefore: "Discover the",
-    titleHighlight: "artist",
-    titleAfter: "within you",
+    eyebrow: "Zayit Academy",
+    titleBefore: "Beyond Art.",
+    titleHighlight: "Towards a Better You",
+    titleAfter: "",
     description:
-      "Professional art education for children aged 5–16 — offline in Bangalore or live online, in small batches, with real mentorship.",
+      "More than art education—a space to explore creativity, discover your abilities, and grow through the power of making.",
     exploreClasses: "Explore Classes",
     viewGallery: "View Gallery",
     statStudents: "Students Trained",
     statYears: "Years of Teaching",
     statAwards: "Awards Won",
-    imageAlt: "Students painting together at the Zayith Academy studio",
+    imageAlt: "Students painting together at the Zayit Academy studio",
+  },
+
+  visionValues: {
+    eyebrow: "Our Vision",
+    title: "Where Art Inspires",
+    highlight: "Inner Peace",
+    description:
+      "We believe creativity can nurture self-understanding, confidence, compassion, and respect. Through art, we encourage people to discover their potential and contribute to a more peaceful world.",
+    card1Title: "Discover the Artist Within",
+    card1Desc:
+      "Every individual has the potential to create. We provide space, guidance, and encouragement to explore it.",
+    card2Title: "Learn Through Creation",
+    card2Desc:
+      "Develop artistic skills through drawing, painting, experimentation, and hands-on learning.",
+    card3Title: "Grow Beyond the Canvas",
+    card3Desc:
+      "Cultivate patience, focus, imagination, independent thinking, and confidence through the creative process.",
+    card4Title: "Create a Culture of Kindness",
+    card4Desc:
+      "Encourage respect, empathy, individuality, and meaningful connections through shared creative experiences.",
   },
 
   littleArtists: {
@@ -66,10 +86,13 @@ const en = {
 
   classes: {
     eyebrow: "Art Classes",
-    title: "A course for",
-    highlight: "every stage",
+    title: "Grow Beyond the",
+    highlight: "Canvas",
     description:
-      "From your very first pencil stroke to a portfolio ready for the world — three tiers, built to grow with you.",
+      "Every stage of learning is an opportunity to develop artistic skills, patience, observation, imagination, focus, and independent thinking. We encourage students to experiment, learn from mistakes, and build confidence through practice.",
+    paceTitle: "Every Artist Grows at Their Own Pace.",
+    paceDesc:
+      "From learning the fundamentals to developing advanced techniques, we guide learners through a structured creative journey that values progress, practice, and individual expression.",
     duration: "Duration",
     batch: "Batch",
     weeklySchedule: "Weekly Schedule",
@@ -117,19 +140,20 @@ const en = {
   },
 
   workshop: {
-    eyebrow: "Workshops",
-    title: "Creative",
-    highlight: "Workshops",
+    eyebrow: "Creativity Brings Us Together",
+    title: "Create, Connect, and",
+    highlight: "Discover",
     description:
-      "Hands-on, practical sessions designed to get your hands dirty — literally. Limited seats, real materials, real feedback.",
+      "Our creative workshops offer opportunities to explore new techniques, experiment with ideas, express individuality, and learn together. We aim to make creativity an engaging experience where everyone can participate, grow, and appreciate different perspectives.",
     seatsLeft: "Only {count} seats left",
   },
 
   gallery: {
     eyebrow: "Gallery",
-    title: "A wall of",
-    highlight: "student work",
-    description: "Each piece tells a story of growth, creativity, and the unique voice of every artist.",
+    title: "A Gallery of",
+    highlight: "Creativity and Growth",
+    description:
+      "Every creation tells a story of exploration, practice, and progress. Celebrate the ideas, individual expression, and creative journeys of our learners.",
     all: "All",
   },
 
@@ -204,23 +228,28 @@ const en = {
     title: "Where we've brought",
     highlight: "art to life",
     description:
-      "From school campuses to corporate parks, Zayith Academy travels to bring hands-on creative experiences to your community.",
+      "From school campuses to corporate parks, Zayit Academy travels to bring hands-on creative experiences to your community.",
     bookEvent: "Book an Event",
   },
 
   collaboration: {
     eyebrow: "Collaboration",
-    title: "Let's Create",
-    highlight: "Together",
+    title: "Art That",
+    highlight: "Connects Us",
     description:
-      "Bring Zayith Academy to your school, workplace, or community. Tell us what you're planning and our team will reach out.",
+      "We believe creativity can bring people together, encourage meaningful conversations, and communicate messages of peace, unity, kindness, and hope. We welcome opportunities to collaborate with schools, residential communities, and organisations through workshops, collaborative art, and community projects.",
+    optionsTitle: "Collaboration Opportunities",
     imageAlt: "Instructor collaborating with students",
     thanks: "Thank you!",
     thanksText: "Our team will reach out to you shortly.",
     name: "Name",
     namePlaceholder: "Your full name",
+    organisation: "Organisation",
+    organisationPlaceholder: "School, company, or residential community",
     email: "Email",
     mobile: "Mobile",
+    collaborationType: "Type of Collaboration",
+    preferredDate: "Preferred Date",
     purpose: "Purpose",
     purposePlaceholder: "Workshop, event, custom art…",
     message: "Message",
@@ -229,18 +258,29 @@ const en = {
   },
 
   about: {
-    eyebrow: "About Zayith Academy",
-    title: "Built on a",
-    highlight: "simple belief",
+    eyebrow: "The Founder’s Story",
+    title: "Chalz Simon",
+    highlight: "From Self-Doubt to Self-Discovery",
     story:
-      "Zayith Academy began with one instructor, a small room and a conviction that art training should feel personal — not mass-produced. Today we run offline classes from our Bangalore studio and live online classes for children aged 5–16 — that same belief still shapes every batch we run.",
-    missionTitle: "Our Mission",
-    mission: "Make quality art education accessible to every child aged 5–16, without diluting the craft.",
-    visionTitle: "Our Vision",
-    vision: "A community where every student sees themselves as a working artist, not just a hobbyist.",
-    quote: "Every child who walks in unsure leaves knowing they can create.",
-    quoteBy: "— Founder, Zayith Academy",
-    imageAlt: "Founder mentoring a student at the easel",
+      "Art became more than a creative interest in my life. It gave me a way to express myself, explore my abilities, and gradually discover my potential.\n\nThat experience shaped my belief that everyone deserves the opportunity to grow, build confidence, and discover their abilities without being defined by discouragement or the opinions of others.\n\nZayit Academy was born from this belief: that creative education can inspire people to learn, express themselves, and grow—not only as artists, but as individuals.",
+    aboutZayitTitle: "About Zayit Academy",
+    aboutZayitText:
+      "Zayit Academy believes that art is more than a skill—it is a journey of self-discovery, confidence, and personal growth.\n\nThrough creative learning, we encourage individuals to explore their potential, express themselves freely, think independently, and develop patience, focus, and imagination.\n\nOur vision is to spread peace through art by nurturing creativity, kindness, and respect, helping people grow not only as artists, but as individuals.",
+    aboutZayitTagline: "Create with Purpose. Grow with Confidence. Spread Peace Through Art.",
+    missionTitle: "Mission",
+    missionTagline: "Teach Skills. Inspire Confidence. Nurture Creativity.",
+    mission:
+      "We aim to create a supportive learning environment where people can develop artistic skills, explore ideas, express themselves, learn from mistakes, and discover their potential.",
+    visionTitle: "Vision",
+    visionTagline: "Spreading Peace Through Art.",
+    vision:
+      "We envision a world where creativity nurtures self-understanding, confidence, compassion, and respect—one person, one heart, and one creation at a time.",
+    closingTitle: "A Better World Begins Within.",
+    closingText: "Discover your creativity. Develop your potential. Share your gifts with the world.",
+    closingSignature: "One Mind. One Heart. One Creation at a Time.",
+    quote: "Create with Purpose. Grow with Confidence. Spread Peace Through Art.",
+    quoteBy: "— Chalz Simon, Founder",
+    imageAlt: "Chalz Simon, founder of Zayit Academy",
   },
 
   contact: {
@@ -255,8 +295,8 @@ const en = {
     phoneValue: "[Add phone number]",
     emailValue: "[Add email address]",
     hoursValue: "Mon – Sat · 10 AM – 7 PM",
-    addressValue: "Zayith Studio, Bangalore, Karnataka",
-    mapTitle: "Zayith Academy Location",
+    addressValue: "Zayit Studio, Bangalore, Karnataka",
+    mapTitle: "Zayit Academy Location",
   },
 
   enroll: {
@@ -285,7 +325,7 @@ const en = {
     message: "Message",
     messagePlaceholder: "Anything we should know before your first class?",
     confirm: "Confirm Enrollment",
-    consent: "By submitting, you agree to be contacted by Zayith Academy about this enrollment.",
+    consent: "By submitting, you agree to be contacted by Zayit Academy about this enrollment.",
   },
 
   faq: {
@@ -311,7 +351,7 @@ const en = {
   },
 
   footer: {
-    blurb: "Professional art training for every age and skill level. Learn, create and inspire with Zayith Academy.",
+    blurb: "Create with Purpose. Grow with Confidence. Spreading Peace Through Art.",
     quickLinks: "Quick Links",
     support: "Support",
     helpCenter: "Help Center",
@@ -326,7 +366,7 @@ const en = {
     newsletter: "Get workshop dates, new store drops and student features in your inbox.",
     emailPlaceholder: "you@email.com",
     subscribe: "Subscribe",
-    rights: "© {year} Zayith Academy. All rights reserved.",
+    rights: "© {year} Zayit Academy. All rights reserved.",
   },
 
   floating: {
@@ -383,9 +423,6 @@ const en = {
     reduceMotionDescription: "Calms page animations and pauses all the effects below.",
     effectTrail: "Cursor paint trail",
     effectTrailDescription: "Colorful paint dots follow your mouse on the home page.",
-    effectStroke: "Dripping paint on scroll",
-    effectStrokeDescription:
-      "A wet paint line with a water-drop tip runs down the home page as you scroll, dripping as it goes.",
     effectSplash: "Menu click splash",
     effectSplashDescription: "The menu bubble bursts into a paint splash when you click a link.",
     effectDoodles: "Crayon doodles",
@@ -404,5 +441,48 @@ const en = {
   data: {} as DataTranslations,
 };
 
-export type Dictionary = typeof en;
+// What each other language file provides. Keys marked optional aren't translated
+// everywhere yet; lib/i18n shows the English text until they are.
+export type Translation = Omit<typeof en, "visionValues" | "classes" | "collaboration" | "about"> & {
+  visionValues?: typeof en.visionValues;
+  classes: Omit<typeof en.classes, "paceTitle" | "paceDesc"> & {
+    paceTitle?: string;
+    paceDesc?: string;
+  };
+  collaboration: Omit<
+    typeof en.collaboration,
+    "optionsTitle" | "organisation" | "organisationPlaceholder" | "collaborationType" | "preferredDate"
+  > & {
+    optionsTitle?: string;
+    organisation?: string;
+    organisationPlaceholder?: string;
+    collaborationType?: string;
+    preferredDate?: string;
+  };
+  about: Omit<
+    typeof en.about,
+    | "founderName"
+    | "founderSubtitle"
+    | "aboutZayitTitle"
+    | "aboutZayitText"
+    | "aboutZayitTagline"
+    | "missionTagline"
+    | "visionTagline"
+    | "closingTitle"
+    | "closingText"
+    | "closingSignature"
+  > & {
+    founderName?: string;
+    founderSubtitle?: string;
+    aboutZayitTitle?: string;
+    aboutZayitText?: string;
+    aboutZayitTagline?: string;
+    missionTagline?: string;
+    visionTagline?: string;
+    closingTitle?: string;
+    closingText?: string;
+    closingSignature?: string;
+  };
+};
+
 export default en;

@@ -1,7 +1,7 @@
-import type { Dictionary } from "./en";
+﻿import type { Translation } from "./en";
 
 // Arabic — العربية (right-to-left)
-const ar: Dictionary = {
+const ar: Translation = {
   common: {
     enquire: "استفسر",
     enroll: "سجّل",
@@ -35,7 +35,7 @@ const ar: Dictionary = {
   },
 
   hero: {
-    eyebrow: "Zayith Academy",
+    eyebrow: "Zayit Academy",
     titleBefore: "اكتشف",
     titleHighlight: "الفنان",
     titleAfter: "الذي بداخلك",
@@ -46,7 +46,7 @@ const ar: Dictionary = {
     statStudents: "طالب تدرّب لدينا",
     statYears: "سنوات من التدريس",
     statAwards: "جائزة حصدناها",
-    imageAlt: "طلاب يرسمون معًا في استوديو Zayith Academy",
+    imageAlt: "طلاب يرسمون معًا في استوديو Zayit Academy",
   },
 
   littleArtists: {
@@ -200,7 +200,7 @@ const ar: Dictionary = {
     title: "حيث بثثنا",
     highlight: "الحياة في الفن",
     description:
-      "من الحرم المدرسية إلى مجمّعات الشركات، تتنقّل Zayith Academy لتقدّم تجارب إبداعية عملية لمجتمعك.",
+      "من الحرم المدرسية إلى مجمّعات الشركات، تتنقّل Zayit Academy لتقدّم تجارب إبداعية عملية لمجتمعك.",
     bookEvent: "احجز فعالية",
   },
 
@@ -209,7 +209,7 @@ const ar: Dictionary = {
     title: "لنبدع",
     highlight: "معًا",
     description:
-      "اجلب Zayith Academy إلى مدرستك أو مكان عملك أو مجتمعك. أخبرنا بما تخطط له وسيتواصل معك فريقنا.",
+      "اجلب Zayit Academy إلى مدرستك أو مكان عملك أو مجتمعك. أخبرنا بما تخطط له وسيتواصل معك فريقنا.",
     imageAlt: "مدرّب يتعاون مع الطلاب",
     thanks: "شكرًا لك!",
     thanksText: "سيتواصل معك فريقنا قريبًا.",
@@ -225,17 +225,17 @@ const ar: Dictionary = {
   },
 
   about: {
-    eyebrow: "عن Zayith Academy",
+    eyebrow: "عن Zayit Academy",
     title: "قامت على",
     highlight: "قناعة بسيطة",
     story:
-      "بدأت Zayith Academy بمدرّب واحد وغرفة صغيرة وقناعة راسخة بأن التدريب الفني يجب أن يكون شخصيًا لا نمطيًا. واليوم نقدّم دروسًا حضورية في استوديو بنغالور ودروسًا مباشرة عبر الإنترنت للأطفال من عمر 5 إلى 16 عامًا — وما زالت القناعة نفسها تشكّل كل مجموعة لدينا.",
+      "بدأت Zayit Academy بمدرّب واحد وغرفة صغيرة وقناعة راسخة بأن التدريب الفني يجب أن يكون شخصيًا لا نمطيًا. واليوم نقدّم دروسًا حضورية في استوديو بنغالور ودروسًا مباشرة عبر الإنترنت للأطفال من عمر 5 إلى 16 عامًا — وما زالت القناعة نفسها تشكّل كل مجموعة لدينا.",
     missionTitle: "رسالتنا",
     mission: "أن نجعل التعليم الفني عالي الجودة في متناول كل طفل من عمر 5 إلى 16 عامًا، دون التنازل عن أصول الحِرفة.",
     visionTitle: "رؤيتنا",
     vision: "مجتمع يرى فيه كل طالب نفسه فنانًا حقيقيًا، لا مجرد هاوٍ.",
     quote: "كل طفل يدخل مترددًا يخرج وهو واثق بأنه قادر على الإبداع.",
-    quoteBy: "— المؤسِّس، Zayith Academy",
+    quoteBy: "— المؤسِّس، Zayit Academy",
     imageAlt: "المؤسِّس يوجّه طالبًا عند حامل الرسم",
   },
 
@@ -251,8 +251,8 @@ const ar: Dictionary = {
     phoneValue: "[أضف رقم الهاتف]",
     emailValue: "[أضف البريد الإلكتروني]",
     hoursValue: "الاثنين – السبت · 10 صباحًا – 7 مساءً",
-    addressValue: "Zayith Studio، بنغالور، كارناتاكا",
-    mapTitle: "موقع Zayith Academy",
+    addressValue: "Zayit Studio، بنغالور، كارناتاكا",
+    mapTitle: "موقع Zayit Academy",
   },
 
   enroll: {
@@ -281,7 +281,7 @@ const ar: Dictionary = {
     message: "الرسالة",
     messagePlaceholder: "هل هناك ما ينبغي أن نعرفه قبل الدرس الأول؟",
     confirm: "تأكيد التسجيل",
-    consent: "بالإرسال، توافق على أن تتواصل معك Zayith Academy بشأن هذا التسجيل.",
+    consent: "بالإرسال، توافق على أن تتواصل معك Zayit Academy بشأن هذا التسجيل.",
   },
 
   faq: {
@@ -307,7 +307,7 @@ const ar: Dictionary = {
   },
 
   footer: {
-    blurb: "تدريب فني احترافي لكل الأعمار ومستويات المهارة. تعلّم وأبدع وألهِم مع Zayith Academy.",
+    blurb: "تدريب فني احترافي لكل الأعمار ومستويات المهارة. تعلّم وأبدع وألهِم مع Zayit Academy.",
     quickLinks: "روابط سريعة",
     support: "الدعم",
     helpCenter: "مركز المساعدة",
@@ -322,7 +322,7 @@ const ar: Dictionary = {
     newsletter: "احصل على مواعيد الورش وأحدث منتجات المتجر وأبرز أعمال الطلاب في بريدك.",
     emailPlaceholder: "you@email.com",
     subscribe: "اشترك",
-    rights: "© {year} Zayith Academy. جميع الحقوق محفوظة.",
+    rights: "© {year} Zayit Academy. جميع الحقوق محفوظة.",
   },
 
   floating: {
@@ -379,8 +379,6 @@ const ar: Dictionary = {
     reduceMotionDescription: "يهدّئ حركات الصفحة ويوقف كل التأثيرات أدناه.",
     effectTrail: "أثر ألوان المؤشر",
     effectTrailDescription: "نقاط ألوان زاهية تتبع الفأرة في الصفحة الرئيسية.",
-    effectStroke: "ألوان تقطر مع التمرير",
-    effectStrokeDescription: "أثناء التمرير، يسيل خط طلاء رطب برأس على شكل قطرة ماء في الصفحة الرئيسية وهو يقطر.",
     effectSplash: "رشّة عند النقر على القائمة",
     effectSplashDescription: "تنفجر فقاعة القائمة في رشّة ألوان عند النقر على رابط.",
     effectDoodles: "خربشات ملوّنة",
@@ -568,7 +566,7 @@ const ar: Dictionary = {
     roles: { Student: "طالب", Parent: "ولي أمر" },
     faqs: {
       f1: {
-        question: "لأي فئة عمرية Zayith Academy؟",
+        question: "لأي فئة عمرية Zayit Academy؟",
         answer: "صُمّمت دروسنا للأطفال من عمر 5 إلى 16 عامًا، ويتدرّجون عبر المستويات الأساسي والمتقدم والاحترافي.",
       },
       f2: {
@@ -599,7 +597,7 @@ const ar: Dictionary = {
           "نقدّم دروسًا حضورية في استوديو بنغالور ودروسًا مباشرة عبر الإنترنت، فاختر ما يناسب جدولك. تزيد رسوم المجموعات الحضورية ₹200 شهريًا عن الدروس عن بُعد لتغطية تكاليف الاستوديو.",
       },
       f8: {
-        question: "هل يمكن لـ Zayith Academy إقامة ورشة في مجمّعنا أو مدرستنا أو مكتبنا؟",
+        question: "هل يمكن لـ Zayit Academy إقامة ورشة في مجمّعنا أو مدرستنا أو مكتبنا؟",
         answer:
           "بالتأكيد — نقيم الورش بانتظام في المجمّعات السكنية وجمعيات الشقق والمدارس ومجمّعات التقنية والجامعات. استخدم نموذج التعاون لمشاركة تفاصيل فعاليتك وسيتواصل معك فريقنا.",
       },

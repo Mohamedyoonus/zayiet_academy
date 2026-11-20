@@ -131,6 +131,29 @@ export default function ArtClasses() {
           ))}
         </div>
 
+        {/* Statement below course cards */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mx-auto mt-8 max-w-3xl rounded-3xl border border-sage-200/50 bg-white/70 p-6 sm:p-7 text-center shadow-sm backdrop-blur-sm dark:border-white/10 dark:bg-ink-900/40"
+        >
+          <h4 className="font-display text-base sm:text-lg font-medium text-charcoal-900 dark:text-white">
+            {t.classes.paceTitle}
+          </h4>
+          <p className="mt-2 text-xs sm:text-sm text-charcoal-600 dark:text-charcoal-300 leading-relaxed">
+            {t.classes.paceDesc}
+          </p>
+          <div className="mt-4 pt-4 border-t border-sage-200/30 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] sm:text-xs text-charcoal-500 dark:text-charcoal-400">
+            <span>✓ Structured Levels: Basic, Advanced, Pro</span>
+            <span>✓ Ages 5–16</span>
+            <span>✓ 6 Months Duration (2 classes/week · 1.5 hrs)</span>
+            <span>✓ Certificate Included</span>
+            <span>✓ Online & Offline Studio</span>
+          </div>
+        </motion.div>
+
         <p className="mt-4 text-center text-xs sm:text-sm text-charcoal-500 dark:text-charcoal-400">{admissionNote}</p>
 
         {/* Delivery modes comparison - ULTRA COMPACT */}

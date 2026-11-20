@@ -40,12 +40,14 @@ export default function Footer() {
         <div>
           <Link href="/" className="flex items-center gap-2.5 group">
             <span className="font-display text-lg sm:text-xl font-medium">
-              Zayith <span className="italic text-sage-300 transition-colors group-hover:text-sage-200">Academy</span>
+              Zayit <span className="italic text-sage-300 transition-colors group-hover:text-sage-200">Academy</span>
             </span>
           </Link>
-          <p className="mt-3 sm:mt-4 max-w-xs text-xs sm:text-sm leading-relaxed text-white/60">
-            {t.footer.blurb}
-          </p>
+          <div className="mt-3 sm:mt-4 max-w-xs space-y-1 text-xs sm:text-sm text-white/70">
+            <p className="font-medium text-white/90">Create with Purpose. Grow with Confidence.</p>
+            <p className="text-sage-300">Spreading Peace Through Art.</p>
+            <p className="text-[11px] sm:text-xs italic text-white/50 pt-1">One Mind. One Heart. One Creation at a Time.</p>
+          </div>
           <div className="mt-6 flex gap-3">
             {[Instagram, Facebook, Youtube].map((Icon, i) => (
               <a

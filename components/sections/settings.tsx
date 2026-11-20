@@ -5,7 +5,6 @@ import { motion, useReducedMotion } from "framer-motion";
 import {
   Check,
   Contrast as ContrastIcon,
-  Droplet,
   Droplets,
   Languages,
   Loader2,
@@ -344,14 +343,13 @@ const TEXT_SIZES: { value: TextSize; label: keyof SettingsText; px: number }[] =
 ];
 
 const FONTS: { value: HeadingFont; label: keyof SettingsText; family: string }[] = [
-  { value: "elegant", label: "fontElegant", family: "Fraunces, Georgia, serif" },
-  { value: "modern", label: "fontModern", family: '"Plus Jakarta Sans", system-ui, sans-serif' },
+  { value: "elegant", label: "fontElegant", family: "var(--font-fraunces-face), Georgia, serif" },
+  { value: "modern", label: "fontModern", family: "var(--font-jakarta-face), system-ui, sans-serif" },
   { value: "playful", label: "fontPlayful", family: "Fredoka, ui-rounded, system-ui, sans-serif" },
 ];
 
 const EFFECTS: { key: keyof Effects; icon: LucideIcon; title: keyof SettingsText; description: keyof SettingsText }[] = [
   { key: "trail", icon: MousePointer2, title: "effectTrail", description: "effectTrailDescription" },
-  { key: "stroke", icon: Droplet, title: "effectStroke", description: "effectStrokeDescription" },
   { key: "splash", icon: Droplets, title: "effectSplash", description: "effectSplashDescription" },
   { key: "doodles", icon: PenLine, title: "effectDoodles", description: "effectDoodlesDescription" },
 ];

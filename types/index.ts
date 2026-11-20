@@ -32,6 +32,9 @@ export interface WorkshopEvent {
   date: string;
   image: string;
   seatsLeft: number;
+  ageGroup?: string;
+  duration?: string;
+  fee?: string;
 }
 
 export interface Product {
@@ -68,7 +71,20 @@ export interface ServiceCard {
 
 export interface GalleryItem {
   id: string;
-  category: "Portrait" | "Landscape" | "Sketch" | "Painting" | "Workshop" | "Students";
+  category:
+    | "Student Artwork"
+    | "Drawing and Sketching"
+    | "Painting and Mixed Media"
+    | "Creative Workshops"
+    | "Student Progress"
+    | "Community Art"
+    | "Portrait"
+    | "Landscape"
+    | "Sketch"
+    | "Painting"
+    | "Workshop"
+    | "Students"
+    | string;
   image: string;
   title: string;
 }

@@ -10,8 +10,6 @@ export type Contrast = "normal" | "high";
 export type Effects = {
   /** Colorful paint blobs that follow the cursor */
   trail: boolean;
-  /** Dripping paint line with a water-drop tip that runs down the home page while scrolling */
-  stroke: boolean;
   /** Paint splash when a menu link is clicked */
   splash: boolean;
   /** Crayon doodles floating around headings and sections */
@@ -33,7 +31,7 @@ export const DEFAULT_SETTINGS: Settings = {
   font: "elegant",
   motion: "auto",
   contrast: "normal",
-  effects: { trail: true, stroke: true, splash: true, doodles: true },
+  effects: { trail: true, splash: true, doodles: true },
 };
 
 export const STORAGE_KEY = "zayit-settings";
@@ -53,11 +51,14 @@ export const PLAYFUL_FONT_HREF =
 export function parseSettings(raw: string | null): Settings {
   try {
     const stored = raw ? (JSON.parse(raw) as Partial<Settings>) : {};
-    return {
-      ...DEFAULT_SETTINGS,
-      ...stored,
-      effects: { ...DEFAULT_SETTINGS.effects, ...(stored.effects ?? {}) },
-    };
+    // Only keep effects that still exist, so a removed one saved earlier doesn't linger
+    const saved: Partial<Effects> = stored.effects ?? {};
+    const effects = { ...DEFAULT_SETTINGS.effects };
+    for (const key of Object.keys(effects) as (keyof Effects)[]) {
+      const value = saved[key];
+      if (typeof value === "boolean") effects[key] = value;
+    }
+    return { ...DEFAULT_SETTINGS, ...stored, effects };
   } catch {
     return DEFAULT_SETTINGS;
   }

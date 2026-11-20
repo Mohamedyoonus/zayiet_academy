@@ -103,6 +103,9 @@ export const workshops: WorkshopEvent[] = [
     date: "Register for upcoming dates",
     image: "https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?q=80&w=1200&auto=format&fit=crop",
     seatsLeft: 8,
+    ageGroup: "Ages 6–16 & Adults",
+    duration: "3 Hours Intensive",
+    fee: "₹799 · Materials Included",
   },
   {
     id: "w2",
@@ -111,6 +114,9 @@ export const workshops: WorkshopEvent[] = [
     date: "Register for upcoming dates",
     image: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?q=80&w=1200&auto=format&fit=crop",
     seatsLeft: 6,
+    ageGroup: "All Age Groups",
+    duration: "Half-Day Weekend",
+    fee: "Free / Community Registration",
   },
   {
     id: "w3",
@@ -119,6 +125,9 @@ export const workshops: WorkshopEvent[] = [
     date: "Register for upcoming dates",
     image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1200&auto=format&fit=crop",
     seatsLeft: 10,
+    ageGroup: "School Students (Ages 5–16)",
+    duration: "4 Hours Interactive",
+    fee: "Partnership / School Hosted",
   },
 ];
 
@@ -170,18 +179,18 @@ export const otherServices: ServiceCard[] = [
 ];
 
 export const galleryItems: GalleryItem[] = [
-  { id: "g1", category: "Portrait", image: "https://images.unsplash.com/photo-1549289524-06cf8837ace5?q=80&w=800&auto=format&fit=crop", title: "Study in Graphite" },
-  { id: "g2", category: "Landscape", image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=800&auto=format&fit=crop", title: "Hills at Dusk" },
-  { id: "g3", category: "Sketch", image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800&auto=format&fit=crop", title: "Quick Figure Sketch" },
-  { id: "g4", category: "Painting", image: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?q=80&w=800&auto=format&fit=crop", title: "Abstract in Ember" },
-  { id: "g5", category: "Workshop", image: "https://images.unsplash.com/photo-1522205408450-add114ad53fe?q=80&w=800&auto=format&fit=crop", title: "Saturday Studio Session" },
-  { id: "g6", category: "Students", image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=800&auto=format&fit=crop", title: "Basic Batch 12" },
-  { id: "g7", category: "Painting", image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=800&auto=format&fit=crop", title: "Sunset Study" },
-  { id: "g8", category: "Landscape", image: "https://images.unsplash.com/photo-1519638399535-1b036603ac77?q=80&w=800&auto=format&fit=crop", title: "River Bend" },
-  { id: "g9", category: "Portrait", image: "https://images.unsplash.com/photo-1580136579312-94651dfd596d?q=80&w=800&auto=format&fit=crop", title: "Charcoal Portrait" },
-  { id: "g10", category: "Sketch", image: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=800&auto=format&fit=crop", title: "Hands Study" },
-  { id: "g11", category: "Workshop", image: "https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?q=80&w=800&auto=format&fit=crop", title: "Live Demo Day" },
-  { id: "g12", category: "Students", image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800&auto=format&fit=crop", title: "Pro Batch Showcase" },
+  { id: "g1", category: "Drawing and Sketching", image: "https://images.unsplash.com/photo-1549289524-06cf8837ace5?q=80&w=800&auto=format&fit=crop", title: "Study in Graphite" },
+  { id: "g2", category: "Painting and Mixed Media", image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=800&auto=format&fit=crop", title: "Hills at Dusk" },
+  { id: "g3", category: "Drawing and Sketching", image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=800&auto=format&fit=crop", title: "Quick Figure Sketch" },
+  { id: "g4", category: "Painting and Mixed Media", image: "https://images.unsplash.com/photo-1536924940846-227afb31e2a5?q=80&w=800&auto=format&fit=crop", title: "Abstract in Ember" },
+  { id: "g5", category: "Creative Workshops", image: "https://images.unsplash.com/photo-1522205408450-add114ad53fe?q=80&w=800&auto=format&fit=crop", title: "Saturday Studio Session" },
+  { id: "g6", category: "Student Progress", image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=800&auto=format&fit=crop", title: "Basic Batch 12" },
+  { id: "g7", category: "Student Artwork", image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=800&auto=format&fit=crop", title: "Sunset Study" },
+  { id: "g8", category: "Painting and Mixed Media", image: "https://images.unsplash.com/photo-1519638399535-1b036603ac77?q=80&w=800&auto=format&fit=crop", title: "River Bend" },
+  { id: "g9", category: "Drawing and Sketching", image: "https://images.unsplash.com/photo-1580136579312-94651dfd596d?q=80&w=800&auto=format&fit=crop", title: "Charcoal Portrait" },
+  { id: "g10", category: "Student Artwork", image: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=800&auto=format&fit=crop", title: "Hands Study" },
+  { id: "g11", category: "Community Art", image: "https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?q=80&w=800&auto=format&fit=crop", title: "Community Mural Day" },
+  { id: "g12", category: "Student Progress", image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=800&auto=format&fit=crop", title: "Pro Batch Showcase" },
 ];
 
 export const testimonials: Testimonial[] = [
@@ -192,14 +201,14 @@ export const testimonials: Testimonial[] = [
 ];
 
 export const faqs: FAQItem[] = [
-  { id: "f1", question: "What age group is Zayith Academy for?", answer: "Our classes are designed for children aged 5–16 years, progressing through the Basic, Advanced and Pro levels." },
+  { id: "f1", question: "What age group is Zayit Academy for?", answer: "Our classes are designed for children aged 5–16 years, progressing through the Basic, Advanced and Pro levels." },
   { id: "f2", question: "Do I need any prior art experience to join Basic?", answer: "No prior experience is required. The Basic course is built from the ground up — line, form and shading — through fully visual, hands-on classes." },
   { id: "f3", question: "What's the difference between Online Live and Pre-Recorded classes?", answer: "Online Live mirrors the offline schedule with real-time instructor feedback over 24 weeks. Pre-Recorded gives you 70+ hours of structured lessons across 12 weeks with lifetime access, so you can learn at your own pace." },
   { id: "f4", question: "Is a certificate provided for every course?", answer: "Yes — Basic, Advanced, Pro, Online Live and Pre-Recorded courses all include a certificate of completion." },
   { id: "f5", question: "How large are the batches?", answer: "We intentionally cap batches at 15 students so every student gets real, individual attention from instructors." },
   { id: "f6", question: "Is there a minimum fee to be paid at admission?", answer: "Yes — every new student pays a minimum of 3 months' course fees at the time of admission." },
   { id: "f7", question: "Where are your classes held?", answer: "We run offline classes from our Bangalore studio as well as live online classes, so you can choose whichever fits your schedule. Offline batches are ₹200/month more than online to cover studio costs." },
-  { id: "f8", question: "Can Zayith Academy host a workshop at our community, school or office?", answer: "Absolutely — we regularly run workshops at gated communities, apartment associations, schools, IT parks and colleges. Use the Collaboration form to share your event details and our team will get back to you." },
+  { id: "f8", question: "Can Zayit Academy host a workshop at our community, school or office?", answer: "Absolutely — we regularly run workshops at gated communities, apartment associations, schools, IT parks and colleges. Use the Collaboration form to share your event details and our team will get back to you." },
   { id: "f9", question: "Do you offer materials, or do I need to buy my own?", answer: "Our Art Store stocks a complete Materials Kit — charcoal pencils, brush sets, drawing paper and more — so you can get started without hunting for supplies." },
 ];
 

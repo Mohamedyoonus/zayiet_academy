@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import SettingsPanel from "@/components/sections/settings";
 
 export const metadata: Metadata = {
-  title: "Settings — Zayith Academy",
+  title: "Settings — Zayit Academy",
   description: "Choose a color theme, text size, heading style and which animations play.",
 };
 
