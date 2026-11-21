@@ -7,6 +7,7 @@ import { I18nProvider } from "@/hooks/use-i18n";
 import { settingsBootScript } from "@/lib/settings";
 import { loadDictionary } from "@/lib/i18n";
 import { DEFAULT_LOCALE, LOCALE_COOKIE, getLanguage, isLocale, scriptFontHref } from "@/lib/i18n/config";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
 import FloatingActions from "@/components/layout/floating-actions";
@@ -18,15 +19,31 @@ const fraunces = Fraunces({ subsets: ["latin"], axes: ["opsz"], variable: "--fon
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakarta-face" });
 
 export const metadata: Metadata = {
-  title: "Zayit Academy — Beyond Art. Towards a Better You",
-  description:
-    "Zayit Academy is a premium art academy offering foundation to professional art training, workshops, an art store and community events for every age and skill level. Beyond Art. Towards a Better You.",
-  keywords: ["art academy", "art classes", "drawing classes", "painting classes", "Zayit Academy", "art workshop"],
+  metadataBase: new URL(SITE_URL),
+  // Pages set a short title ("About") and get " — Zayit Academy" added
+  title: { default: `${SITE_NAME} — ${SITE_TAGLINE}`, template: `%s — ${SITE_NAME}` },
+  description: SITE_DESCRIPTION,
+  keywords: ["art academy", "art classes", "drawing classes", "painting classes", "Zayit Academy", "art workshop", "Bangalore"],
   openGraph: {
-    title: "Zayit Academy — Beyond Art. Towards a Better You",
-    description: "Beyond Art. Towards a Better You. Professional art training for every age and skill level.",
+    title: `${SITE_NAME} — ${SITE_TAGLINE}`,
+    description: SITE_DESCRIPTION,
+    siteName: SITE_NAME,
+    locale: "en_IN",
     type: "website",
   },
+};
+
+// Tells Google who the academy is, so searches for the name can show it as an organisation
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  name: SITE_NAME,
+  url: SITE_URL,
+  logo: `${SITE_URL}/assets/logo_only.png`,
+  slogan: SITE_TAGLINE,
+  description: SITE_DESCRIPTION,
+  founder: { "@type": "Person", name: "Chalz Simon" },
+  address: { "@type": "PostalAddress", addressLocality: "Bangalore", addressRegion: "Karnataka", addressCountry: "IN" },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -47,6 +64,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         {/* Applies saved theme / text size before first paint (no flash of the default) */}
         <script dangerouslySetInnerHTML={{ __html: settingsBootScript }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
         {language.font && (
           <link id={`font-script-${locale}`} rel="stylesheet" href={scriptFontHref(language.font)} />
         )}
