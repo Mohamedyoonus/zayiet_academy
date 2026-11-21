@@ -15,11 +15,12 @@ export default function VisionValues() {
   ];
 
   return (
-    <section id="vision" className="relative overflow-hidden bg-sage-50/60 py-12 sm:py-16 lg:py-24 dark:bg-ink-950">
-      {/* Soft botanical wash matching all sections */}
-      <div className="pointer-events-none absolute -left-32 top-10 h-[26rem] w-[26rem] rounded-full bg-sage-200/50 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-24 bottom-0 h-[22rem] w-[22rem] rounded-full bg-sage-100/70 blur-[130px]" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-sage-200/10" />
+    <section id="vision" className="relative overflow-hidden bg-sage-50/60 py-12 sm:py-14 lg:py-16 dark:bg-ink-950">
+      {/* Soft botanical wash */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(36rem_26rem_at_5%_10%,rgb(var(--c-sage-200)/0.5),transparent_70%),radial-gradient(32rem_22rem_at_95%_95%,rgb(var(--c-sage-100)/0.7),transparent_70%)]"
+      />
 
       <div className="container-academy relative z-10">
         {/* Short Vision Section */}
@@ -34,7 +35,7 @@ export default function VisionValues() {
         </div>
 
         {/* Four Value Cards */}
-        <div className="mt-10 sm:mt-12 lg:mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:mt-10 lg:grid-cols-4 lg:gap-5">
           {valueCards.map((card, i) => {
             const Icon = card.icon;
             return (

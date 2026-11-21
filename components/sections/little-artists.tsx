@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Palette, Sparkles } from "lucide-react";
@@ -91,10 +91,24 @@ const kids: Kid[] = [
   },
 ];
 
-// Hand scribble path, as offsets from the hand's resting position
+// Hand scribble path, as offsets from the hand's resting position (used only
+// for the first frame, before the strokes have been measured)
 const scribbleX = [0, -16, 10, -8, 14, -4, 0];
 const scribbleY = [0, 10, -6, 12, 2, -8, 0];
 const SHOULDER = { x: 150, y: 138 };
+
+// Drawing timeline: strokes are drawn one after another, and between them the
+// pencil lifts and moves to where the next stroke starts
+const STROKE_TIME = 0.6; // seconds to draw one stroke
+const STROKE_GAP = 0.15; // seconds to move to the next stroke
+const FIRST_STROKE = 0.25;
+const strokeStart = (i: number) => FIRST_STROKE + i * (STROKE_TIME + STROKE_GAP);
+/** Where the tip of the pencil/brush sits, relative to the centre of the hand */
+const TIP = { x: -3, y: 8 };
+/** Points sampled along each stroke for the pencil to follow */
+const SAMPLES = 16;
+
+type Track = { x: number[]; y: number[]; times: number[]; duration: number };
 
 function Hair({ kid }: { kid: Kid }) {
   const cap = "M86,82 A34,34 0 0 1 154,82 Q140,62 120,64 Q100,62 86,82 Z";
@@ -127,8 +141,30 @@ function KidIllustration({
   blinkDelay: number;
 }) {
   const { hand } = kid;
-  // Last stroke finishes at 0.15 + (n - 1) * 0.6 + 0.8
-  const doneDelay = 0.35 + kid.strokes.length * 0.6;
+  // Show off the artwork a moment after the last stroke is finished
+  const doneDelay = strokeStart(kid.strokes.length - 1) + STROKE_TIME + 0.25;
+
+  // Measure every stroke once, so the pencil tip can trace exactly the line being drawn
+  const strokeRefs = useRef<(SVGPathElement | null)[]>([]);
+  const [track, setTrack] = useState<Track | null>(null);
+  useEffect(() => {
+    const x = [hand.x];
+    const y = [hand.y];
+    const times = [0];
+    kid.strokes.forEach((_, i) => {
+      const path = strokeRefs.current[i];
+      if (!path) return;
+      const length = path.getTotalLength();
+      for (let j = 0; j <= SAMPLES; j++) {
+        const point = path.getPointAtLength((length * j) / SAMPLES);
+        x.push(point.x - TIP.x);
+        y.push(point.y - TIP.y);
+        times.push(strokeStart(i) + (STROKE_TIME * j) / SAMPLES);
+      }
+    });
+    const duration = times[times.length - 1];
+    if (duration > 0) setTrack({ x, y, times: times.map((t) => t / duration), duration });
+  }, [kid, hand]);
 
   // Phases: idle → drawing → done (smile + show the artwork). Leaving resets to idle.
   const [done, setDone] = useState(false);
@@ -157,8 +193,10 @@ function KidIllustration({
       {/* Backdrop blob */}
       <circle cx={120} cy={140} r={104} fill={kid.accent} opacity={0.14} />
 
-      {/* Head + body: bob while drawing, happy hop when done */}
+      {/* Head + body: bob while drawing, happy hop when done.
+          (Every moving SVG group needs an `initial`, or its movement is never applied.) */}
       <motion.g
+        initial={{ y: 0 }}
         animate={drawing ? { y: [0, 2, 0] } : done ? { y: [0, -5, 0] } : { y: 0 }}
         transition={
           drawing
@@ -186,9 +224,10 @@ function KidIllustration({
         <circle cx={100} cy={96} r={5} fill="#E58A7A" opacity={0.45} />
         <circle cx={140} cy={96} r={5} fill="#E58A7A" opacity={0.45} />
         {/* Eyes look down at the paper while drawing */}
-        <motion.g animate={{ y: drawing ? 3 : 0 }} transition={{ duration: 0.3 }}>
+        <motion.g initial={{ y: 0 }} animate={{ y: drawing ? 3 : 0 }} transition={{ duration: 0.3 }}>
           {/* Idle blink so the kids feel alive */}
           <motion.g
+            initial={{ scaleY: 1 }}
             animate={{ scaleY: [1, 1, 0.1, 1] }}
             transition={{ duration: 4, times: [0, 0.92, 0.96, 1], repeat: Infinity, delay: blinkDelay }}
           >
@@ -209,6 +248,7 @@ function KidIllustration({
 
       {/* Drawing board — lifts up to show the finished artwork */}
       <motion.g
+        initial={{ y: 0, scale: 1 }}
         animate={done ? { y: -10, scale: 1.04 } : { y: 0, scale: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 18 }}
       >
@@ -219,6 +259,9 @@ function KidIllustration({
         {kid.strokes.map((s, i) => (
           <motion.path
             key={i}
+            ref={(el) => {
+              strokeRefs.current[i] = el;
+            }}
             d={s.d}
             fill="none"
             stroke={s.color}
@@ -228,9 +271,8 @@ function KidIllustration({
             initial={{ pathLength: 0, opacity: 0 }}
             animate={playing ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 }}
             transition={
-              playing
-                ? { duration: 0.8, delay: 0.15 + i * 0.6, ease: "easeInOut" }
-                : { duration: 0.35 }
+              // Linear, so the line grows exactly in step with the pencil tip
+              playing ? { duration: STROKE_TIME, delay: strokeStart(i), ease: "linear" } : { duration: 0.35 }
             }
           />
         ))}
@@ -274,7 +316,7 @@ function KidIllustration({
         transition={{ duration: 0.45, ease: "easeOut" }}
       />
 
-      {/* Drawing arm: scribbles while drawing, then grips the board's other side */}
+      {/* Drawing arm: the pencil tip traces each stroke as it appears, then the hand grips the board's other side */}
       <motion.line
         x1={SHOULDER.x}
         y1={SHOULDER.y}
@@ -284,22 +326,39 @@ function KidIllustration({
         initial={{ x2: hand.x, y2: hand.y }}
         animate={
           drawing
-            ? { x2: scribbleX.map((d) => hand.x + d), y2: scribbleY.map((d) => hand.y + d) }
+            ? track
+              ? { x2: track.x, y2: track.y }
+              : { x2: scribbleX.map((d) => hand.x + d), y2: scribbleY.map((d) => hand.y + d) }
             : done
               ? { x2: showRight.x, y2: showRight.y }
               : { x2: hand.x, y2: hand.y }
         }
-        transition={drawing ? { duration: 1.1, repeat: Infinity, ease: "easeInOut" } : { duration: 0.45, ease: "easeOut" }}
+        transition={
+          drawing && track
+            ? { duration: track.duration, times: track.times, ease: "linear" }
+            : drawing
+              ? { duration: 1.1, repeat: Infinity, ease: "easeInOut" }
+              : { duration: 0.45, ease: "easeOut" }
+        }
       />
       <motion.g
+        initial={{ x: 0, y: 0 }}
         animate={
           drawing
-            ? { x: scribbleX, y: scribbleY }
+            ? track
+              ? { x: track.x.map((v) => v - hand.x), y: track.y.map((v) => v - hand.y) }
+              : { x: scribbleX, y: scribbleY }
             : done
               ? { x: showRight.x - hand.x, y: showRight.y - hand.y }
               : { x: 0, y: 0 }
         }
-        transition={drawing ? { duration: 1.1, repeat: Infinity, ease: "easeInOut" } : { duration: 0.45, ease: "easeOut" }}
+        transition={
+          drawing && track
+            ? { duration: track.duration, times: track.times, ease: "linear" }
+            : drawing
+              ? { duration: 1.1, repeat: Infinity, ease: "easeInOut" }
+              : { duration: 0.45, ease: "easeOut" }
+        }
       >
         <g transform={`translate(${hand.x} ${hand.y})`}>
           {kid.tool === "pencil" ? (
@@ -334,7 +393,7 @@ const sag = (t: number) => 20 + 200 * t * (1 - t);
 
 function Clothesline() {
   return (
-    <div aria-hidden className="relative mx-auto mt-8 h-[140px] max-w-3xl sm:h-[150px]">
+    <div aria-hidden className="relative mx-auto h-[140px] max-w-xl sm:h-[150px] lg:max-w-none">
       <svg viewBox="0 0 1000 120" preserveAspectRatio="none" className="absolute inset-x-0 top-0 h-[120px] w-full">
         <path d="M0 20 Q500 120 1000 20" fill="none" stroke="#C9A77C" strokeWidth={2} vectorEffect="non-scaling-stroke" />
       </svg>
@@ -395,13 +454,15 @@ export default function LittleArtists() {
     <section
       id="little-artists"
       onMouseMove={handleMouseMove}
-      className="relative overflow-hidden bg-ivory py-10 sm:py-16 lg:py-28"
+      className="relative overflow-hidden bg-ivory py-12 sm:py-14 lg:py-16"
     >
       {/* Paint trail — sits behind the content */}
       {trail}
 
-      <div className="pointer-events-none absolute -right-32 top-10 h-[24rem] w-[24rem] rounded-full bg-sage-200/40 blur-[120px]" />
-      <div className="pointer-events-none absolute -left-24 bottom-0 h-[20rem] w-[20rem] rounded-full bg-[#E8B04B]/10 blur-[120px]" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(36rem_26rem_at_95%_10%,rgb(var(--c-sage-200)/0.4),transparent_70%),radial-gradient(30rem_22rem_at_5%_95%,rgb(232_176_75/0.1),transparent_70%)]"
+      />
 
       {settings.effects.doodles && bgDoodles.map((d, i) => (
         <motion.svg
@@ -426,10 +487,15 @@ export default function LittleArtists() {
           description={t.littleArtists.description}
         />
 
-        <Clothesline />
+        {/* Desktop: clothesline and call-to-action on the left, the kids across the right.
+            Phones: clothesline → kids → call-to-action. */}
+        <div className="mt-6 grid items-center gap-8 lg:mt-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-x-14 lg:gap-y-6">
+        <div className="lg:col-start-1 lg:row-start-1 lg:self-end">
+          <Clothesline />
+        </div>
 
         <div
-          className="mx-auto mt-6 grid max-w-[16rem] grid-cols-1 gap-5 sm:max-w-3xl sm:grid-cols-3 lg:gap-6"
+          className="mx-auto grid w-full max-w-[16rem] grid-cols-1 gap-4 sm:max-w-none sm:grid-cols-3 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:gap-5"
           onMouseLeave={() => setActive(null)}
         >
           {kids.map((kid, i) => {
@@ -482,7 +548,7 @@ export default function LittleArtists() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.6 }}
-          className="mt-10 flex flex-col items-center gap-4 text-center lg:mt-12"
+          className="flex flex-col items-center gap-4 text-center lg:col-start-1 lg:row-start-2 lg:self-start"
         >
           <p className="font-display text-lg italic text-charcoal-700 sm:text-xl">
             {t.littleArtists.cta}
@@ -496,6 +562,7 @@ export default function LittleArtists() {
             </Link>
           </div>
         </motion.div>
+        </div>
       </div>
     </section>
   );

@@ -10,6 +10,21 @@ create table if not exists public.admins (
 );
 alter table public.admins enable row level security; -- no policies: hidden from the API
 
+-- Admins sign in with a short username; the login looks up their email from it
+alter table public.admins add column if not exists username text unique
+  check (username ~ '^[a-z0-9._-]{3,30}$');
+
+create or replace function public.admin_login_email(login text) returns text
+language sql stable security definer set search_path = public as $$
+  select email from public.admins where username = lower(trim(login));
+$$;
+
+-- The signed-in admin's own username, shown in the admin menu
+create or replace function public.my_admin_username() returns text
+language sql stable security definer set search_path = public as $$
+  select username from public.admins where lower(email) = lower(auth.jwt() ->> 'email');
+$$;
+
 create or replace function public.is_admin() returns boolean
 language sql stable security definer set search_path = public as $$
   select exists (
@@ -152,6 +167,8 @@ create policy "admins delete media" on storage.objects
 -- ---------------------------------------------------------------------------
 grant usage on schema public to anon, authenticated;
 grant execute on function public.is_admin() to anon, authenticated;
+grant execute on function public.admin_login_email(text) to anon, authenticated;
+grant execute on function public.my_admin_username() to authenticated;
 grant select on public.site_content, public.courses, public.gallery_items to anon, authenticated;
 grant insert on public.enrollments, public.enquiries to anon, authenticated;
 grant select, insert, update, delete
@@ -216,9 +233,9 @@ select * from (values
 where not exists (select 1 from public.gallery_items);
 
 -- ---------------------------------------------------------------------------
--- Admin logins: replace the email below with the one you'll sign in with.
--- Create the same user under Authentication → Users → Add user.
--- Run this line again for each extra admin.
+-- Admin logins: the email of a user created under Authentication → Users → Add
+-- user, and the username they type on /admin/login (lowercase, 3–30 characters).
+-- Run this again for each extra admin.
 -- ---------------------------------------------------------------------------
-insert into public.admins (email) values ('thechalzart@gmail.com')
-on conflict (email) do nothing;
+insert into public.admins (email, username) values ('thechalzart@gmail.com', 'chalz')
+on conflict (email) do update set username = excluded.username;

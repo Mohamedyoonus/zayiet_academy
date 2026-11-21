@@ -1,5 +1,13 @@
-import { getAdminState } from "@/lib/admin";
-import { formatDateTime, isStatus, isSubmissionTable, STATUS_LABELS, type Status } from "@/lib/admin-shared";
+import { getAdminState, searchFilter } from "@/lib/admin";
+import {
+  dateRange,
+  formatDateTime,
+  isDateParam,
+  isStatus,
+  isSubmissionTable,
+  STATUS_LABELS,
+  type Status,
+} from "@/lib/admin-shared";
 import { collaborationTypes } from "@/lib/data";
 
 // Downloads enrollments or enquiries as a CSV file that opens in Excel.
@@ -49,9 +57,23 @@ export async function GET(request: Request, { params }: { params: Promise<{ tabl
   const state = await getAdminState();
   if (state.status !== "admin") return new Response("Please sign in to the admin first.", { status: 401 });
 
-  const status = new URL(request.url).searchParams.get("status");
+  // Same filters as the list on screen
+  const filters = new URL(request.url).searchParams;
+  const status = filters.get("status");
+  const from = filters.get("from");
+  const to = filters.get("to");
+  const range = dateRange(isDateParam(from) ? from : undefined, isDateParam(to) ? to : undefined);
+  const searchColumns =
+    table === "enrollments"
+      ? ["student_name", "parent_name", "mobile", "email", "course_title"]
+      : ["name", "organisation", "mobile", "email"];
+
   let query = state.supabase.from(table).select("*").order("created_at", { ascending: false });
   if (isStatus(status)) query = query.eq("status", status);
+  if (range.start) query = query.gte("created_at", range.start);
+  if (range.end) query = query.lt("created_at", range.end);
+  const search = searchFilter(filters.get("q") ?? undefined, searchColumns);
+  if (search) query = query.or(search);
   const { data, error } = await query;
   if (error) return new Response(`Couldn’t export: ${error.message}`, { status: 500 });
 
@@ -66,7 +88,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ tabl
   return new Response(`﻿${lines.join("\r\n")}`, {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": `attachment; filename="zayit-${table}${isStatus(status) ? `-${status}` : ""}-${date}.csv"`,
+      "Content-Disposition": `attachment; filename="zayit-${table}${isStatus(status) ? `-${status}` : ""}${isDateParam(from) ? `-from-${from}` : ""}${isDateParam(to) ? `-to-${to}` : ""}-${date}.csv"`,
       "Cache-Control": "no-store",
     },
   });

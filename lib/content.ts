@@ -18,12 +18,60 @@ export type HeroContent = {
   stats: HeroStat[];
 };
 
+/** About page text and founder photo. Keys match the `about` dictionary section, so saved values override it. */
+export type AboutContent = {
+  photo: string;
+  /** Caption on the photo, e.g. "— Chalz Simon, Founder" */
+  quoteBy: string;
+  eyebrow: string;
+  title: string;
+  highlight: string;
+  /** Paragraphs separated by an empty line; the last one is shown as a quote */
+  story: string;
+  aboutZayitTitle: string;
+  aboutZayitText: string;
+  aboutZayitTagline: string;
+  missionTitle: string;
+  missionTagline: string;
+  mission: string;
+  visionTitle: string;
+  visionTagline: string;
+  vision: string;
+  closingTitle: string;
+  closingText: string;
+  closingSignature: string;
+};
+
+/** Contact page and the academy's contact details used across the site (call/WhatsApp buttons, social icons) */
+export type ContactContent = {
+  eyebrow: string;
+  title: string;
+  highlight: string;
+  description: string;
+  phoneValue: string;
+  /** WhatsApp number; empty means use the phone number */
+  whatsapp: string;
+  emailValue: string;
+  hoursValue: string;
+  addressValue: string;
+  /** What the map shows, e.g. "Zayit Academy, Indiranagar, Bengaluru" */
+  mapQuery: string;
+  instagram: string;
+  facebook: string;
+  youtube: string;
+};
+
 /** null means "not in the database", so the site falls back to the defaults in code */
 export type SiteContent = {
   hero: HeroContent | null;
+  about: Partial<AboutContent> | null;
+  contact: Partial<ContactContent> | null;
   courses: Course[] | null;
   gallery: GalleryItem[] | null;
 };
+
+/** The keys stored in the site_content table */
+export type ContentKey = "hero" | "about" | "contact";
 
 export const CONTENT_TAG = "site-content";
 
@@ -69,23 +117,26 @@ export function courseFromRow(row: CourseRow): Course {
   };
 }
 
-const EMPTY: SiteContent = { hero: null, courses: null, gallery: null };
+const EMPTY: SiteContent = { hero: null, about: null, contact: null, courses: null, gallery: null };
 
 const loadContent = unstable_cache(
   async (): Promise<SiteContent> => {
     const supabase = createPublicClient();
-    const [hero, courses, gallery] = await Promise.all([
-      supabase.from("site_content").select("data").eq("key", "hero").maybeSingle(),
+    const [pages, courses, gallery] = await Promise.all([
+      supabase.from("site_content").select("key, data"),
       supabase.from("courses").select("*").eq("published", true).order("sort").order("title"),
       supabase.from("gallery_items").select("id, sort, title, category, image").order("sort").order("created_at", { ascending: false }),
     ]);
-    const error = hero.error ?? courses.error ?? gallery.error;
+    const error = pages.error ?? courses.error ?? gallery.error;
     // Thrown errors aren't cached, so the next request tries again
     if (error) throw new Error(error.message);
 
+    const page = (key: ContentKey) => ((pages.data ?? []) as { key: string; data: unknown }[]).find((row) => row.key === key)?.data ?? null;
     const courseRows = (courses.data ?? []) as CourseRow[];
     return {
-      hero: (hero.data?.data as HeroContent | undefined) ?? null,
+      hero: page("hero") as HeroContent | null,
+      about: page("about") as Partial<AboutContent> | null,
+      contact: page("contact") as Partial<ContactContent> | null,
       // The enroll form and class finder need at least one course, so an empty list keeps the defaults
       courses: courseRows.length ? courseRows.map(courseFromRow) : null,
       gallery: (gallery.data ?? []) as GalleryRow[],

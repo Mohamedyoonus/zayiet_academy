@@ -193,9 +193,11 @@ export default function ClassFinder() {
   };
 
   return (
-    <section id="class-finder" className="relative overflow-hidden bg-sage-50/40 py-10 sm:py-16 lg:py-28">
-      <div className="pointer-events-none absolute -left-32 top-10 h-[24rem] w-[24rem] rounded-full bg-sage-200/50 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-24 bottom-0 h-[20rem] w-[20rem] rounded-full bg-[#E8B04B]/10 blur-[120px]" />
+    <section id="class-finder" className="relative overflow-hidden bg-sage-50/40 py-12 sm:py-14 lg:py-16">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(34rem_24rem_at_5%_10%,rgb(var(--c-sage-200)/0.5),transparent_70%),radial-gradient(30rem_22rem_at_95%_95%,rgb(232_176_75/0.1),transparent_70%)]"
+      />
 
       <div className="container-academy relative z-10">
         <SectionHeading
@@ -206,7 +208,7 @@ export default function ClassFinder() {
           description={t.classFinder.description}
         />
 
-        <div className="mx-auto mt-10 max-w-3xl overflow-hidden rounded-5xl border border-sage-200/60 bg-white/80 shadow-lg shadow-sage-500/5 backdrop-blur-sm lg:mt-12">
+        <div className="mx-auto mt-8 w-full max-w-5xl overflow-hidden rounded-5xl border border-sage-200/60 bg-white/80 shadow-lg shadow-sage-500/5 backdrop-blur-sm">
           {/* Progress */}
           <div className="h-1.5 bg-sage-100">
             <motion.div

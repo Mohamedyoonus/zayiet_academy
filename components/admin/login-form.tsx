@@ -1,33 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useTransition } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
-import { createBrowserSupabase } from "@/lib/supabase/browser";
+import { signIn } from "@/app/admin/actions";
+import Dots from "@/components/ui/dots";
 import { Card, Field, buttonClass, inputClass } from "@/components/admin/ui";
+import { useToast } from "@/components/admin/toast";
 
 export default function LoginForm() {
   const router = useRouter();
-  const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
+  const toast = useToast();
+  const [busy, startTransition] = useTransition();
 
-  async function signIn(event: React.FormEvent<HTMLFormElement>) {
+  function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    setBusy(true);
-    setError("");
-    const { error } = await createBrowserSupabase().auth.signInWithPassword({
-      email: String(form.get("email")),
-      password: String(form.get("password")),
+    startTransition(async () => {
+      const result = await signIn(String(form.get("username")), String(form.get("password")));
+      if (!result.ok) return toast.error(result.error);
+      router.replace("/admin");
+      router.refresh();
     });
-    if (error) {
-      setError(error.message === "Invalid login credentials" ? "Wrong email or password." : error.message);
-      setBusy(false);
-      return;
-    }
-    router.replace("/admin");
-    router.refresh();
   }
 
   return (
@@ -40,21 +34,28 @@ export default function LoginForm() {
             <p className="text-sm text-charcoal-500">Admin sign in</p>
           </div>
         </div>
-        <form onSubmit={signIn} className="mt-6 space-y-4">
-          <Field label="Email">
-            <input name="email" type="email" required autoComplete="email" className={inputClass} />
+        <form onSubmit={submit} className="mt-6 space-y-4">
+          <Field label="Username">
+            <input
+              name="username"
+              required
+              autoComplete="username"
+              autoCapitalize="none"
+              spellCheck={false}
+              className={inputClass}
+            />
           </Field>
           <Field label="Password">
             <input name="password" type="password" required autoComplete="current-password" className={inputClass} />
           </Field>
-          {error && (
-            <p role="alert" className="rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700">
-              {error}
-            </p>
-          )}
           <button type="submit" disabled={busy} className={`${buttonClass.primary} w-full`}>
-            {busy && <Loader2 className="h-4 w-4 animate-spin" />}
-            Sign in
+            {busy ? (
+              <>
+                Signing in <Dots label="Signing in" />
+              </>
+            ) : (
+              "Sign in"
+            )}
           </button>
         </form>
       </Card>

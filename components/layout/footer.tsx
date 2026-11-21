@@ -6,12 +6,21 @@ import { Instagram, Facebook, Youtube, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { scrollToHash } from "@/lib/utils";
 import { useData, useT } from "@/hooks/use-i18n";
+import { useContent } from "@/hooks/use-content";
 import { fmt } from "@/lib/i18n";
+import { webLink } from "@/lib/contact";
 
 export default function Footer() {
   const pathname = usePathname();
   const t = useT();
   const { nav } = useData();
+  // Social links from the admin's Contact page; an icon only shows once its link is set
+  const contact = useContent().contact;
+  const socials = [
+    { icon: Instagram, label: "Instagram", href: webLink(contact?.instagram) },
+    { icon: Facebook, label: "Facebook", href: webLink(contact?.facebook) },
+    { icon: Youtube, label: "YouTube", href: webLink(contact?.youtube) },
+  ].filter((s) => s.href);
   const linkClass =
     "transition-all duration-300 hover:text-sage-300 hover:pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded px-1";
 
@@ -46,19 +55,23 @@ export default function Footer() {
           <div className="mt-3 sm:mt-4 max-w-xs space-y-1 text-xs sm:text-sm text-white/70">
             <p className="font-medium text-white/90">Create with Purpose. Grow with Confidence.</p>
             <p className="text-sage-300">Spreading Peace Through Art.</p>
-            <p className="text-[11px] sm:text-xs italic text-white/50 pt-1">One Mind. One Heart. One Creation at a Time.</p>
           </div>
-          <div className="mt-6 flex gap-3">
-            {[Instagram, Facebook, Youtube].map((Icon, i) => (
-              <a
-                key={i}
-                href="#"
-                className="grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/5 text-white/70 transition-all duration-300 hover:border-sage-400 hover:bg-sage-500/20 hover:text-sage-300 hover:shadow-lg hover:shadow-sage-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
-              >
-                <Icon className="h-4 w-4" />
-              </a>
-            ))}
-          </div>
+          {socials.length > 0 && (
+            <div className="mt-6 flex gap-3">
+              {socials.map(({ icon: Icon, label, href }) => (
+                <a
+                  key={label}
+                  href={href!}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="grid h-11 w-11 place-items-center rounded-full border border-white/10 bg-white/5 text-white/70 transition-all duration-300 hover:border-sage-400 hover:bg-sage-500/20 hover:text-sage-300 hover:shadow-lg hover:shadow-sage-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
+            </div>
+          )}
         </div>
 
         <div>

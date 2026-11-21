@@ -5,6 +5,7 @@ import { SITE_URL } from "@/lib/site";
 const PAGES = [
   "/",
   "/classes",
+  "/gallery",
   "/about",
   "/collaboration",
   "/enroll",

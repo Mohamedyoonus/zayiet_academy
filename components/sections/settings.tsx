@@ -7,7 +7,6 @@ import {
   Contrast as ContrastIcon,
   Droplets,
   Languages,
-  Loader2,
   MousePointer2,
   Palette,
   PenLine,
@@ -18,6 +17,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
+import Dots from "@/components/ui/dots";
 import { useSettings } from "@/hooks/use-settings";
 import { useI18n } from "@/hooks/use-i18n";
 import type { Dictionary } from "@/lib/i18n";
@@ -226,7 +226,7 @@ function LanguageCard({
           selected || loading ? "scale-100 bg-sage-500 text-white" : "scale-75 bg-charcoal-100 text-transparent"
         )}
       >
-        {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
+        {loading ? <Dots size="sm" label="Switching language" /> : <Check className="h-3.5 w-3.5" />}
       </span>
     </motion.button>
   );

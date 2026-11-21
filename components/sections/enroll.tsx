@@ -3,13 +3,15 @@
 import { useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Send, CheckCircle2, Loader2 } from "lucide-react";
+import { Send, CheckCircle2 } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
+import Dots from "@/components/ui/dots";
 import { Button } from "@/components/ui/button";
 import { cn, formatINR } from "@/lib/utils";
 import { useData, useT } from "@/hooks/use-i18n";
 import { fmt } from "@/lib/i18n";
 import { submitEnrollment } from "@/lib/submissions";
+import { useToast } from "@/components/admin/toast";
 
 function RadioDot({ checked, size = "md" }: { checked: boolean; size?: "sm" | "md" }) {
   const outer = size === "sm" ? "h-4 w-4" : "h-5 w-5";
@@ -55,8 +57,8 @@ export default function Enroll() {
     searchParams.get("mode") === "online" ? "online" : "offline"
   );
   const [submitted, setSubmitted] = useState(false);
-  const [failed, setFailed] = useState(false);
   const [sending, startSending] = useTransition();
+  const toast = useToast();
 
   const course = courses.find((c) => c.id === courseId) ?? courses[0];
   const fee = mode === "offline" ? course.feeOffline : course.feeOnline;
@@ -190,11 +192,11 @@ export default function Enroll() {
                   const form = new FormData(ev.currentTarget);
                   form.set("course", course.id);
                   form.set("mode", mode);
-                  setFailed(false);
                   startSending(async () => {
                     const { ok } = await submitEnrollment(form);
-                    if (ok) setSubmitted(true);
-                    else setFailed(true);
+                    if (!ok) return toast.error(t.common.submitError);
+                    setSubmitted(true);
+                    toast.success(e.doneTitle);
                   });
                 }}
               >
@@ -221,13 +223,8 @@ export default function Enroll() {
                     className="w-full rounded-2xl border border-sage-200/50 bg-white px-4 sm:px-5 py-3 sm:py-4 text-sm text-charcoal-900 placeholder:text-charcoal-400 focus:border-sage-400 focus:outline-none focus:ring-1 focus:ring-sage-400/50 focus-visible:ring-2 focus-visible:ring-sage-500"
                   />
                 </div>
-                {failed && (
-                  <p role="alert" className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
-                    {t.common.submitError}
-                  </p>
-                )}
                 <Button type="submit" size="lg" disabled={sending} className="w-full justify-center h-11 sm:h-12">
-                  {e.confirm} {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                  {e.confirm} {sending ? <Dots label="Sending" /> : <Send className="h-4 w-4" />}
                 </Button>
                 <p className="text-center text-[11px] text-charcoal-400">{e.consent}</p>
               </form>

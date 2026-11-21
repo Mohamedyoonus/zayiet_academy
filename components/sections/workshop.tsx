@@ -15,17 +15,15 @@ export default function Workshop() {
   const { workshops } = useData();
 
   return (
-    <section id="workshop" className="relative overflow-hidden bg-ivory-200 py-10 sm:py-16 lg:py-28 dark:bg-ink-950">
-      {/* Soft botanical wash - matching Hero and ArtClasses */}
-      <div className="pointer-events-none absolute -left-32 top-10 h-[26rem] w-[26rem] rounded-full bg-sage-200/50 blur-[120px]" />
-      <div className="pointer-events-none absolute -right-24 bottom-0 h-[22rem] w-[22rem] rounded-full bg-sage-100/70 blur-[130px]" />
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-[30rem] w-[30rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-ember-50/30 blur-[140px]" />
-      
-      {/* Subtle gradient overlay for depth */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/20 via-transparent to-sage-200/10" />
+    <section id="workshop" className="relative overflow-hidden bg-ivory-200 py-12 sm:py-14 lg:py-16 dark:bg-ink-950">
+      {/* Soft botanical wash */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(36rem_26rem_at_5%_10%,rgb(var(--c-sage-200)/0.5),transparent_70%),radial-gradient(32rem_22rem_at_95%_95%,rgb(var(--c-sage-100)/0.7),transparent_70%)]"
+      />
 
       <div className="container-academy relative z-10">
-        <div className="flex flex-col items-center gap-6">
+        <div className="flex flex-col items-center gap-5">
           <SectionHeading
             align="center"
             eyebrow={t.workshop.eyebrow}
@@ -43,7 +41,7 @@ export default function Workshop() {
           </Button>
         </div>
 
-        <div className="mt-12 flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden no-scrollbar scroll-pl-8 -mx-4 px-8 pb-2 sm:-mx-5 sm:px-9 sm:scroll-pl-9 sm:gap-6 md:-mx-6 md:px-10 md:scroll-pl-10 lg:mx-0 lg:mt-14 lg:grid lg:grid-cols-3 lg:overflow-visible lg:snap-none lg:px-0 lg:pb-0">
+        <div className="mt-8 flex snap-x snap-mandatory gap-5 overflow-x-auto overflow-y-hidden no-scrollbar scroll-pl-8 -mx-4 px-8 pb-2 sm:-mx-5 sm:px-9 sm:scroll-pl-9 sm:gap-6 md:-mx-6 md:px-10 md:scroll-pl-10 lg:mx-0 lg:mt-10 lg:grid lg:grid-cols-3 lg:overflow-visible lg:snap-none lg:px-0 lg:pb-0">
           {workshops.map((w, i) => (
             <motion.div
               key={w.id}
@@ -53,7 +51,7 @@ export default function Workshop() {
               transition={{ duration: 0.6, delay: i * 0.1 }}
               className="card-hover group relative w-[85%] shrink-0 snap-start overflow-hidden rounded-4xl border border-sage-200/40 bg-white/60 shadow-md backdrop-blur-sm transition-all duration-300 hover:shadow-lg dark:border-white/10 dark:bg-ink-900/60 sm:w-[55%] md:w-[42%] lg:w-auto"
             >
-              <div className="relative h-48 sm:h-56 lg:h-64 overflow-hidden">
+              <div className="relative h-48 sm:h-52 lg:h-56 overflow-hidden">
                 <Image src={w.image} alt={w.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                 {w.seatsLeft <= 6 && (
@@ -102,22 +100,6 @@ export default function Workshop() {
               </div>
             </motion.div>
           ))}
-        </div>
-
-        {/* Gallery slider marquee */}
-        <div className="relative mt-12 sm:mt-16 lg:mt-20 hidden sm:block overflow-hidden">
-          <motion.div
-            className="flex gap-4 sm:gap-5"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{ repeat: Infinity, duration: 40, ease: "linear" }}
-          >
-            {[...workshops, ...workshops, ...workshops].map((w, i) => (
-              <div key={i} className="relative h-40 w-56 sm:w-60 lg:w-64 shrink-0 overflow-hidden rounded-3xl shadow-md">
-                <Image src={w.image} alt="" fill className="object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-              </div>
-            ))}
-          </motion.div>
         </div>
       </div>
     </section>

@@ -58,6 +58,30 @@ export function formatDate(date: string) {
   return new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeZone: "UTC" }).format(new Date(`${date}T00:00:00Z`));
 }
 
+/* ------------------------------- Date filters ------------------------------- */
+
+/** A "YYYY-MM-DD" value from a date input or the URL */
+export const isDateParam = (value: unknown): value is string =>
+  typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value));
+
+/** Today's date in India, as YYYY-MM-DD */
+export function todayInIndia() {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date());
+}
+
+/** Moves a YYYY-MM-DD date by whole days */
+export function shiftDate(date: string, days: number) {
+  return new Date(Date.parse(`${date}T00:00:00Z`) + days * 86_400_000).toISOString().slice(0, 10);
+}
+
+/** The exact moments a from–to filter covers, in Indian time; `to` includes that whole day */
+export function dateRange(from?: string, to?: string) {
+  return {
+    start: from ? new Date(`${from}T00:00:00+05:30`).toISOString() : undefined,
+    end: to ? new Date(Date.parse(`${to}T00:00:00+05:30`) + 86_400_000).toISOString() : undefined,
+  };
+}
+
 /** WhatsApp chat link; 10-digit numbers are treated as Indian */
 export function whatsappLink(mobile: string) {
   let digits = mobile.replace(/\D/g, "");

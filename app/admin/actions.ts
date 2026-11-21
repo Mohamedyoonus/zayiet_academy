@@ -4,7 +4,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { getAdminClient } from "@/lib/admin";
 import { isStatus, isSubmissionTable } from "@/lib/admin-shared";
-import { CONTENT_TAG, type HeroContent } from "@/lib/content";
+import { CONTENT_TAG, type AboutContent, type ContactContent, type HeroContent } from "@/lib/content";
 import { MEDIA_BUCKET, SUPABASE_URL, supabaseConfigured } from "@/lib/supabase/config";
 import { createSessionClient } from "@/lib/supabase/server";
 import { galleryCategories } from "@/lib/data";
@@ -114,6 +114,59 @@ export async function saveHero(input: HeroContent) {
     if (error) return failed(error.message);
     refreshSite("/admin/hero");
     return done;
+  });
+}
+
+/* ------------------------------- About & Contact ------------------------------- */
+
+async function savePage(key: "about" | "contact", data: Record<string, string>) {
+  const supabase = await admin();
+  const { error } = await supabase.from("site_content").upsert({ key, data, updated_at: new Date().toISOString() });
+  if (error) return failed(error.message);
+  refreshSite(`/admin/${key}`);
+  return done;
+}
+
+// Longer fields hold paragraphs; everything else is a line or two
+const ABOUT_LONG = new Set<keyof AboutContent>(["story", "aboutZayitText", "mission", "vision", "closingText"]);
+
+export async function saveAbout(input: AboutContent) {
+  return run(async () => {
+    const data = Object.fromEntries(
+      (Object.keys(input) as (keyof AboutContent)[]).map((key) => [
+        key,
+        clean(input[key], key === "photo" ? 1000 : ABOUT_LONG.has(key) ? 3000 : 200),
+      ])
+    );
+    if (!data.photo) return failed("Add the founder’s photo.");
+    if (!data.title) return failed("Add the founder’s name.");
+    return savePage("about", data);
+  });
+}
+
+export async function saveContact(input: ContactContent) {
+  return run(async () => {
+    const data = Object.fromEntries(
+      (Object.keys(input) as (keyof ContactContent)[]).map((key) => [
+        key,
+        clean(input[key], key === "description" || key === "addressValue" ? 600 : 300),
+      ])
+    );
+    if (data.emailValue && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.emailValue)) return failed("Check the email address.");
+    for (const [key, label] of [
+      ["phoneValue", "phone number"],
+      ["whatsapp", "WhatsApp number"],
+    ] as const) {
+      if (data[key] && data[key].replace(/\D/g, "").length < 8) return failed(`Check the ${label}.`);
+    }
+    for (const [key, label] of [
+      ["instagram", "Instagram"],
+      ["facebook", "Facebook"],
+      ["youtube", "YouTube"],
+    ] as const) {
+      if (data[key] && !/^https?:\/\/\S+$/i.test(data[key])) return failed(`The ${label} link should start with https://`);
+    }
+    return savePage("contact", data);
   });
 }
 
@@ -276,6 +329,27 @@ export async function deleteGalleryItem(id: string) {
 }
 
 /* ----------------------------------- Login ----------------------------------- */
+
+const WRONG_LOGIN = "Wrong username or password.";
+
+/** Signs in with a username (looked up in the admins table) or a full email, plus password */
+export async function signIn(login: string, password: string): Promise<ActionResult> {
+  return run(async () => {
+    if (!supabaseConfigured) return failed("The admin isn’t connected yet.");
+    const supabase = await createSessionClient();
+
+    let email = login.trim();
+    if (!email.includes("@")) {
+      const { data } = await supabase.rpc("admin_login_email", { login: email });
+      if (typeof data !== "string" || !data) return failed(WRONG_LOGIN);
+      email = data;
+    }
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return failed(error.message === "Invalid login credentials" ? WRONG_LOGIN : error.message);
+    return done;
+  });
+}
 
 // Works for anyone signed in, including someone whose email isn't an admin
 export async function signOut() {

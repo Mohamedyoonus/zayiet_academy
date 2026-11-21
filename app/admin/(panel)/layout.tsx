@@ -2,8 +2,8 @@ import { redirect } from "next/navigation";
 import { getAdminState } from "@/lib/admin";
 import AdminShell from "@/components/admin/admin-shell";
 import SetupNotice from "@/components/admin/setup-notice";
-import { Card, buttonClass } from "@/components/admin/ui";
-import { signOut } from "@/app/admin/actions";
+import { Card } from "@/components/admin/ui";
+import SignOutButton from "@/components/admin/sign-out-button";
 
 export default async function AdminPanelLayout({ children }: { children: React.ReactNode }) {
   const state = await getAdminState();
@@ -18,15 +18,32 @@ export default async function AdminPanelLayout({ children }: { children: React.R
           <p className="mt-2 text-sm text-charcoal-600">
             {state.email} is signed in, but isn’t on the admin list. Ask the academy to add this email.
           </p>
-          <form action={signOut} className="mt-6">
-            <button type="submit" className={buttonClass.secondary}>
-              Sign out
-            </button>
-          </form>
+          <div className="mt-6">
+            <SignOutButton withLabel />
+          </div>
         </Card>
       </div>
     );
   }
 
-  return <AdminShell email={state.email}>{children}</AdminShell>;
+  // How many new (not yet handled) submissions each list has, shown as badges in the menu
+  const newCount = (table: "enrollments" | "enquiries") =>
+    state.supabase.from(table).select("id", { count: "exact", head: true }).eq("status", "new");
+  const [enrollments, enquiries, username] = await Promise.all([
+    newCount("enrollments"),
+    newCount("enquiries"),
+    state.supabase.rpc("my_admin_username"),
+  ]);
+  const badges = {
+    "/admin/enrollments": enrollments.count ?? 0,
+    "/admin/enquiries": enquiries.count ?? 0,
+  };
+  // The admin's username (e.g. "chalz"); the start of the email until it's set up
+  const name = (typeof username.data === "string" && username.data) || state.email.split("@")[0];
+
+  return (
+    <AdminShell name={name} badges={badges}>
+      {children}
+    </AdminShell>
+  );
 }

@@ -11,6 +11,7 @@ import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site"
 import { getSiteContent } from "@/lib/content";
 import { ContentProvider } from "@/hooks/use-content";
 import SiteChrome from "@/components/layout/site-chrome";
+import { ToastProvider } from "@/components/admin/toast";
 
 // Self-hosted and preloaded by Next, so text doesn't wait on a chain of Google
 // Fonts requests. globals.css builds --font-fraunces / --font-jakarta on top of
@@ -73,7 +74,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SettingsProvider>
           <I18nProvider initialLocale={locale} initialDictionary={dictionary}>
             <ContentProvider content={content}>
-              <SiteChrome>{children}</SiteChrome>
+              {/* Snackbars for the whole site: form results on the website and everything in the admin */}
+              <ToastProvider>
+                <SiteChrome>{children}</SiteChrome>
+              </ToastProvider>
             </ContentProvider>
           </I18nProvider>
         </SettingsProvider>

@@ -18,7 +18,7 @@ export default function Home() {
       <LittleArtists />
       <ClassFinder />
       <Workshop />
-      <Gallery />
+      <Gallery preview />
     </>
   );
 }

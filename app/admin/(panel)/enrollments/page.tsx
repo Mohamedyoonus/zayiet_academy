@@ -1,74 +1,106 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import { countByStatus, getAdminClient, searchFilter } from "@/lib/admin";
-import { formatDateTime, isStatus, type Enrollment } from "@/lib/admin-shared";
-import { Card, EmptyState, PageHeader } from "@/components/admin/ui";
-import SubmissionToolbar from "@/components/admin/submission-toolbar";
-import SubmissionControls from "@/components/admin/submission-controls";
-import ContactLinks from "@/components/admin/contact-links";
+import { getAdminClient, searchFilter } from "@/lib/admin";
+import { dateRange, formatDateTime, isDateParam, type Enrollment } from "@/lib/admin-shared";
+import { EmptyState, PageHeader } from "@/components/admin/ui";
+import SubmissionToolbar, { type SubmissionFilters } from "@/components/admin/submission-toolbar";
+import { DeleteCell, NotesCell, StatusCell } from "@/components/admin/submission-cells";
+import { ClampedText, ContactCell, Row, TableShell, Td, type Column } from "@/components/admin/data-table";
+import { TableSkeleton } from "@/components/admin/skeletons";
 
 export const metadata: Metadata = { title: "Enrollments" };
 
-export default async function EnrollmentsPage({ searchParams }: { searchParams: Promise<{ status?: string; q?: string }> }) {
-  const supabase = await getAdminClient();
-  if (!supabase) return null;
-  const { status: statusParam, q } = await searchParams;
-  const status = isStatus(statusParam) ? statusParam : undefined;
+const COLUMNS: Column[] = [
+  { label: "Student", width: "14%" },
+  { label: "Received", width: "11%" },
+  { label: "Course", width: "13%" },
+  { label: "Parent", width: "12%" },
+  { label: "Contact", width: "17%" },
+  { label: "Message", width: "13%" },
+  { label: "Status & notes", width: "16%" },
+  { label: "", width: "4%" },
+];
 
-  let query = supabase.from("enrollments").select("*").order("created_at", { ascending: false }).limit(500);
-  if (status) query = query.eq("status", status);
-  const search = searchFilter(q, ["student_name", "parent_name", "mobile", "email", "course_title"]);
-  if (search) query = query.or(search);
+type SearchParams = Promise<{ q?: string; from?: string; to?: string }>;
 
-  const [{ data, error }, counts] = await Promise.all([query, countByStatus(supabase, "enrollments")]);
-  const enrollments = (data ?? []) as Enrollment[];
+export default async function EnrollmentsPage({ searchParams }: { searchParams: SearchParams }) {
+  const params = await searchParams;
+  const filters: SubmissionFilters = {
+    q: params.q?.trim() || undefined,
+    from: isDateParam(params.from) ? params.from : undefined,
+    to: isDateParam(params.to) ? params.to : undefined,
+  };
 
   return (
     <>
       <PageHeader title="Enrollments" description="Everyone who filled in the Enroll form on the website, newest first." />
-      <SubmissionToolbar table="enrollments" counts={counts} status={status} q={q} />
+      <SubmissionToolbar table="enrollments" filters={filters} />
+      {/* Only the table waits for the data, so the search box keeps focus while you type */}
+      <Suspense key={JSON.stringify(filters)} fallback={<TableSkeleton rows={6} />}>
+        <EnrollmentsTable filters={filters} />
+      </Suspense>
+    </>
+  );
+}
 
-      {error && <p className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">Couldn’t load enrollments: {error.message}</p>}
+async function EnrollmentsTable({ filters }: { filters: SubmissionFilters }) {
+  const supabase = await getAdminClient();
+  if (!supabase) return null;
+  const range = dateRange(filters.from, filters.to);
 
-      {enrollments.length === 0 ? (
-        <EmptyState title={q || status ? "No matching enrollments" : "No enrollments yet"}>
-          {q || status ? "Try a different search or filter." : "When someone enrolls on the website, they’ll appear here."}
-        </EmptyState>
-      ) : (
-        <div className="grid gap-4 xl:grid-cols-2">
-          {enrollments.map((e) => (
-            <Card key={e.id}>
-              <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-1">
-                <div>
-                  <h2 className="font-display text-lg text-charcoal-900">
-                    {e.student_name}
-                    {e.student_age !== null && <span className="font-body text-sm text-charcoal-500"> · {e.student_age} yrs</span>}
-                  </h2>
-                  <p className="text-sm text-charcoal-600">
-                    {e.course_title} · <span className="capitalize">{e.mode}</span>
-                  </p>
-                </div>
-                <p className="text-xs text-charcoal-500">{formatDateTime(e.created_at)}</p>
-              </div>
+  let query = supabase.from("enrollments").select("*").order("created_at", { ascending: false }).limit(500);
+  if (range.start) query = query.gte("created_at", range.start);
+  if (range.end) query = query.lt("created_at", range.end);
+  const search = searchFilter(filters.q, ["student_name", "parent_name", "mobile", "email", "course_title"]);
+  if (search) query = query.or(search);
 
-              <dl className="mt-3 space-y-2 text-sm">
-                <div>
-                  <dt className="text-xs text-charcoal-500">Parent / guardian</dt>
-                  <dd className="text-charcoal-800">{e.parent_name}</dd>
-                </div>
-                <div>
-                  <dt className="mb-1 text-xs text-charcoal-500">Contact</dt>
-                  <dd>
-                    <ContactLinks mobile={e.mobile} email={e.email} />
-                  </dd>
-                </div>
-              </dl>
-              {e.message && <p className="mt-3 whitespace-pre-line rounded-xl bg-ivory-100 p-3 text-sm text-charcoal-700">{e.message}</p>}
+  const { data, error } = await query;
+  const enrollments = (data ?? []) as Enrollment[];
+  const filtered = Boolean(filters.q || filters.from || filters.to);
 
-              <SubmissionControls table="enrollments" id={e.id} status={e.status} notes={e.notes} />
-            </Card>
-          ))}
-        </div>
-      )}
+  if (error) return <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">Couldn’t load enrollments: {error.message}</p>;
+  if (enrollments.length === 0) {
+    return (
+      <EmptyState title={filtered ? "No matching enrollments" : "No enrollments yet"}>
+        {filtered ? "Try a different search or date range." : "When someone enrolls on the website, they’ll appear here."}
+      </EmptyState>
+    );
+  }
+
+  return (
+    <>
+      <p className="mb-2 text-sm text-charcoal-500">
+        Showing {enrollments.length} {enrollments.length === 1 ? "enrollment" : "enrollments"}
+      </p>
+      <TableShell columns={COLUMNS}>
+        {enrollments.map((e) => (
+          <Row key={e.id}>
+            <Td sticky>
+              <div className="font-medium text-charcoal-900">{e.student_name}</div>
+              {e.student_age !== null && <div className="text-xs text-charcoal-500">{e.student_age} yrs</div>}
+            </Td>
+            <Td className="text-xs text-charcoal-600">{formatDateTime(e.created_at)}</Td>
+            <Td>
+              <div className="text-charcoal-800">{e.course_title}</div>
+              <div className="text-xs capitalize text-charcoal-500">{e.mode}</div>
+            </Td>
+            <Td className="text-charcoal-800">{e.parent_name}</Td>
+            <Td>
+              <ContactCell mobile={e.mobile} email={e.email} />
+            </Td>
+            <Td className="text-charcoal-700">
+              <ClampedText text={e.message} />
+            </Td>
+            <Td className="space-y-2 py-2.5">
+              <StatusCell table="enrollments" id={e.id} status={e.status} />
+              <NotesCell table="enrollments" id={e.id} notes={e.notes} />
+            </Td>
+            <Td className="px-1 py-2.5 text-center">
+              <DeleteCell table="enrollments" id={e.id} />
+            </Td>
+          </Row>
+        ))}
+      </TableShell>
     </>
   );
 }

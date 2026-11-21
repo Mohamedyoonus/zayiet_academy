@@ -1,7 +1,6 @@
 import { cache } from "react";
 import { createSessionClient } from "@/lib/supabase/server";
 import { supabaseConfigured } from "@/lib/supabase/config";
-import { STATUSES, type Status, type SubmissionTable } from "@/lib/admin-shared";
 
 // Server-side helpers for the admin pages.
 
@@ -31,13 +30,6 @@ export const getAdminState = cache(async (): Promise<AdminState> => {
 export async function getAdminClient() {
   const state = await getAdminState();
   return state.status === "admin" ? state.supabase : null;
-}
-
-export async function countByStatus(supabase: SessionClient, table: SubmissionTable) {
-  const { data } = await supabase.from(table).select("status");
-  const counts = Object.fromEntries(STATUSES.map((s) => [s, 0])) as Record<Status, number>;
-  for (const row of (data ?? []) as { status: Status }[]) counts[row.status] = (counts[row.status] ?? 0) + 1;
-  return counts;
 }
 
 /** Turns a search box entry into a "matches any of these columns" filter */

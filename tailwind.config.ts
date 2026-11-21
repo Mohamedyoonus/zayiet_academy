@@ -87,6 +87,11 @@ const config: Config = {
         "float-slower": "float 13s ease-in-out infinite",
         "fade-up": "fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) both",
         marquee: "marquee 34s linear infinite",
+        // Loading states: a light sweep across skeleton blocks, and three pulsing dots
+        shimmer: "shimmer 1.4s ease-in-out infinite",
+        "dot-pulse": "dotPulse 1.1s ease-in-out infinite",
+        // Snackbar timer bar; its duration is set per snackbar
+        countdown: "countdown linear forwards",
       },
       keyframes: {
         float: {
@@ -100,6 +105,17 @@ const config: Config = {
         marquee: {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
+        },
+        shimmer: {
+          "100%": { transform: "translateX(100%)" },
+        },
+        countdown: {
+          from: { transform: "scaleX(1)" },
+          to: { transform: "scaleX(0)" },
+        },
+        dotPulse: {
+          "0%, 80%, 100%": { opacity: "0.3", transform: "scale(0.75)" },
+          "40%": { opacity: "1", transform: "scale(1)" },
         },
       },
     },

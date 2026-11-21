@@ -478,13 +478,7 @@ export default function Hero() {
                 sm:px-6
                 sm:text-base
               "
-              onClick={() =>
-                document
-                  .getElementById("gallery")
-                  ?.scrollIntoView({
-                    behavior: "smooth",
-                  })
-              }
+              onClick={() => router.push("/gallery")}
             >
               {t.hero.viewGallery}
             </Button>

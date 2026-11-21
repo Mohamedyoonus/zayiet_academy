@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState, useTransition } from "react";
-import { ArrowLeft, ArrowRight, Loader2, Trash2, Upload } from "lucide-react";
+import { ArrowLeft, ArrowRight, Trash2, Upload } from "lucide-react";
+import Dots from "@/components/ui/dots";
 import { cn } from "@/lib/utils";
 import { galleryCategories } from "@/lib/data";
 import type { GalleryRow } from "@/lib/content";
 import { ACCEPTED_IMAGES, uploadImage } from "@/lib/upload-image";
 import { addGalleryItems, deleteGalleryItem, reorderGallery, updateGalleryItem } from "@/app/admin/actions";
 import { Card, EmptyState, Field, buttonClass, inputClass } from "@/components/admin/ui";
+import { useToast } from "@/components/admin/toast";
+import { useConfirm } from "@/components/admin/confirm";
 
 /** "IMG_2041.jpg" → "", "sunset-study.png" → "Sunset study" */
 function titleFromFile(name: string) {
@@ -21,19 +24,21 @@ export default function GalleryManager({ items: savedItems }: { items: GalleryRo
   useEffect(() => setItems(savedItems), [savedItems]);
   const [category, setCategory] = useState<string>(galleryCategories[0]);
   const [progress, setProgress] = useState("");
-  const [error, setError] = useState("");
   const [busy, startTransition] = useTransition();
   const fileInput = useRef<HTMLInputElement>(null);
+  const toast = useToast();
+  const confirm = useConfirm();
 
-  const report = (result: { ok: boolean; error?: string }) => {
-    if (!result.ok) setError(result.error ?? "Something went wrong.");
+  /** Shows a snackbar: the error if it failed, otherwise the success message (if any) */
+  const report = (result: { ok: boolean; error?: string }, success?: string) => {
+    if (!result.ok) toast.error(result.error ?? "Something went wrong.");
+    else if (success) toast.success(success);
   };
 
   async function upload(event: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(event.target.files ?? []);
     event.target.value = "";
     if (!files.length) return;
-    setError("");
     const added: { title: string; category: string; image: string }[] = [];
     try {
       for (const [i, file] of files.entries()) {
@@ -41,11 +46,11 @@ export default function GalleryManager({ items: savedItems }: { items: GalleryRo
         added.push({ title: titleFromFile(file.name), category, image: await uploadImage(file, "gallery") });
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload failed.");
+      toast.error(err instanceof Error ? err.message : "Upload failed.");
     }
     if (added.length) {
       setProgress("Saving…");
-      report(await addGalleryItems(added));
+      report(await addGalleryItems(added), added.length === 1 ? "Photo added to the gallery." : `${added.length} photos added to the gallery.`);
     }
     setProgress("");
   }
@@ -59,15 +64,19 @@ export default function GalleryManager({ items: savedItems }: { items: GalleryRo
     startTransition(async () => report(await reorderGallery(next.map((item) => item.id))));
   };
 
-  const remove = (item: GalleryRow) => {
-    if (!window.confirm("Delete this photo from the gallery?")) return;
+  const remove = async (item: GalleryRow) => {
+    const ok = await confirm({
+      title: "Delete this photo?",
+      message: `${item.title ? `“${item.title}” ` : "It "}will be removed from the website’s gallery.`,
+    });
+    if (!ok) return;
     setItems((list) => list.filter((i) => i.id !== item.id));
-    startTransition(async () => report(await deleteGalleryItem(item.id)));
+    startTransition(async () => report(await deleteGalleryItem(item.id), "Photo deleted."));
   };
 
   const edit = (id: string, patch: { title?: string; category?: string }) => {
     setItems((list) => list.map((item) => (item.id === id ? { ...item, ...patch } : item)));
-    startTransition(async () => report(await updateGalleryItem(id, patch)));
+    startTransition(async () => report(await updateGalleryItem(id, patch), patch.title !== undefined ? "Title saved." : "Category saved."));
   };
 
   return (
@@ -85,13 +94,23 @@ export default function GalleryManager({ items: savedItems }: { items: GalleryRo
           </div>
           <input ref={fileInput} type="file" accept={ACCEPTED_IMAGES} multiple className="hidden" onChange={upload} />
           <button type="button" disabled={Boolean(progress)} onClick={() => fileInput.current?.click()} className={buttonClass.primary}>
-            {progress ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-            {progress || "Upload photos"}
+            {progress ? (
+              <>
+                {progress} <Dots label={progress} />
+              </>
+            ) : (
+              <>
+                <Upload className="h-4 w-4" /> Upload photos
+              </>
+            )}
           </button>
-          {busy && !progress && <Loader2 className="h-4 w-4 animate-spin text-charcoal-400 sm:mb-3" />}
+          {busy && !progress && (
+            <span className="flex items-center gap-2 text-sm text-charcoal-500 sm:mb-2.5">
+              Saving <Dots label="Saving" />
+            </span>
+          )}
         </div>
         <p className="mt-2 text-xs text-charcoal-500">You can pick several photos at once. New photos appear first on the website.</p>
-        {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
       </Card>
 
       {items.length === 0 ? (

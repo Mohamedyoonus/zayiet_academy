@@ -17,7 +17,7 @@ export const nav = [
   { key: "home", label: "Home", href: "/" },
   { key: "classes", label: "Art Classes", href: "/classes" },
   { key: "workshop", label: "Workshop", href: "/#workshop" },
-  { key: "gallery", label: "Gallery", href: "/#gallery" },
+  { key: "gallery", label: "Gallery", href: "/gallery" },
   { key: "funZone", label: "Fun Zone", href: "/fun-zone" },
   { key: "store", label: "Store", href: "/store" },
   { key: "events", label: "Events", href: "/events" },

@@ -4,9 +4,15 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Phone, ArrowUp, MessageCircle } from "lucide-react";
 import { useT } from "@/hooks/use-i18n";
+import { useContent } from "@/hooks/use-content";
+import { telLink, whatsappLink } from "@/lib/contact";
 
 export default function FloatingActions() {
   const t = useT();
+  // Numbers from the admin's Contact page; each button only shows once its number is set
+  const contact = useContent().contact;
+  const call = telLink(contact?.phoneValue);
+  const whatsapp = whatsappLink(contact?.whatsapp || contact?.phoneValue);
   const [showTop, setShowTop] = useState(false);
   const [isDesktop, setIsDesktop] = useState(true);
 
@@ -51,29 +57,33 @@ export default function FloatingActions() {
         )}
       </AnimatePresence>
 
-      <motion.a
-        href="tel:+910000000000"
-        aria-label={t.floating.callUs}
-        whileHover={{ y: -3 }}
-        whileTap={{ scale: 0.95 }}
-        className="grid h-12 w-12 place-items-center rounded-full bg-charcoal-900 text-white shadow-lg transition-colors hover:bg-charcoal-800 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
-      >
-        <Phone className="h-5 w-5" />
-      </motion.a>
+      {call && (
+        <motion.a
+          href={call}
+          aria-label={t.floating.callUs}
+          whileHover={{ y: -3 }}
+          whileTap={{ scale: 0.95 }}
+          className="grid h-12 w-12 place-items-center rounded-full bg-charcoal-900 text-white shadow-lg transition-colors hover:bg-charcoal-800 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+        >
+          <Phone className="h-5 w-5" />
+        </motion.a>
+      )}
 
-      <motion.a
-        href="https://wa.me/910000000000"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={t.floating.whatsapp}
-        whileHover={{ y: -3 }}
-        whileTap={{ scale: 0.95 }}
-        animate={{ boxShadow: ["0 0 0 0 rgba(34,197,94,0.5)", "0 0 0 14px rgba(34,197,94,0)"] }}
-        transition={{ repeat: Infinity, duration: 2 }}
-        className="grid h-12 w-12 place-items-center rounded-full bg-[#25D366] text-white shadow-lg transition-colors hover:bg-[#22c050] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
-      >
-        <MessageCircle className="h-6 w-6" fill="white" />
-      </motion.a>
+      {whatsapp && (
+        <motion.a
+          href={whatsapp}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={t.floating.whatsapp}
+          whileHover={{ y: -3 }}
+          whileTap={{ scale: 0.95 }}
+          animate={{ boxShadow: ["0 0 0 0 rgba(34,197,94,0.5)", "0 0 0 14px rgba(34,197,94,0)"] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="grid h-12 w-12 place-items-center rounded-full bg-[#25D366] text-white shadow-lg transition-colors hover:bg-[#22c050] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+        >
+          <MessageCircle className="h-6 w-6" fill="white" />
+        </motion.a>
+      )}
     </div>
   );
 }
