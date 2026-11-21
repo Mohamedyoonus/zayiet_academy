@@ -14,8 +14,7 @@ const hi: Translation = {
     optional: "(वैकल्पिक)",
     required: "(ज़रूरी)",
     newBadge: "नया",
-    tagline: "सीखें • रचें • प्रेरित करें",
-  },
+    tagline: "सीखें • रचें • प्रेरित करें",  },
 
   nav: {
     home: "होम",

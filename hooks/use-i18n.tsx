@@ -20,6 +20,7 @@ import {
   workshops,
 } from "@/lib/data";
 import type { EventClient, GalleryItem, Testimonial } from "@/types";
+import { useContent } from "@/hooks/use-content";
 
 type I18nContextValue = {
   locale: Locale;
@@ -102,9 +103,13 @@ export function useT() {
   return useI18n().t;
 }
 
-/** The site content from lib/data.ts in the current language (English fills any gaps) */
+/**
+ * The site content in the current language (English fills any gaps). Courses
+ * and the gallery come from the admin when it has them — those are English only.
+ */
 export function useData() {
   const t = useT();
+  const content = useContent();
 
   return useMemo(() => {
     const tr = t.data;
@@ -114,19 +119,21 @@ export function useData() {
 
     return {
       nav: nav.map((item) => ({ ...item, label: t.nav[item.key] })),
-      courses: courses.map((c) => {
-        const x = tr.courses?.[c.id] ?? {};
-        return {
-          ...c,
-          tierLabel: x.tier ?? c.tier,
-          title: x.title ?? c.title,
-          description: x.description ?? c.description,
-          duration: x.duration ?? c.duration,
-          schedule: x.schedule ?? c.schedule,
-          batchSize: x.batchSize ?? c.batchSize,
-          highlights: x.highlights ?? c.highlights,
-        };
-      }),
+      courses: content.courses
+        ? content.courses.map((c) => ({ ...c, tierLabel: c.tier }))
+        : courses.map((c) => {
+            const x = tr.courses?.[c.id] ?? {};
+            return {
+              ...c,
+              tierLabel: x.tier ?? c.tier,
+              title: x.title ?? c.title,
+              description: x.description ?? c.description,
+              duration: x.duration ?? c.duration,
+              schedule: x.schedule ?? c.schedule,
+              batchSize: x.batchSize ?? c.batchSize,
+              highlights: x.highlights ?? c.highlights,
+            };
+          }),
       deliveryModes: deliveryModes.map((m) => {
         const x = tr.deliveryModes?.[m.id] ?? {};
         return { ...m, title: x.title ?? m.title, points: x.points ?? m.points };
@@ -151,11 +158,9 @@ export function useData() {
         const x = tr.otherServices?.[s.id] ?? {};
         return { ...s, title: x.title ?? s.title, description: x.description ?? s.description };
       }),
-      galleryItems: galleryItems.map((g) => ({
-        ...g,
-        title: tr.galleryItems?.[g.id] ?? g.title,
-        categoryLabel: galleryCategory(g.category),
-      })),
+      galleryItems: (content.gallery ?? galleryItems.map((g) => ({ ...g, title: tr.galleryItems?.[g.id] ?? g.title }))).map(
+        (g) => ({ ...g, categoryLabel: galleryCategory(g.category) })
+      ),
       testimonials: testimonials.map((r) => ({
         ...r,
         quote: tr.testimonials?.[r.id] ?? r.quote,
@@ -169,5 +174,5 @@ export function useData() {
       admissionNote: tr.admissionNote ?? admissionNote,
       galleryCategory,
     };
-  }, [t]);
+  }, [t, content]);
 }

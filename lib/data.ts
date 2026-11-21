@@ -15,7 +15,7 @@ import {
 // `key` picks the translated label from the dictionary (lib/i18n)
 export const nav = [
   { key: "home", label: "Home", href: "/" },
-  { key: "classes", label: "Classes", href: "/#classes" },
+  { key: "classes", label: "Art Classes", href: "/classes" },
   { key: "workshop", label: "Workshop", href: "/#workshop" },
   { key: "gallery", label: "Gallery", href: "/#gallery" },
   { key: "funZone", label: "Fun Zone", href: "/fun-zone" },
@@ -177,6 +177,25 @@ export const otherServices: ServiceCard[] = [
   { id: "s5", title: "Murals", description: "Large-scale statement murals for public spaces, campuses and offices.", image: "https://images.unsplash.com/photo-1531913764164-f85c52e6e654?q=80&w=1000&auto=format&fit=crop" },
   { id: "s6", title: "Corporate Decoration", description: "Art installations and decor that give your workplace real character.", image: "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1000&auto=format&fit=crop" },
 ];
+
+// Gallery filter buttons, in order; the admin picks one of these for each photo
+export const galleryCategories = [
+  "Student Artwork",
+  "Drawing and Sketching",
+  "Painting and Mixed Media",
+  "Creative Workshops",
+  "Student Progress",
+  "Community Art",
+] as const;
+
+// Choices in the collaboration form; `value` is what gets saved
+export const collaborationTypes = [
+  { value: "school", label: "School art programmes" },
+  { value: "community", label: "Community art workshops" },
+  { value: "apartment", label: "Apartment and residential events" },
+  { value: "murals", label: "Collaborative murals and public art" },
+  { value: "custom", label: "Custom creative projects" },
+] as const;
 
 export const galleryItems: GalleryItem[] = [
   { id: "g1", category: "Drawing and Sketching", image: "https://images.unsplash.com/photo-1549289524-06cf8837ace5?q=80&w=800&auto=format&fit=crop", title: "Study in Graphite" },

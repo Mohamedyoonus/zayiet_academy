@@ -4,6 +4,7 @@ import { SITE_URL } from "@/lib/site";
 // Every page Google should list (Settings is left out on purpose)
 const PAGES = [
   "/",
+  "/classes",
   "/about",
   "/collaboration",
   "/enroll",

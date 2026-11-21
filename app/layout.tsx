@@ -8,9 +8,9 @@ import { settingsBootScript } from "@/lib/settings";
 import { loadDictionary } from "@/lib/i18n";
 import { DEFAULT_LOCALE, LOCALE_COOKIE, getLanguage, isLocale, scriptFontHref } from "@/lib/i18n/config";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
-import Navbar from "@/components/layout/navbar";
-import Footer from "@/components/layout/footer";
-import FloatingActions from "@/components/layout/floating-actions";
+import { getSiteContent } from "@/lib/content";
+import { ContentProvider } from "@/hooks/use-content";
+import SiteChrome from "@/components/layout/site-chrome";
 
 // Self-hosted and preloaded by Next, so text doesn't wait on a chain of Google
 // Fonts requests. globals.css builds --font-fraunces / --font-jakarta on top of
@@ -52,7 +52,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const cookieLocale = (await cookies()).get(LOCALE_COOKIE)?.value;
   const locale = isLocale(cookieLocale) ? cookieLocale : DEFAULT_LOCALE;
   const language = getLanguage(locale);
-  const dictionary = await loadDictionary(locale);
+  const [dictionary, content] = await Promise.all([loadDictionary(locale), getSiteContent()]);
 
   return (
     <html
@@ -72,10 +72,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="font-body overflow-x-hidden">
         <SettingsProvider>
           <I18nProvider initialLocale={locale} initialDictionary={dictionary}>
-            <Navbar />
-            <main className="overflow-x-hidden">{children}</main>
-            <Footer />
-            <FloatingActions />
+            <ContentProvider content={content}>
+              <SiteChrome>{children}</SiteChrome>
+            </ContentProvider>
           </I18nProvider>
         </SettingsProvider>
       </body>

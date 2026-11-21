@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { motion } from "framer-motion";
-import { Send, CheckCircle2, School, Users, Building, Palette, Sparkles, Calendar } from "lucide-react";
+import { Send, CheckCircle2, School, Users, Building, Palette, Sparkles, Loader2 } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
 import { Button } from "@/components/ui/button";
 import { useT } from "@/hooks/use-i18n";
+import { collaborationTypes } from "@/lib/data";
+import { submitEnquiry } from "@/lib/submissions";
 
 const collaborationOptions = [
   { title: "School art programmes", icon: School, desc: "Curriculum-aligned workshops and art immersion days." },
@@ -16,8 +18,11 @@ const collaborationOptions = [
 ];
 
 export default function Collaboration() {
-  const t = useT().collaboration;
+  const dictionary = useT();
+  const t = dictionary.collaboration;
   const [submitted, setSubmitted] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [sending, startSending] = useTransition();
 
   return (
     <section id="collaboration" className="relative overflow-hidden bg-gradient-to-br from-charcoal-950 via-sage-900 to-charcoal-950 py-20 sm:py-24 lg:py-28 text-white">
@@ -88,41 +93,51 @@ export default function Collaboration() {
               className="space-y-4 sm:space-y-5"
               onSubmit={(e) => {
                 e.preventDefault();
-                setSubmitted(true);
+                const form = new FormData(e.currentTarget);
+                setFailed(false);
+                startSending(async () => {
+                  const { ok } = await submitEnquiry(form);
+                  if (ok) setSubmitted(true);
+                  else setFailed(true);
+                });
               }}
             >
               <h3 className="font-display text-xl sm:text-2xl text-white">Collaborate With Us</h3>
               <p className="text-xs text-white/60">Share details about your community, school, or project below.</p>
+              {/* Left empty by people; bots that fill it in are ignored */}
+              <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden className="absolute -left-[9999px] h-0 w-0 opacity-0" />
 
               <div className="grid gap-4 sm:gap-5 sm:grid-cols-2">
-                <Field label={t.name} placeholder={t.namePlaceholder} />
-                <Field label={t.organisation} placeholder={t.organisationPlaceholder} />
+                <Field name="name" label={t.name} placeholder={t.namePlaceholder} />
+                <Field name="organisation" label={t.organisation} placeholder={t.organisationPlaceholder} required={false} />
               </div>
 
               <div className="grid gap-4 sm:gap-5 sm:grid-cols-2">
-                <Field label={t.email} type="email" placeholder="you@email.com" />
-                <Field label={t.mobile} type="tel" placeholder="+91 00000 00000" />
+                <Field name="email" label={t.email} type="email" placeholder="you@email.com" />
+                <Field name="mobile" label={t.mobile} type="tel" placeholder="+91 00000 00000" />
               </div>
 
               <div className="grid gap-4 sm:gap-5 sm:grid-cols-2">
                 <div>
                   <label className="mb-2 block text-xs sm:text-sm font-medium text-white/70">{t.collaborationType}</label>
                   <select
+                    name="collaborationType"
                     required
                     defaultValue=""
                     className="w-full rounded-2xl border border-sage-500/20 bg-charcoal-900 px-4 py-2.5 sm:py-3.5 text-xs sm:text-sm text-white focus:border-sage-400 focus:outline-none focus:ring-1 focus:ring-sage-400/50"
                   >
                     <option value="" disabled className="bg-charcoal-900 text-white/40">Select collaboration type</option>
-                    <option value="school" className="bg-charcoal-900 text-white">School art programmes</option>
-                    <option value="community" className="bg-charcoal-900 text-white">Community art workshops</option>
-                    <option value="apartment" className="bg-charcoal-900 text-white">Apartment and residential events</option>
-                    <option value="murals" className="bg-charcoal-900 text-white">Collaborative murals and public art</option>
-                    <option value="custom" className="bg-charcoal-900 text-white">Custom creative projects</option>
+                    {collaborationTypes.map((type) => (
+                      <option key={type.value} value={type.value} className="bg-charcoal-900 text-white">
+                        {type.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>
                   <label className="mb-2 block text-xs sm:text-sm font-medium text-white/70">{t.preferredDate}</label>
                   <input
+                    name="preferredDate"
                     type="date"
                     required
                     className="w-full rounded-2xl border border-sage-500/20 bg-white/5 px-4 sm:px-5 py-2.5 sm:py-3 text-xs sm:text-sm text-white placeholder:text-white/30 focus:border-sage-400 focus:outline-none focus:ring-1 focus:ring-sage-400/50 [color-scheme:dark]"
@@ -133,15 +148,22 @@ export default function Collaboration() {
               <div>
                 <label className="mb-2 block text-xs sm:text-sm font-medium text-white/70">{t.message}</label>
                 <textarea
+                  name="message"
                   required
+                  maxLength={2000}
                   rows={4}
                   placeholder={t.messagePlaceholder}
                   className="w-full rounded-2xl border border-sage-500/20 bg-white/5 px-4 sm:px-5 py-3 sm:py-4 text-xs sm:text-sm text-white placeholder:text-white/30 focus:border-sage-400 focus:outline-none focus:ring-1 focus:ring-sage-400/50"
                 />
               </div>
 
-              <Button type="submit" size="lg" className="w-full justify-center h-11 sm:h-12 bg-sage-500 hover:bg-sage-600 dark:bg-sage-500 dark:hover:bg-sage-600">
-                {t.send} <Send className="h-4 w-4" />
+              {failed && (
+                <p role="alert" className="rounded-2xl bg-red-500/15 px-4 py-3 text-sm text-red-200">
+                  {dictionary.common.submitError}
+                </p>
+              )}
+              <Button type="submit" size="lg" disabled={sending} className="w-full justify-center h-11 sm:h-12 bg-sage-500 hover:bg-sage-600 dark:bg-sage-500 dark:hover:bg-sage-600">
+                {t.send} {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
               </Button>
             </form>
           )}
@@ -151,12 +173,25 @@ export default function Collaboration() {
   );
 }
 
-function Field({ label, type = "text", placeholder }: { label: string; type?: string; placeholder: string }) {
+function Field({
+  name,
+  label,
+  type = "text",
+  placeholder,
+  required = true,
+}: {
+  name: string;
+  label: string;
+  type?: string;
+  placeholder: string;
+  required?: boolean;
+}) {
   return (
     <div>
       <label className="mb-2 block text-xs sm:text-sm font-medium text-white/70">{label}</label>
       <input
-        required
+        name={name}
+        required={required}
         type={type}
         placeholder={placeholder}
         className="w-full rounded-2xl border border-sage-500/20 bg-white/5 px-4 sm:px-5 py-2.5 sm:py-3.5 text-xs sm:text-sm text-white placeholder:text-white/30 focus:border-sage-400 focus:outline-none focus:ring-1 focus:ring-sage-400/50"

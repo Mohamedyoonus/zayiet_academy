@@ -8,12 +8,14 @@ import {
   useTransform,
 } from "framer-motion";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { usePaintTrail } from "@/hooks/use-paint-trail";
 import { useMotionReduced, useSettings } from "@/hooks/use-settings";
 import { useT } from "@/hooks/use-i18n";
+import { useContent } from "@/hooks/use-content";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -73,11 +75,21 @@ const PARALLAX_SPRING = { stiffness: 120, damping: 22, mass: 0.5 };
 
 export default function Hero() {
   const t = useT();
-  const stats = [
-    ["1200+", t.hero.statStudents],
-    ["9+", t.hero.statYears],
-    ["18", t.hero.statAwards],
-  ];
+  const router = useRouter();
+  // Text, photo and numbers set in the admin (English only); the translated defaults until then
+  const hero = useContent().hero ?? {
+    eyebrow: t.hero.eyebrow,
+    titleBefore: t.hero.titleBefore,
+    titleHighlight: t.hero.titleHighlight,
+    titleAfter: t.hero.titleAfter,
+    description: t.hero.description,
+    image: "/assets/hero.webp",
+    stats: [
+      { value: "1200+", label: t.hero.statStudents },
+      { value: "9+", label: t.hero.statYears },
+      { value: "18", label: t.hero.statAwards },
+    ],
+  };
   const prefersReducedMotion = useMotionReduced();
   const [parallaxEnabled, setParallaxEnabled] = useState(false);
 
@@ -322,7 +334,7 @@ export default function Hero() {
             "
           >
             <span className="h-1 w-1 rounded-full bg-sage-500" />
-            {t.hero.eyebrow}
+            {hero.eyebrow}
           </motion.span>
 
           {/* Heading */}
@@ -359,9 +371,9 @@ export default function Hero() {
               2xl:text-[4.25rem]
             "
           >
-            {t.hero.titleBefore && <>{t.hero.titleBefore} </>}
+            {hero.titleBefore && <>{hero.titleBefore} </>}
             <span className="relative inline-block italic text-sage-700">
-              {t.hero.titleHighlight}
+              {hero.titleHighlight}
               <svg
                 aria-hidden
                 viewBox="0 0 120 12"
@@ -381,7 +393,7 @@ export default function Hero() {
                 />
               </svg>
             </span>
-            {t.hero.titleAfter && <> {t.hero.titleAfter}</>}
+            {hero.titleAfter && <> {hero.titleAfter}</>}
           </motion.h1>
 
           {/* Description */}
@@ -412,7 +424,7 @@ export default function Hero() {
               xl:text-[1.05rem]
             "
           >
-            {t.hero.description}
+            {hero.description}
           </motion.p>
 
           {/* Buttons */}
@@ -448,13 +460,7 @@ export default function Hero() {
                 sm:px-6
                 sm:text-base
               "
-              onClick={() =>
-                document
-                  .getElementById("classes")
-                  ?.scrollIntoView({
-                    behavior: "smooth",
-                  })
-              }
+              onClick={() => router.push("/classes")}
             >
               {t.hero.exploreClasses}
               <ArrowRight className="h-4 w-4" />
@@ -514,7 +520,7 @@ export default function Hero() {
               xl:gap-10
             "
           >
-            {stats.map(([value, label]) => (
+            {hero.stats.map(({ value, label }) => (
               <div
                 key={label}
                 className="min-w-0"
@@ -608,7 +614,7 @@ export default function Hero() {
             "
           >
             <Image
-              src="/assets/hero.webp"
+              src={hero.image}
               alt={t.hero.imageAlt}
               fill
               priority

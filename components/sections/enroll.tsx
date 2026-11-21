@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Send, CheckCircle2 } from "lucide-react";
+import { Send, CheckCircle2, Loader2 } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
 import { Button } from "@/components/ui/button";
 import { cn, formatINR } from "@/lib/utils";
 import { useData, useT } from "@/hooks/use-i18n";
 import { fmt } from "@/lib/i18n";
+import { submitEnrollment } from "@/lib/submissions";
 
 function RadioDot({ checked, size = "md" }: { checked: boolean; size?: "sm" | "md" }) {
   const outer = size === "sm" ? "h-4 w-4" : "h-5 w-5";
@@ -54,6 +55,8 @@ export default function Enroll() {
     searchParams.get("mode") === "online" ? "online" : "offline"
   );
   const [submitted, setSubmitted] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [sending, startSending] = useTransition();
 
   const course = courses.find((c) => c.id === courseId) ?? courses[0];
   const fee = mode === "offline" ? course.feeOffline : course.feeOnline;
@@ -182,32 +185,49 @@ export default function Enroll() {
             ) : (
               <form
                 className="space-y-4 sm:space-y-5"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setSubmitted(true);
+                onSubmit={(ev) => {
+                  ev.preventDefault();
+                  const form = new FormData(ev.currentTarget);
+                  form.set("course", course.id);
+                  form.set("mode", mode);
+                  setFailed(false);
+                  startSending(async () => {
+                    const { ok } = await submitEnrollment(form);
+                    if (ok) setSubmitted(true);
+                    else setFailed(true);
+                  });
                 }}
               >
                 <StepLabel step={3} title={e.step3} hint={e.step3Hint} />
+                {/* Left empty by people; bots that fill it in are ignored */}
+                <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden className="absolute -left-[9999px] h-0 w-0 opacity-0" />
 
                 <div className="grid gap-4 sm:gap-5 sm:grid-cols-2">
-                  <Field label={e.studentName} placeholder={e.fullName} required requiredLabel={t.common.required} />
-                  <Field label={e.studentAge} type="number" placeholder={e.agePlaceholder} min={5} max={16} required requiredLabel={t.common.required} hint={e.ageHint} />
+                  <Field name="studentName" label={e.studentName} placeholder={e.fullName} required requiredLabel={t.common.required} />
+                  <Field name="studentAge" label={e.studentAge} type="number" placeholder={e.agePlaceholder} min={5} max={16} required requiredLabel={t.common.required} hint={e.ageHint} />
                 </div>
                 <div className="grid gap-4 sm:gap-5 sm:grid-cols-2">
-                  <Field label={e.parentName} placeholder={e.fullName} required requiredLabel={t.common.required} />
-                  <Field label={e.mobile} type="tel" placeholder="+91 00000 00000" required requiredLabel={t.common.required} />
+                  <Field name="parentName" label={e.parentName} placeholder={e.fullName} required requiredLabel={t.common.required} />
+                  <Field name="mobile" label={e.mobile} type="tel" placeholder="+91 00000 00000" required requiredLabel={t.common.required} />
                 </div>
-                <Field label={e.email} type="email" placeholder="you@email.com" required requiredLabel={t.common.required} />
+                <Field name="email" label={e.email} type="email" placeholder="you@email.com" required requiredLabel={t.common.required} />
                 <div>
                   <label className="mb-2 block text-xs sm:text-sm font-medium text-charcoal-700">{e.message} <span className="font-normal text-charcoal-400">{t.common.optional}</span></label>
                   <textarea
+                    name="message"
+                    maxLength={2000}
                     rows={4}
                     placeholder={e.messagePlaceholder}
                     className="w-full rounded-2xl border border-sage-200/50 bg-white px-4 sm:px-5 py-3 sm:py-4 text-sm text-charcoal-900 placeholder:text-charcoal-400 focus:border-sage-400 focus:outline-none focus:ring-1 focus:ring-sage-400/50 focus-visible:ring-2 focus-visible:ring-sage-500"
                   />
                 </div>
-                <Button type="submit" size="lg" className="w-full justify-center h-11 sm:h-12">
-                  {e.confirm} <Send className="h-4 w-4" />
+                {failed && (
+                  <p role="alert" className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">
+                    {t.common.submitError}
+                  </p>
+                )}
+                <Button type="submit" size="lg" disabled={sending} className="w-full justify-center h-11 sm:h-12">
+                  {e.confirm} {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
                 </Button>
                 <p className="text-center text-[11px] text-charcoal-400">{e.consent}</p>
               </form>
@@ -220,6 +240,7 @@ export default function Enroll() {
 }
 
 function Field({
+  name,
   label,
   type = "text",
   placeholder,
@@ -229,6 +250,7 @@ function Field({
   requiredLabel,
   hint,
 }: {
+  name: string;
   label: string;
   type?: string;
   placeholder: string;
@@ -251,6 +273,7 @@ function Field({
         )}
       </label>
       <input
+        name={name}
         required={required}
         type={type}
         min={min}

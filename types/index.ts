@@ -5,7 +5,8 @@ export interface CourseHighlight {
 
 export interface Course {
   id: string;
-  tier: "Basic" | "Advanced" | "Pro";
+  /** Level shown on the card, e.g. "Basic" */
+  tier: string;
   title: string;
   description: string;
   duration: string;

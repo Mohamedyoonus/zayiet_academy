@@ -14,8 +14,7 @@ const kn: Translation = {
     optional: "(ಐಚ್ಛಿಕ)",
     required: "(ಕಡ್ಡಾಯ)",
     newBadge: "ಹೊಸದು",
-    tagline: "ಕಲಿಯಿರಿ • ರಚಿಸಿ • ಸ್ಫೂರ್ತಿ ನೀಡಿ",
-  },
+    tagline: "ಕಲಿಯಿರಿ • ರಚಿಸಿ • ಸ್ಫೂರ್ತಿ ನೀಡಿ",  },
 
   nav: {
     home: "ಮುಖಪುಟ",

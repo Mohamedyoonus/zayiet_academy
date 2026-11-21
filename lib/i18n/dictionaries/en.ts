@@ -16,11 +16,12 @@ const en = {
     required: "(required)",
     newBadge: "New",
     tagline: "Learn • Create • Inspire",
+    submitError: "Something went wrong. Please try again, or call us.",
   },
 
   nav: {
     home: "Home",
-    classes: "Classes",
+    classes: "Art Classes",
     workshop: "Workshop",
     gallery: "Gallery",
     funZone: "Fun Zone",
@@ -443,7 +444,8 @@ const en = {
 
 // What each other language file provides. Keys marked optional aren't translated
 // everywhere yet; lib/i18n shows the English text until they are.
-export type Translation = Omit<typeof en, "visionValues" | "classes" | "collaboration" | "about"> & {
+export type Translation = Omit<typeof en, "common" | "visionValues" | "classes" | "collaboration" | "about"> & {
+  common: Omit<typeof en.common, "submitError"> & { submitError?: string };
   visionValues?: typeof en.visionValues;
   classes: Omit<typeof en.classes, "paceTitle" | "paceDesc"> & {
     paceTitle?: string;

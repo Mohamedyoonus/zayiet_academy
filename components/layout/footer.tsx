@@ -83,7 +83,7 @@ export default function Footer() {
           <h4 className="font-display text-sm sm:text-base font-semibold text-white">{t.footer.support}</h4>
           <ul className="mt-4 sm:mt-5 space-y-2 sm:space-y-3 text-xs sm:text-sm text-white/60">
             <li><Link href="/faq" className={linkClass}>{t.footer.helpCenter}</Link></li>
-            <li><Link href="/#classes" scroll={false} onClick={() => handleHashClick("/#classes")} className={linkClass}>{t.footer.courseSupport}</Link></li>
+            <li><Link href="/classes" className={linkClass}>{t.footer.courseSupport}</Link></li>
             <li><Link href="/contact" className={linkClass}>{t.footer.customerSupport}</Link></li>
             <li><Link href="/faq" className={linkClass}>{t.footer.faq}</Link></li>
             <li><Link href="/accessories" className={linkClass}>{t.footer.accessories}</Link></li>

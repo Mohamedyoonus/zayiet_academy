@@ -7,16 +7,9 @@ import { X } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
 import { cn } from "@/lib/utils";
 import { useData, useT } from "@/hooks/use-i18n";
+import { galleryCategories } from "@/lib/data";
 
-const filters = [
-  "All",
-  "Student Artwork",
-  "Drawing and Sketching",
-  "Painting and Mixed Media",
-  "Creative Workshops",
-  "Student Progress",
-  "Community Art",
-] as const;
+const filters = ["All", ...galleryCategories] as const;
 
 export default function Gallery() {
   const t = useT();

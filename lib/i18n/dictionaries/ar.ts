@@ -14,8 +14,7 @@ const ar: Translation = {
     optional: "(اختياري)",
     required: "(مطلوب)",
     newBadge: "جديد",
-    tagline: "تعلّم • أبدع • ألهِم",
-  },
+    tagline: "تعلّم • أبدع • ألهِم",  },
 
   nav: {
     home: "الرئيسية",
