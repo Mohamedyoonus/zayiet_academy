@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { animate, motion, useMotionValue, useTransform } from "framer-motion";
 import { ArrowRight, Palette, Sparkles } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
 import { buttonVariants } from "@/components/ui/button";
@@ -15,13 +15,11 @@ type Stroke = { d: string; color: string; width?: number };
 
 type Kid = {
   name: string;
-  /** Dictionary key for what the kid is drawing */
-  activity: "kidAarav" | "kidMeera" | "kidDiya";
   accent: string;
   skin: string;
   hair: string;
   shirt: string;
-  hairStyle: "pigtails" | "spiky" | "bun";
+  hairStyle: "pigtails" | "spiky" | "bun" | "side" | "curly";
   tool: "pencil" | "brush";
   toolColor: string;
   hand: { x: number; y: number };
@@ -31,7 +29,6 @@ type Kid = {
 const kids: Kid[] = [
   {
     name: "Aarav",
-    activity: "kidAarav",
     accent: "#E8B04B",
     skin: "#C68B59",
     hair: "#2A2420",
@@ -50,7 +47,6 @@ const kids: Kid[] = [
   },
   {
     name: "Meera",
-    activity: "kidMeera",
     accent: "#D9695F",
     skin: "#E0A878",
     hair: "#3B2A20",
@@ -68,8 +64,26 @@ const kids: Kid[] = [
     ],
   },
   {
+    name: "Ishaan",
+    accent: "#4E9C8F",
+    skin: "#B67B52",
+    hair: "#2A2420",
+    shirt: "#6B9AC4",
+    hairStyle: "side",
+    tool: "pencil",
+    toolColor: "#4E9C8F",
+    hand: { x: 120, y: 208 },
+    strokes: [
+      // Hull, mast, sail, flag, then the waves
+      { d: "M84,212 L156,212 L144,226 L96,226 Z", color: "#8A5A3C" },
+      { d: "M120,212 L120,166", color: "#5B4636" },
+      { d: "M123,170 L152,206 L123,206 Z", color: "#D9695F" },
+      { d: "M120,166 L134,171 L120,176", color: "#E8B04B" },
+      { d: "M74,234 q8,-6 16,0 q8,-6 16,0 q8,-6 16,0 q8,-6 16,0 q8,-6 16,0 q8,-6 16,0", color: "#6B9AC4", width: 3 },
+    ],
+  },
+  {
     name: "Diya",
-    activity: "kidDiya",
     accent: "#6B9AC4",
     skin: "#A86B44",
     hair: "#1C1F1A",
@@ -89,6 +103,33 @@ const kids: Kid[] = [
       { d: "M116,180 a4,4 0 1 0 8,0 a4,4 0 1 0 -8,0", color: "#E8B04B", width: 4 },
     ],
   },
+  {
+    name: "Anika",
+    accent: "#9B7EC4",
+    skin: "#D4976A",
+    hair: "#3B2A20",
+    shirt: "#8E79B8",
+    hairStyle: "curly",
+    tool: "brush",
+    toolColor: "#9B7EC4",
+    hand: { x: 126, y: 202 },
+    strokes: [
+      // Body, left wings, right wings, spots, then the antennae
+      { d: "M120,178 L120,222", color: "#3B2A20", width: 4 },
+      {
+        d: "M118,188 C98,164 74,176 84,194 C90,204 106,202 118,196 M118,202 C102,204 92,222 106,226 C114,228 118,216 118,206",
+        color: "#9B7EC4",
+        width: 4,
+      },
+      {
+        d: "M122,188 C142,164 166,176 156,194 C150,204 134,202 122,196 M122,202 C138,204 148,222 134,226 C126,228 122,216 122,206",
+        color: "#9B7EC4",
+        width: 4,
+      },
+      { d: "M92,190 a4,4 0 1 0 8,0 a4,4 0 1 0 -8,0 M140,190 a4,4 0 1 0 8,0 a4,4 0 1 0 -8,0", color: "#E8B04B", width: 4 },
+      { d: "M118,178 Q112,166 106,162 M122,178 Q128,166 134,162", color: "#3B2A20", width: 3 },
+    ],
+  },
 ];
 
 // Hand scribble path, as offsets from the hand's resting position (used only
@@ -96,6 +137,9 @@ const kids: Kid[] = [
 const scribbleX = [0, -16, 10, -8, 14, -4, 0];
 const scribbleY = [0, 10, -6, 12, 2, -8, 0];
 const SHOULDER = { x: 150, y: 138 };
+// Where both hands grip the lifted board in the "show" pose
+const SHOW_RIGHT = { x: 182, y: 178 };
+const SHOW_LEFT = { x: 58, y: 178 };
 
 // Drawing timeline: strokes are drawn one after another, and between them the
 // pencil lifts and moves to where the next stroke starts
@@ -103,6 +147,8 @@ const STROKE_TIME = 0.6; // seconds to draw one stroke
 const STROKE_GAP = 0.15; // seconds to move to the next stroke
 const FIRST_STROKE = 0.25;
 const strokeStart = (i: number) => FIRST_STROKE + i * (STROKE_TIME + STROKE_GAP);
+/** Seconds until the kid finishes and shows off the artwork (a beat after the last stroke) */
+const drawTime = (kid: Kid) => strokeStart(kid.strokes.length - 1) + STROKE_TIME + 0.25;
 /** Where the tip of the pencil/brush sits, relative to the centre of the hand */
 const TIP = { x: -3, y: 8 };
 /** Points sampled along each stroke for the pencil to follow */
@@ -118,6 +164,35 @@ function Hair({ kid }: { kid: Kid }) {
         d="M86,82 A34,34 0 0 1 154,82 L148,64 L140,72 L132,58 L122,70 L112,58 L104,72 L94,64 Z"
         fill={kid.hair}
       />
+    );
+  }
+  if (kid.hairStyle === "side") {
+    // Side-swept fringe
+    return (
+      <path
+        d="M86,84 A34,34 0 0 1 154,80 Q150,66 138,62 Q128,76 108,72 Q94,70 86,84 Z"
+        fill={kid.hair}
+      />
+    );
+  }
+  if (kid.hairStyle === "curly") {
+    // A cloud of curls around the top of the head
+    const curls = [
+      [87, 76, 10],
+      [93, 62, 12],
+      [106, 53, 12],
+      [120, 50, 13],
+      [134, 53, 12],
+      [147, 62, 12],
+      [153, 76, 10],
+    ];
+    return (
+      <>
+        {curls.map(([cx, cy, r]) => (
+          <circle key={cx} cx={cx} cy={cy} r={r} fill={kid.hair} />
+        ))}
+        <path d={cap} fill={kid.hair} />
+      </>
     );
   }
   if (kid.hairStyle === "bun") {
@@ -141,8 +216,7 @@ function KidIllustration({
   blinkDelay: number;
 }) {
   const { hand } = kid;
-  // Show off the artwork a moment after the last stroke is finished
-  const doneDelay = strokeStart(kid.strokes.length - 1) + STROKE_TIME + 0.25;
+  const doneDelay = drawTime(kid);
 
   // Measure every stroke once, so the pencil tip can trace exactly the line being drawn
   const strokeRefs = useRef<(SVGPathElement | null)[]>([]);
@@ -178,9 +252,34 @@ function KidIllustration({
   }, [playing, doneDelay]);
   const drawing = playing && !done;
 
-  // Where both hands grip the lifted board in the "show" pose
-  const showRight = { x: 182, y: 178 };
-  const showLeft = { x: 58, y: 178 };
+  // The drawing hand is driven by motion values rather than the `animate` prop.
+  // The site's MotionConfig skips transform animations when the device asks for
+  // reduced motion, which froze the pencil while its line still drew itself.
+  const handX = useMotionValue(0); // offset from the resting position
+  const handY = useMotionValue(0);
+  const armX = useTransform(handX, (v) => hand.x + v);
+  const armY = useTransform(handY, (v) => hand.y + v);
+  useEffect(() => {
+    let moves: { stop: () => void }[];
+    if (drawing && track) {
+      // Pencil tip follows each stroke exactly as it appears
+      const timing = { duration: track.duration, times: track.times, ease: "linear" } as const;
+      moves = [
+        animate(handX, track.x.map((v) => v - hand.x), timing),
+        animate(handY, track.y.map((v) => v - hand.y), timing),
+      ];
+    } else if (drawing) {
+      // Strokes not measured yet: a generic scribble
+      const timing = { duration: 1.1, repeat: Infinity, ease: "easeInOut" } as const;
+      moves = [animate(handX, scribbleX, timing), animate(handY, scribbleY, timing)];
+    } else {
+      // Done: grip the board's side. Idle: back to resting on the paper.
+      const target = done ? SHOW_RIGHT : hand;
+      const timing = { duration: 0.45, ease: "easeOut" } as const;
+      moves = [animate(handX, target.x - hand.x, timing), animate(handY, target.y - hand.y, timing)];
+    }
+    return () => moves.forEach((move) => move.stop());
+  }, [drawing, done, track, hand, handX, handY]);
 
   const mouth = done
     ? "M107,96 Q120,114 133,96" // big grin
@@ -189,7 +288,12 @@ function KidIllustration({
       : "M111,98 Q120,107 129,98"; // soft smile
 
   return (
-    <svg viewBox="0 0 240 260" className="h-auto w-full" aria-hidden>
+    <svg
+      viewBox="0 0 240 260"
+      // Desktop: never taller than the screen height allows, so the section fits in view
+      className="h-auto w-full lg:max-h-[clamp(10rem,calc(100vh_-_550px),22rem)]"
+      aria-hidden
+    >
       {/* Backdrop blob */}
       <circle cx={120} cy={140} r={104} fill={kid.accent} opacity={0.14} />
 
@@ -305,14 +409,14 @@ function KidIllustration({
         strokeWidth={12}
         strokeLinecap="round"
         initial={{ x2: 84, y2: 156 }}
-        animate={done ? { x2: showLeft.x, y2: showLeft.y } : { x2: 84, y2: 156 }}
+        animate={done ? { x2: SHOW_LEFT.x, y2: SHOW_LEFT.y } : { x2: 84, y2: 156 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
       />
       <motion.circle
         r={7}
         fill={kid.skin}
         initial={{ cx: 84, cy: 157 }}
-        animate={done ? { cx: showLeft.x, cy: showLeft.y } : { cx: 84, cy: 157 }}
+        animate={done ? { cx: SHOW_LEFT.x, cy: SHOW_LEFT.y } : { cx: 84, cy: 157 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
       />
 
@@ -320,46 +424,13 @@ function KidIllustration({
       <motion.line
         x1={SHOULDER.x}
         y1={SHOULDER.y}
+        x2={armX}
+        y2={armY}
         stroke={kid.shirt}
         strokeWidth={12}
         strokeLinecap="round"
-        initial={{ x2: hand.x, y2: hand.y }}
-        animate={
-          drawing
-            ? track
-              ? { x2: track.x, y2: track.y }
-              : { x2: scribbleX.map((d) => hand.x + d), y2: scribbleY.map((d) => hand.y + d) }
-            : done
-              ? { x2: showRight.x, y2: showRight.y }
-              : { x2: hand.x, y2: hand.y }
-        }
-        transition={
-          drawing && track
-            ? { duration: track.duration, times: track.times, ease: "linear" }
-            : drawing
-              ? { duration: 1.1, repeat: Infinity, ease: "easeInOut" }
-              : { duration: 0.45, ease: "easeOut" }
-        }
       />
-      <motion.g
-        initial={{ x: 0, y: 0 }}
-        animate={
-          drawing
-            ? track
-              ? { x: track.x.map((v) => v - hand.x), y: track.y.map((v) => v - hand.y) }
-              : { x: scribbleX, y: scribbleY }
-            : done
-              ? { x: showRight.x - hand.x, y: showRight.y - hand.y }
-              : { x: 0, y: 0 }
-        }
-        transition={
-          drawing && track
-            ? { duration: track.duration, times: track.times, ease: "linear" }
-            : drawing
-              ? { duration: 1.1, repeat: Infinity, ease: "easeInOut" }
-              : { duration: 0.45, ease: "easeOut" }
-        }
-      >
+      <motion.g style={{ x: handX, y: handY }}>
         <g transform={`translate(${hand.x} ${hand.y})`}>
           {kid.tool === "pencil" ? (
             <>
@@ -381,51 +452,82 @@ function KidIllustration({
 
 // Mini artworks pinned on the clothesline (40x40 viewBox)
 const hangingArt = [
-  { t: 0.08, color: "#E8B04B", d: "M20 13 a7 7 0 1 0 0.01 0 M20 4 v4 M20 32 v4 M4 20 h4 M32 20 h4 M9 9 l3 3 M28 28 l3 3 M9 31 l3 -3 M28 12 l3 -3" },
-  { t: 0.27, color: "#6B9AC4", d: "M6 20 Q16 8 28 20 Q16 32 6 20 Z M28 20 L36 13 L36 27 Z M12 18 v0.5" },
-  { t: 0.5, color: "#D9695F", d: "M20 32 C 8 24 6 15 11 11 C 15 8 20 11 20 14 C 20 11 25 8 29 11 C 34 15 32 24 20 32 Z" },
-  { t: 0.73, color: "#93A57D", d: "M20 36 V24 M20 24 a10 10 0 1 1 0.01 0 M14 36 h12" },
-  { t: 0.92, color: "#D9695F", d: "M8 34 V20 L20 9 L32 20 V34 Z M17 34 V26 H23 V34" },
+  { color: "#E8B04B", d: "M20 13 a7 7 0 1 0 0.01 0 M20 4 v4 M20 32 v4 M4 20 h4 M32 20 h4 M9 9 l3 3 M28 28 l3 3 M9 31 l3 -3 M28 12 l3 -3" },
+  { color: "#6B9AC4", d: "M6 20 Q16 8 28 20 Q16 32 6 20 Z M28 20 L36 13 L36 27 Z M12 18 v0.5" },
+  { color: "#D9695F", d: "M20 32 C 8 24 6 15 11 11 C 15 8 20 11 20 14 C 20 11 25 8 29 11 C 34 15 32 24 20 32 Z" },
+  { color: "#93A57D", d: "M20 36 V24 M20 24 a10 10 0 1 1 0.01 0 M14 36 h12" },
+  { color: "#D9695F", d: "M8 34 V20 L20 9 L32 20 V34 Z M17 34 V26 H23 V34" },
 ];
 
-// y of the sagging line: quadratic M0 20 Q500 120 1000 20 (dips to 70 at the middle)
-const sag = (t: number) => 20 + 200 * t * (1 - t);
+/** Which artwork hangs where along the line (t: 0 = left end, 1 = right end) */
+type Hanging = { art: number; t: number; phoneHidden?: boolean };
 
-function Clothesline() {
+// Phones & tablets: all five across a line above the call-to-action
+const bandFrames: Hanging[] = [
+  { art: 0, t: 0.08 },
+  { art: 1, t: 0.27, phoneHidden: true },
+  { art: 2, t: 0.5 },
+  { art: 3, t: 0.73, phoneHidden: true },
+  { art: 4, t: 0.92 },
+];
+// Desktop: a garland across the top, with art either side of the heading
+const garlandFrames: Hanging[] = [
+  { art: 0, t: 0.05 },
+  { art: 1, t: 0.15 },
+  { art: 3, t: 0.85 },
+  { art: 4, t: 0.95 },
+];
+
+/** A line tied between two nails with mini artworks pegged on it. `dip` = how far (px) the middle sags. */
+function Clothesline({ frames, dip, className }: { frames: Hanging[]; dip: number; className?: string }) {
+  // Quadratic curve, 20px from the top at both ends
+  const sag = (t: number) => 20 + 4 * dip * t * (1 - t);
   return (
-    <div aria-hidden className="relative mx-auto h-[140px] max-w-xl sm:h-[150px] lg:max-w-none">
+    <div aria-hidden className={cn("relative", className)}>
       <svg viewBox="0 0 1000 120" preserveAspectRatio="none" className="absolute inset-x-0 top-0 h-[120px] w-full">
-        <path d="M0 20 Q500 120 1000 20" fill="none" stroke="#C9A77C" strokeWidth={2} vectorEffect="non-scaling-stroke" />
+        <path
+          d={`M0 20 Q500 ${20 + 2 * dip} 1000 20`}
+          fill="none"
+          stroke="#C9A77C"
+          strokeWidth={2}
+          vectorEffect="non-scaling-stroke"
+        />
       </svg>
-      {hangingArt.map((art, i) => (
-        <div
-          key={i}
-          className={cn("absolute -translate-x-1/2", (i === 1 || i === 3) && "hidden sm:block")}
-          style={{ left: `${art.t * 100}%`, top: sag(art.t) - 4 }}
-        >
-          <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 + i * 0.1, duration: 0.5 }}
+      {/* Nails the line is tied to */}
+      <span className="absolute left-0 top-4 h-2 w-2 -translate-x-1/2 rounded-full bg-[#A07C55]" />
+      <span className="absolute right-0 top-4 h-2 w-2 translate-x-1/2 rounded-full bg-[#A07C55]" />
+      {frames.map(({ art: index, t, phoneHidden }, i) => {
+        const art = hangingArt[index];
+        return (
+          <div
+            key={index}
+            className={cn("absolute -translate-x-1/2", phoneHidden && "hidden sm:block")}
+            style={{ left: `${t * 100}%`, top: sag(t) - 4 }}
           >
             <motion.div
-              className="flex flex-col items-center"
-              style={{ transformOrigin: "top center" }}
-              animate={{ rotate: [-4, 4, -4] }}
-              transition={{ duration: 3 + i * 0.4, repeat: Infinity, ease: "easeInOut" }}
+              initial={{ opacity: 0, y: -12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 + i * 0.1, duration: 0.5 }}
             >
-              {/* Clothespin */}
-              <span className="h-3 w-1.5 rounded-sm bg-[#A07C55]" />
-              <span className="-mt-0.5 grid h-14 w-12 place-items-center rounded-md border border-charcoal-900/5 bg-white shadow-md sm:h-16 sm:w-14">
-                <svg viewBox="0 0 40 40" className="h-9 w-9 sm:h-10 sm:w-10" fill="none">
-                  <path d={art.d} stroke={art.color} strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </span>
+              <motion.div
+                className="flex flex-col items-center"
+                style={{ transformOrigin: "top center" }}
+                animate={{ rotate: [-4, 4, -4] }}
+                transition={{ duration: 3 + i * 0.4, repeat: Infinity, ease: "easeInOut" }}
+              >
+                {/* Clothespin */}
+                <span className="h-3 w-1.5 rounded-sm bg-[#A07C55]" />
+                <span className="-mt-0.5 grid h-14 w-12 place-items-center rounded-md border border-charcoal-900/5 bg-white shadow-md sm:h-16 sm:w-14">
+                  <svg viewBox="0 0 40 40" className="h-9 w-9 sm:h-10 sm:w-10" fill="none">
+                    <path d={art.d} stroke={art.color} strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        </div>
-      ))}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -437,6 +539,100 @@ const bgDoodles = [
   { className: "left-[8%] bottom-[14%] h-12 w-12", color: "#D9695F", d: "M20 20 a3 3 0 1 1 4 3 a7 7 0 1 1 -10 -6 a11 11 0 1 1 15 13" },
   { className: "right-[10%] bottom-[10%] h-10 w-10", color: "#93A57D", d: "M10 2 v16 M2 10 h16 M26 22 v10 M21 27 h10" },
 ];
+
+// A strip of washi tape "pins" each card; tilted a little differently on each
+const tapeTilt = ["-rotate-3", "rotate-2", "-rotate-2", "rotate-3", "-rotate-1"];
+
+function KidCard({
+  kid,
+  index,
+  playing,
+  dimmed,
+  onHover,
+  onToggle,
+}: {
+  kid: Kid;
+  index: number;
+  playing: boolean;
+  dimmed: boolean;
+  onHover: () => void;
+  onToggle: () => void;
+}) {
+  const t = useT();
+  return (
+    <motion.div
+      role="button"
+      tabIndex={0}
+      aria-pressed={playing}
+      onPointerEnter={(e) => e.pointerType === "mouse" && onHover()}
+      onPointerUp={(e) => e.pointerType !== "mouse" && onToggle()}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onToggle();
+        }
+      }}
+      animate={{ scale: playing ? 1.03 : 1, opacity: dimmed ? 0.55 : 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 26 }}
+      className={cn(
+        // Phones & tablets: a fixed-width slide in the swipe row. Desktop: one of five grid cells.
+        "relative w-[66vw] shrink-0 snap-center cursor-pointer select-none rounded-4xl border px-4 pb-4 pt-5 shadow-sm outline-none backdrop-blur-sm transition-shadow focus-visible:ring-2 focus-visible:ring-sage-400 sm:w-[42vw] md:w-[32vw] lg:w-auto lg:shrink",
+        playing && "shadow-lg"
+      )}
+      style={{
+        borderColor: `${kid.accent}40`,
+        background: `linear-gradient(180deg, ${kid.accent}1c 0%, transparent 55%), rgb(255 255 255 / 0.75)`,
+      }}
+    >
+      {/* Washi tape */}
+      <span
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute -top-3 left-1/2 h-6 w-20 -translate-x-1/2 rounded-sm shadow-sm",
+          tapeTilt[index % tapeTilt.length]
+        )}
+        style={{
+          backgroundColor: `${kid.accent}b3`,
+          backgroundImage: "repeating-linear-gradient(135deg, rgb(255 255 255 / 0.3) 0 5px, transparent 5px 10px)",
+        }}
+      />
+
+      <KidIllustration kid={kid} playing={playing} blinkDelay={index * 1.3} />
+
+      <h3 className="mt-2 text-center font-display text-lg font-medium text-charcoal-900">{kid.name}</h3>
+
+      {/* "Watch me draw" while idle — turns into a progress bar that fills as the kid draws */}
+      <div className="relative mx-auto mt-2 h-7 max-w-[10.5rem]">
+        <motion.span
+          className="absolute inset-0 flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full text-[11px] font-semibold text-white shadow-sm"
+          style={{ backgroundColor: kid.accent }}
+          initial={false}
+          animate={playing ? { opacity: 0, scale: 0.85 } : { opacity: 1, scale: 1 }}
+          transition={{ duration: 0.25 }}
+        >
+          <Sparkles className="h-3 w-3" /> {t.littleArtists.watchMeDraw}
+        </motion.span>
+        <motion.span
+          aria-hidden
+          className="absolute inset-0 flex items-center px-3"
+          initial={false}
+          animate={{ opacity: playing ? 1 : 0 }}
+          transition={{ duration: 0.25 }}
+        >
+          <span className="h-1.5 w-full overflow-hidden rounded-full" style={{ backgroundColor: `${kid.accent}2e` }}>
+            <motion.span
+              className="block h-full w-full rounded-full"
+              style={{ backgroundColor: kid.accent, originX: 0 }}
+              initial={false}
+              animate={{ scaleX: playing ? 1 : 0 }}
+              transition={playing ? { duration: drawTime(kid), ease: "linear" } : { duration: 0.2 }}
+            />
+          </span>
+        </motion.span>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function LittleArtists() {
   const [active, setActive] = useState<number | null>(null);
@@ -450,11 +646,56 @@ export default function LittleArtists() {
     spawn(e.clientX - rect.left, e.clientY - rect.top);
   };
 
+  // Phones: the kids sit in a swipeable row. Track which card is centred (for
+  // the dots), and when a swipe comes to rest on a new kid, they start drawing.
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [current, setCurrent] = useState(0);
+  const settled = useRef(0);
+  const settleTimer = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(settleTimer.current), []);
+
+  const centredCard = () => {
+    const el = scrollerRef.current;
+    if (!el) return 0;
+    const middle = el.scrollLeft + el.clientWidth / 2;
+    let best = 0;
+    let bestDistance = Infinity;
+    Array.from(el.children).forEach((child, i) => {
+      const card = child as HTMLElement;
+      const distance = Math.abs(card.offsetLeft + card.offsetWidth / 2 - middle);
+      if (distance < bestDistance) {
+        best = i;
+        bestDistance = distance;
+      }
+    });
+    return best;
+  };
+
+  const handleScroll = () => {
+    setCurrent(centredCard());
+    window.clearTimeout(settleTimer.current);
+    settleTimer.current = window.setTimeout(() => {
+      const i = centredCard();
+      if (i !== settled.current) {
+        settled.current = i;
+        setActive(i);
+      }
+    }, 140);
+  };
+
+  /** Slides a card to the middle of the row (does nothing once it's a grid) */
+  const scrollToCard = (i: number) => {
+    const el = scrollerRef.current;
+    const card = el?.children[i] as HTMLElement | undefined;
+    if (!el || !card || el.scrollWidth <= el.clientWidth) return;
+    el.scrollTo({ left: card.offsetLeft - (el.clientWidth - card.offsetWidth) / 2, behavior: "smooth" });
+  };
+
   return (
     <section
       id="little-artists"
       onMouseMove={handleMouseMove}
-      className="relative overflow-hidden bg-ivory py-12 sm:py-14 lg:py-16"
+      className="relative overflow-hidden bg-ivory py-12 sm:py-14 lg:pb-10 lg:pt-14"
     >
       {/* Paint trail — sits behind the content */}
       {trail}
@@ -479,6 +720,11 @@ export default function LittleArtists() {
       ))}
 
       <div className="container-academy relative z-10">
+        {/* Desktop: the clothesline hangs across the top, its art either side of the heading */}
+        <div className="pointer-events-none absolute inset-x-8 -top-12 hidden lg:block xl:inset-x-10">
+          <Clothesline frames={garlandFrames} dip={14} className="h-[120px]" />
+        </div>
+
         <SectionHeading
           align="center"
           eyebrow={t.littleArtists.eyebrow}
@@ -487,82 +733,97 @@ export default function LittleArtists() {
           description={t.littleArtists.description}
         />
 
-        {/* Desktop: clothesline and call-to-action on the left, the kids across the right.
-            Phones: clothesline → kids → call-to-action. */}
-        <div className="mt-6 grid items-center gap-8 lg:mt-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-x-14 lg:gap-y-6">
-        <div className="lg:col-start-1 lg:row-start-1 lg:self-end">
-          <Clothesline />
+        {/* One simple column on every screen: heading → kids → call-to-action.
+            Desktop: all five kids side by side across the full width, never taller than
+            the screen allows. Phones & tablets: a swipeable row, the middle card centred. */}
+        <div className="mt-4 w-full min-w-0 sm:mt-8 lg:mt-6">
+          <div
+            ref={scrollerRef}
+            onScroll={handleScroll}
+            onMouseLeave={() => setActive(null)}
+            className="no-scrollbar relative -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto overflow-y-hidden px-[17vw] py-5 sm:-mx-5 sm:px-[29vw] md:-mx-6 md:px-[34vw] lg:mx-0 lg:grid lg:snap-none lg:grid-cols-5 lg:overflow-visible lg:px-0 lg:pb-0 lg:pt-3 xl:gap-5"
+          >
+            {kids.map((kid, i) => {
+              const playing = active === i;
+              return (
+                <KidCard
+                  key={kid.name}
+                  kid={kid}
+                  index={i}
+                  playing={playing}
+                  dimmed={active !== null && !playing}
+                  onHover={() => setActive(i)}
+                  onToggle={() => {
+                    setActive(playing ? null : i);
+                    scrollToCard(i);
+                  }}
+                />
+              );
+            })}
+          </div>
+
+          {/* Phones & tablets: which kid is showing, and a nudge to swipe */}
+          <div className="flex flex-col items-center gap-1 lg:hidden">
+            <div className="flex">
+              {kids.map((kid, i) => (
+                <button
+                  key={kid.name}
+                  type="button"
+                  aria-label={kid.name}
+                  aria-current={current === i}
+                  onClick={() => scrollToCard(i)}
+                  className="p-1.5"
+                >
+                  <span
+                    className={cn(
+                      "block h-2 rounded-full transition-all duration-300",
+                      current === i ? "w-6" : "w-2 bg-charcoal-900/15"
+                    )}
+                    style={current === i ? { backgroundColor: kid.accent } : undefined}
+                  />
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-charcoal-500">{t.littleArtists.swipeHint}</p>
+          </div>
         </div>
 
-        <div
-          className="mx-auto grid w-full max-w-[16rem] grid-cols-1 gap-4 sm:max-w-none sm:grid-cols-3 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:gap-5"
-          onMouseLeave={() => setActive(null)}
-        >
-          {kids.map((kid, i) => {
-            const playing = active === i;
-            const dimmed = active !== null && !playing;
-            return (
-              <motion.div
-                key={kid.name}
-                onPointerEnter={(e) => e.pointerType === "mouse" && setActive(i)}
-                onPointerUp={(e) => e.pointerType !== "mouse" && setActive(playing ? null : i)}
-                animate={{ scale: playing ? 1.03 : 1, opacity: dimmed ? 0.55 : 1 }}
-                transition={{ type: "spring", stiffness: 300, damping: 26 }}
-                className={cn(
-                  "relative cursor-pointer select-none rounded-4xl border bg-white/70 p-4 shadow-sm backdrop-blur-sm transition-shadow",
-                  playing && "shadow-lg"
-                )}
-                style={{ borderColor: `${kid.accent}40` }}
-              >
-                {/* Hint pill — hides while the kid is drawing */}
-                <span className="pointer-events-none absolute inset-x-0 top-3 z-10 flex justify-center">
-                  <motion.span
-                    className="flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-semibold text-white shadow-sm"
-                    style={{ backgroundColor: kid.accent }}
-                    animate={playing ? { opacity: 0, y: -4 } : { opacity: 1, y: [0, -3, 0] }}
-                    transition={
-                      playing
-                        ? { duration: 0.2 }
-                        : { y: { duration: 2, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }, opacity: { duration: 0.3 } }
-                    }
-                  >
-                    <Sparkles className="h-3 w-3" /> {t.littleArtists.watchMeDraw}
-                  </motion.span>
-                </span>
+        {/* Phones & tablets: the clothesline sits above the call-to-action */}
+        <Clothesline frames={bandFrames} dip={35} className="mx-auto mt-6 h-[122px] max-w-4xl sm:h-[132px] lg:hidden" />
 
-                <KidIllustration kid={kid} playing={playing} blinkDelay={i * 1.3} />
-                <div className="mt-3 text-center">
-                  <h3 className="font-display text-lg font-medium text-charcoal-900">{kid.name}</h3>
-                  <p className="mt-1 text-sm" style={{ color: kid.accent }}>
-                    {t.littleArtists[kid.activity]}
-                  </p>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {/* Nudge parents toward enrolling */}
+        {/* Nudge parents toward enrolling — one line on desktop */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.6 }}
-          className="flex flex-col items-center gap-4 text-center lg:col-start-1 lg:row-start-2 lg:self-start"
+          className="mt-1 flex flex-col items-center gap-4 text-center lg:mt-6 lg:flex-row lg:justify-center lg:gap-6"
         >
-          <p className="font-display text-lg italic text-charcoal-700 sm:text-xl">
+          <p className="text-balance font-display text-lg italic text-charcoal-700 sm:text-xl">
             {t.littleArtists.cta}
           </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Link href="/enroll" className={buttonVariants({ size: "md" })}>
-              {t.littleArtists.enrollChild} <ArrowRight className="h-4 w-4" />
+          {/* Phones: the two buttons share one row */}
+          <div className="flex w-full gap-2 sm:w-auto sm:flex-wrap sm:justify-center sm:gap-3">
+            <Link
+              href="/enroll"
+              className={cn(
+                buttonVariants({ size: "md" }),
+                "min-w-0 flex-1 gap-1.5 whitespace-nowrap px-3 text-[13px] sm:flex-none sm:gap-2 sm:px-6 sm:text-sm"
+              )}
+            >
+              {t.littleArtists.enrollChild} <ArrowRight className="h-4 w-4 shrink-0" />
             </Link>
-            <Link href="/fun-zone" className={buttonVariants({ size: "md", variant: "outline" })}>
-              <Palette className="h-4 w-4" /> {t.littleArtists.tryFunZone}
+            <Link
+              href="/fun-zone"
+              className={cn(
+                buttonVariants({ size: "md", variant: "outline" }),
+                "min-w-0 flex-1 gap-1.5 whitespace-nowrap px-3 text-[13px] sm:flex-none sm:gap-2 sm:px-6 sm:text-sm"
+              )}
+            >
+              <Palette className="h-4 w-4 shrink-0" /> {t.littleArtists.tryFunZone}
             </Link>
           </div>
         </motion.div>
-        </div>
       </div>
     </section>
   );

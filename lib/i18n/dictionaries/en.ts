@@ -77,9 +77,7 @@ const en = {
     highlight: "artist",
     description: "Hover over our little artists and watch their ideas come to life.",
     watchMeDraw: "Watch me draw",
-    kidAarav: "Sketching a home",
-    kidMeera: "Painting a rainbow",
-    kidDiya: "Drawing a flower",
+    swipeHint: "Swipe to meet them all, tap one to watch them draw",
     cta: "Your little one could be our next artist.",
     enrollChild: "Enroll your child",
     tryFunZone: "Try the Fun Zone",
@@ -156,6 +154,8 @@ const en = {
     description:
       "Every creation tells a story of exploration, practice, and progress. Celebrate the ideas, individual expression, and creative journeys of our learners.",
     all: "All",
+    previous: "Previous photo",
+    next: "Next photo",
   },
 
   funZone: {
@@ -313,6 +313,7 @@ const en = {
     selection: "Your selection",
     doneTitle: "You're on the list!",
     doneText: "We'll call you shortly to confirm the seat for {course} ({mode}).",
+    enrollAnother: "Enroll another child",
     step3: "Your details",
     step3Hint: "Fields marked * are required — we'll use these to confirm your seat.",
     studentName: "Student Name",
@@ -444,9 +445,15 @@ const en = {
 
 // What each other language file provides. Keys marked optional aren't translated
 // everywhere yet; lib/i18n shows the English text until they are.
-export type Translation = Omit<typeof en, "common" | "visionValues" | "classes" | "collaboration" | "about"> & {
+export type Translation = Omit<
+  typeof en,
+  "common" | "visionValues" | "littleArtists" | "gallery" | "enroll" | "classes" | "collaboration" | "about"
+> & {
   common: Omit<typeof en.common, "submitError"> & { submitError?: string };
+  gallery: Omit<typeof en.gallery, "previous" | "next"> & { previous?: string; next?: string };
+  enroll: Omit<typeof en.enroll, "enrollAnother"> & { enrollAnother?: string };
   visionValues?: typeof en.visionValues;
+  littleArtists: Omit<typeof en.littleArtists, "swipeHint"> & { swipeHint?: string };
   classes: Omit<typeof en.classes, "paceTitle" | "paceDesc"> & {
     paceTitle?: string;
     paceDesc?: string;

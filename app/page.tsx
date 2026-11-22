@@ -14,8 +14,8 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <VisionValues />
       <LittleArtists />
+      <VisionValues />
       <ClassFinder />
       <Workshop />
       <Gallery preview />

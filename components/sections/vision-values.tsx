@@ -34,8 +34,8 @@ export default function VisionValues() {
           />
         </div>
 
-        {/* Four Value Cards */}
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:mt-10 lg:grid-cols-4 lg:gap-5">
+        {/* Four Value Cards — a swipeable row on phones, two per row on tablets, four across on desktop */}
+        <div className="no-scrollbar -mx-4 mt-8 flex snap-x snap-mandatory scroll-pl-4 gap-3 overflow-x-auto overflow-y-hidden px-4 py-2 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 sm:py-0 lg:mt-10 lg:grid-cols-4 lg:gap-5">
           {valueCards.map((card, i) => {
             const Icon = card.icon;
             return (
@@ -45,7 +45,7 @@ export default function VisionValues() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group relative flex flex-col justify-between rounded-3xl border border-sage-200/50 bg-white/70 p-6 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-ink-900/50 sm:p-7"
+                className="group relative flex w-[78%] shrink-0 snap-start flex-col justify-between rounded-3xl border border-sage-200/50 bg-white/70 p-6 shadow-sm backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-ink-900/50 sm:w-auto sm:shrink sm:p-7"
               >
                 <div>
                   <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-sage-500 to-sage-600 text-white shadow-md shadow-sage-200/40 transition-transform duration-300 group-hover:scale-105">

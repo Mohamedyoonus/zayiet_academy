@@ -64,11 +64,11 @@ function buildQuestions(t: Dictionary["classFinder"]): Question[] {
   ];
 }
 
-// Full class names so Tailwind can see them
+// From sm up the answers sit in a grid. Full class names so Tailwind can see them.
 const GRID_COLS: Record<number, string> = {
   2: "sm:grid-cols-2",
   3: "sm:grid-cols-3",
-  4: "grid-cols-2 sm:grid-cols-4",
+  4: "sm:grid-cols-4",
 };
 
 const slide = {
@@ -244,10 +244,15 @@ export default function ClassFinder() {
                     {question.title}
                   </h3>
 
+                  {/* Phones: a swipeable row (two answers simply share the width) */}
                   <div
                     role="radiogroup"
                     aria-label={question.title}
-                    className={cn("mt-6 grid gap-3", GRID_COLS[question.options.length])}
+                    className={cn(
+                      "no-scrollbar -mx-6 mt-6 flex snap-x snap-mandatory scroll-pl-6 gap-3 overflow-x-auto overflow-y-hidden px-6 py-1",
+                      "sm:mx-0 sm:grid sm:snap-none sm:overflow-visible sm:px-0 sm:py-0",
+                      GRID_COLS[question.options.length]
+                    )}
                   >
                     {question.options.map((o) => {
                       const selected = answers[question.id] === o.value;
@@ -261,7 +266,7 @@ export default function ClassFinder() {
                           whileHover={{ y: -3 }}
                           whileTap={{ scale: 0.97 }}
                           className={cn(
-                            "flex flex-col items-center gap-2 rounded-3xl border p-4 text-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 sm:p-5",
+                            "flex min-w-[42%] flex-1 shrink-0 snap-start flex-col items-center gap-2 rounded-3xl border p-4 text-center transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 sm:min-w-0 sm:p-5",
                             selected
                               ? "border-sage-500 bg-sage-100"
                               : "border-sage-200/70 bg-white hover:border-sage-400 hover:bg-sage-50"

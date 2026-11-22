@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
-import { Send, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Send, CheckCircle2, UserPlus } from "lucide-react";
 import SectionHeading from "@/components/ui/section-heading";
 import Dots from "@/components/ui/dots";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn, formatINR } from "@/lib/utils";
 import { useData, useT } from "@/hooks/use-i18n";
 import { fmt } from "@/lib/i18n";
@@ -62,6 +63,29 @@ export default function Enroll() {
 
   const course = courses.find((c) => c.id === courseId) ?? courses[0];
   const fee = mode === "offline" ? course.feeOffline : course.feeOnline;
+  const modeLabel = mode === "offline" ? t.common.offline : t.common.online;
+
+  // After sending, the two columns give way to one confirmation card; bring it into view
+  const doneRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (submitted) doneRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [submitted]);
+
+  const summary = (
+    <div className="rounded-3xl border border-sage-200/40 bg-white/70 p-5 text-left shadow-sm backdrop-blur-sm">
+      <div className="text-xs uppercase tracking-wide text-charcoal-400">{e.selection}</div>
+      <div className="mt-2 flex items-center justify-between gap-3">
+        <span className="text-xs sm:text-sm text-charcoal-500">
+          {course.title} · {modeLabel}
+        </span>
+        <span className="font-display text-xl sm:text-2xl font-semibold text-charcoal-900">
+          {formatINR(fee)}
+          <span className="text-xs sm:text-sm font-normal text-charcoal-400">{t.common.perMonthShort}</span>
+        </span>
+      </div>
+      <p className="mt-2 text-xs text-charcoal-500 leading-relaxed">{admissionNote}</p>
+    </div>
+  );
 
   return (
     <section className="relative overflow-hidden bg-sage-50/40 py-16 sm:py-20 lg:py-28 dark:bg-ink-950">
@@ -82,109 +106,119 @@ export default function Enroll() {
           align="center"
         />
 
-        <div className="mt-12 grid gap-6 lg:mt-14 lg:grid-cols-[1fr_1.15fr] lg:items-start lg:gap-8">
-          {/* Left: course + mode selection + price summary */}
-          <div className="space-y-6">
-            <div>
-              <StepLabel step={1} title={e.step1} hint={e.step1Hint} />
-              <div role="radiogroup" aria-label={e.step1} className="mt-3 space-y-3">
-                {courses.map((c) => {
-                  const checked = courseId === c.id;
-                  const cFee = mode === "offline" ? c.feeOffline : c.feeOnline;
-                  return (
-                    <button
-                      key={c.id}
-                      role="radio"
-                      aria-checked={checked}
-                      type="button"
-                      onClick={() => setCourseId(c.id)}
-                      className={cn(
-                        "w-full cursor-pointer rounded-2xl border p-4 text-left transition-all duration-300",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2 focus-visible:ring-offset-sage-50",
-                        checked
-                          ? "border-sage-500 bg-white shadow-md"
-                          : "border-sage-200/40 bg-white/60 hover:border-sage-300 hover:bg-white"
-                      )}
-                    >
-                      <div className="flex items-start gap-3">
-                        <RadioDot checked={checked} />
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="font-display text-base font-medium text-charcoal-900">{c.title}</span>
-                            <span className="shrink-0 text-xs sm:text-sm font-semibold text-sage-700">{formatINR(cFee)}{t.common.perMonthShort}</span>
-                          </div>
-                          <p className="mt-1 text-xs text-charcoal-500 leading-relaxed">{c.description}</p>
-                        </div>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div>
-              <StepLabel step={2} title={e.step2} hint={e.step2Hint} />
-              <div role="radiogroup" aria-label={e.formatLabel} className="mt-3 grid grid-cols-2 gap-3">
-                {(["offline", "online"] as const).map((m) => {
-                  const checked = mode === m;
-                  return (
-                    <button
-                      key={m}
-                      role="radio"
-                      aria-checked={checked}
-                      type="button"
-                      onClick={() => setMode(m)}
-                      className={cn(
-                        "flex cursor-pointer items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-medium capitalize transition-all duration-300",
-                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2 focus-visible:ring-offset-sage-50",
-                        checked
-                          ? "border-sage-500 bg-white text-charcoal-900 shadow-md"
-                          : "border-sage-200/40 bg-white/60 text-charcoal-500 hover:border-sage-300 hover:bg-white"
-                      )}
-                    >
-                      <RadioDot checked={checked} size="sm" />
-                      {m === "offline" ? t.common.offline : t.common.online}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="rounded-3xl border border-sage-200/40 bg-white/70 p-5 shadow-sm backdrop-blur-sm">
-              <div className="text-xs uppercase tracking-wide text-charcoal-400">{e.selection}</div>
-              <div className="mt-2 flex items-center justify-between gap-3">
-                <span className="text-xs sm:text-sm text-charcoal-500">
-                  {course.title} · {mode === "offline" ? t.common.offline : t.common.online}
-                </span>
-                <span className="font-display text-xl sm:text-2xl font-semibold text-charcoal-900">
-                  {formatINR(fee)}
-                  <span className="text-xs sm:text-sm font-normal text-charcoal-400">{t.common.perMonthShort}</span>
-                </span>
-              </div>
-              <p className="mt-2 text-xs text-charcoal-500 leading-relaxed">{admissionNote}</p>
-            </div>
-          </div>
-
-          {/* Right: enrollment form */}
+        {submitted ? (
+          // Sent: one centred card with what was booked and what happens next
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6 }}
-            className="rounded-5xl border border-sage-200/40 bg-white/70 p-6 sm:p-8 lg:p-10 shadow-sm backdrop-blur-sm"
+            ref={doneRef}
+            initial={{ opacity: 0, y: 16, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="mx-auto mt-12 max-w-2xl rounded-5xl border border-sage-200/40 bg-white/70 p-6 text-center shadow-sm backdrop-blur-sm sm:p-10 lg:mt-14 lg:p-12"
           >
-            {submitted ? (
-              <div className="flex flex-col items-center justify-center py-16 sm:py-20 text-center">
-                <CheckCircle2 className="h-12 sm:h-14 w-12 sm:w-14 text-sage-500" />
-                <h3 className="mt-4 font-display text-xl sm:text-2xl text-charcoal-900">{e.doneTitle}</h3>
-                <p className="mt-2 text-sm sm:text-base text-charcoal-500">
-                  {fmt(e.doneText, {
-                    course: course.title,
-                    mode: mode === "offline" ? t.common.offline : t.common.online,
+            <motion.span
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 260, damping: 16, delay: 0.15 }}
+              className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-sage-100 sm:h-20 sm:w-20"
+            >
+              <CheckCircle2 className="h-9 w-9 text-sage-600 sm:h-11 sm:w-11" />
+            </motion.span>
+            <h3 className="mt-5 font-display text-2xl text-charcoal-900 sm:text-3xl">{e.doneTitle}</h3>
+            <p className="mx-auto mt-2 max-w-md text-sm text-charcoal-500 sm:text-base">
+              {fmt(e.doneText, { course: course.title, mode: modeLabel })}
+            </p>
+
+            <div className="mt-8">{summary}</div>
+
+            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+              <Button variant="outline" size="md" onClick={() => setSubmitted(false)}>
+                <UserPlus className="h-4 w-4" /> {e.enrollAnother}
+              </Button>
+              <Link href="/" className={buttonVariants({ size: "md" })}>
+                {t.notFound.home} <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+          </motion.div>
+        ) : (
+          <div className="mt-12 grid gap-6 lg:mt-14 lg:grid-cols-[1fr_1.15fr] lg:items-start lg:gap-8">
+            {/* Left: course + mode selection + price summary */}
+            <div className="space-y-6">
+              <div>
+                <StepLabel step={1} title={e.step1} hint={e.step1Hint} />
+                <div role="radiogroup" aria-label={e.step1} className="mt-3 space-y-3">
+                  {courses.map((c) => {
+                    const checked = courseId === c.id;
+                    const cFee = mode === "offline" ? c.feeOffline : c.feeOnline;
+                    return (
+                      <button
+                        key={c.id}
+                        role="radio"
+                        aria-checked={checked}
+                        type="button"
+                        onClick={() => setCourseId(c.id)}
+                        className={cn(
+                          "w-full cursor-pointer rounded-2xl border p-4 text-left transition-all duration-300",
+                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2 focus-visible:ring-offset-sage-50",
+                          checked
+                            ? "border-sage-500 bg-white shadow-md"
+                            : "border-sage-200/40 bg-white/60 hover:border-sage-300 hover:bg-white"
+                        )}
+                      >
+                        <div className="flex items-start gap-3">
+                          <RadioDot checked={checked} />
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="font-display text-base font-medium text-charcoal-900">{c.title}</span>
+                              <span className="shrink-0 text-xs sm:text-sm font-semibold text-sage-700">{formatINR(cFee)}{t.common.perMonthShort}</span>
+                            </div>
+                            <p className="mt-1 text-xs text-charcoal-500 leading-relaxed">{c.description}</p>
+                          </div>
+                        </div>
+                      </button>
+                    );
                   })}
-                </p>
+                </div>
               </div>
-            ) : (
+
+              <div>
+                <StepLabel step={2} title={e.step2} hint={e.step2Hint} />
+                <div role="radiogroup" aria-label={e.formatLabel} className="mt-3 grid grid-cols-2 gap-3">
+                  {(["offline", "online"] as const).map((m) => {
+                    const checked = mode === m;
+                    return (
+                      <button
+                        key={m}
+                        role="radio"
+                        aria-checked={checked}
+                        type="button"
+                        onClick={() => setMode(m)}
+                        className={cn(
+                          "flex cursor-pointer items-center justify-center gap-2 rounded-2xl border px-4 py-3 text-sm font-medium capitalize transition-all duration-300",
+                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 focus-visible:ring-offset-2 focus-visible:ring-offset-sage-50",
+                          checked
+                            ? "border-sage-500 bg-white text-charcoal-900 shadow-md"
+                            : "border-sage-200/40 bg-white/60 text-charcoal-500 hover:border-sage-300 hover:bg-white"
+                        )}
+                      >
+                        <RadioDot checked={checked} size="sm" />
+                        {m === "offline" ? t.common.offline : t.common.online}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {summary}
+            </div>
+
+            {/* Right: enrollment form */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.6 }}
+              className="rounded-5xl border border-sage-200/40 bg-white/70 p-6 sm:p-8 lg:p-10 shadow-sm backdrop-blur-sm"
+            >
               <form
                 className="space-y-4 sm:space-y-5"
                 onSubmit={(ev) => {
@@ -228,9 +262,9 @@ export default function Enroll() {
                 </Button>
                 <p className="text-center text-[11px] text-charcoal-400">{e.consent}</p>
               </form>
-            )}
-          </motion.div>
-        </div>
+            </motion.div>
+          </div>
+        )}
       </div>
     </section>
   );
