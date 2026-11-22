@@ -89,7 +89,7 @@ const en = {
     highlight: "Canvas",
     description:
       "Every stage of learning is an opportunity to develop artistic skills, patience, observation, imagination, focus, and independent thinking. We encourage students to experiment, learn from mistakes, and build confidence through practice.",
-    paceTitle: "Every Artist Grows at Their Own Pace.",
+    paceTitle: "Every Artist Grows at Their Own Place.",
     paceDesc:
       "From learning the fundamentals to developing advanced techniques, we guide learners through a structured creative journey that values progress, practice, and individual expression.",
     duration: "Duration",
@@ -213,6 +213,51 @@ const en = {
     kitTitleLine2: "Materials Kit",
     kitDescription: "Everything a beginner needs in one box — sourced and packed by us.",
     shopKit: "Shop the Kit →",
+    all: "All",
+    featured: "Featured",
+    sortLabel: "Sort",
+    sortFeatured: "Featured first",
+    sortPriceLow: "Price: low to high",
+    sortPriceHigh: "Price: high to low",
+    sortName: "Name (A–Z)",
+    catFramedArt: "Framed Art",
+    catKit: "Kits",
+    catMaterials: "Art Materials",
+    catAccessory: "Accessories",
+    inStock: "In stock",
+    madeToOrder: "Made to order",
+    soldOut: "Sold out",
+    off: "{percent}% off",
+    add: "Add",
+    addToBag: "Add to bag",
+    inBag: "In bag ({count})",
+    addedToBag: "Added to your bag",
+    includes: "What’s included",
+    quantity: "Quantity",
+    decrease: "One less",
+    increase: "One more",
+    orderOnWhatsApp: "Order on WhatsApp",
+    bag: "Your bag",
+    openBag: "Open your bag",
+    bagEmpty: "Your bag is empty",
+    bagEmptyHint: "Add the things you like, then send your order on WhatsApp.",
+    keepShopping: "Keep shopping",
+    subtotal: "Subtotal",
+    yourName: "Your name",
+    yourNamePlaceholder: "So we know who’s ordering",
+    deliveryNote: "Pickup or delivery note",
+    deliveryNotePlaceholder: "e.g. I’ll pick up from the studio / my area",
+    sendOrder: "Send order on WhatsApp",
+    howToOrder: "How ordering works",
+    howToOrderText: "Add items to your bag and send the order on WhatsApp. There’s no online payment — we’ll confirm availability, delivery and payment with you there.",
+    noWhatsApp: "Online ordering opens once the academy’s WhatsApp number is added. Until then, please reach us from the Contact page.",
+    contactUs: "Contact us",
+    clearBag: "Clear bag",
+    remove: "Remove",
+    close: "Close",
+    noProducts: "Nothing here yet — try another category.",
+    productsCount: "{count} products",
+    addKit: "Add the kit to your bag",
   },
 
   accessories: {
@@ -282,6 +327,15 @@ const en = {
     quote: "Create with Purpose. Grow with Confidence. Spread Peace Through Art.",
     quoteBy: "— Chalz Simon, Founder",
     imageAlt: "Chalz Simon, founder of Zayit Academy",
+    academyEyebrow: "About us",
+    foundersEyebrow: "Our Founders",
+    foundersTitle: "The people behind Zayit",
+    founderRole: "Founder",
+    coFounderName: "[Co-founder's name]",
+    coFounderRole: "Co-Founder",
+    coFounderBio: "[Add a short introduction for the co-founder in the admin panel.]",
+    readStory: "Read the full story",
+    showLess: "Show less",
   },
 
   contact: {
@@ -433,6 +487,21 @@ const en = {
     reset: "Reset to original",
   },
 
+  // Messages under form fields (Enroll, Collaboration, the footer email box)
+  validation: {
+    required: "Please fill this in.",
+    name: "Please use letters only (at least 2).",
+    email: "Enter a valid email address, like name@example.com.",
+    phone: "Enter a valid mobile number, like 98765 43210.",
+    age: "Age must be between 5 and 16.",
+    date: "Choose a valid date.",
+    datePast: "Choose today or a later date.",
+    message: "Please write at least 10 characters.",
+    choice: "Please choose an option.",
+    tooLong: "This is too long.",
+    fixFields: "Please check the highlighted fields.",
+  },
+
   notFound: {
     title: "Page not found",
     text: "The page you're looking for doesn't exist.",
@@ -447,9 +516,25 @@ const en = {
 // everywhere yet; lib/i18n shows the English text until they are.
 export type Translation = Omit<
   typeof en,
-  "common" | "visionValues" | "littleArtists" | "gallery" | "enroll" | "classes" | "collaboration" | "about"
+  "common" | "visionValues" | "littleArtists" | "gallery" | "store" | "enroll" | "classes" | "collaboration" | "about" | "validation"
 > & {
+  // The store's original words are translated; the shop words added later show in English until they are
+  store: Pick<
+    typeof en.store,
+    | "eyebrow"
+    | "title"
+    | "highlight"
+    | "description"
+    | "addToWishlist"
+    | "buyNow"
+    | "kitTitleLine1"
+    | "kitTitleLine2"
+    | "kitDescription"
+    | "shopKit"
+  > &
+    Partial<typeof en.store>;
   common: Omit<typeof en.common, "submitError"> & { submitError?: string };
+  validation?: Partial<typeof en.validation>;
   gallery: Omit<typeof en.gallery, "previous" | "next"> & { previous?: string; next?: string };
   enroll: Omit<typeof en.enroll, "enrollAnother"> & { enrollAnother?: string };
   visionValues?: typeof en.visionValues;
@@ -468,8 +553,13 @@ export type Translation = Omit<
     collaborationType?: string;
     preferredDate?: string;
   };
+  // title/eyebrow/highlight are now the founder's name and story labels; older translations
+  // used them as a headline, so other languages show the English until re-translated
   about: Omit<
     typeof en.about,
+    | "title"
+    | "eyebrow"
+    | "highlight"
     | "founderName"
     | "founderSubtitle"
     | "aboutZayitTitle"
@@ -480,7 +570,28 @@ export type Translation = Omit<
     | "closingTitle"
     | "closingText"
     | "closingSignature"
+    | "academyEyebrow"
+    | "foundersEyebrow"
+    | "foundersTitle"
+    | "founderRole"
+    | "coFounderName"
+    | "coFounderRole"
+    | "coFounderBio"
+    | "readStory"
+    | "showLess"
   > & {
+    title?: string;
+    eyebrow?: string;
+    highlight?: string;
+    academyEyebrow?: string;
+    foundersEyebrow?: string;
+    foundersTitle?: string;
+    founderRole?: string;
+    coFounderName?: string;
+    coFounderRole?: string;
+    coFounderBio?: string;
+    readStory?: string;
+    showLess?: string;
     founderName?: string;
     founderSubtitle?: string;
     aboutZayitTitle?: string;

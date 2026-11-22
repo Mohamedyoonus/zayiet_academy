@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { motion } from "framer-motion";
 import { Send, School, Users, Building, Palette, Sparkles } from "lucide-react";
 import Dots from "@/components/ui/dots";
@@ -9,6 +9,10 @@ import { useT } from "@/hooks/use-i18n";
 import { collaborationTypes } from "@/lib/data";
 import { submitEnquiry } from "@/lib/submissions";
 import { useToast } from "@/components/admin/toast";
+import FieldError from "@/components/ui/field-error";
+import { useFieldErrors } from "@/hooks/use-field-errors";
+import { isoDate, validateEnquiry } from "@/lib/validation";
+import { cn } from "@/lib/utils";
 
 const collaborationOptions = [
   { title: "School art programmes", icon: School, desc: "Curriculum-aligned workshops and art immersion days." },
@@ -21,6 +25,10 @@ const collaborationOptions = [
 const fieldClass =
   "w-full rounded-xl border border-sage-500/20 bg-white/5 px-3.5 py-2.5 text-sm text-white placeholder:text-white/30 focus:border-sage-400 focus:outline-none focus:ring-1 focus:ring-sage-400/50";
 const labelClass = "mb-1.5 block text-xs font-medium text-white/70 sm:text-[13px]";
+/** A field that needs fixing */
+const invalidClass = "border-red-400/80 focus:border-red-400 focus:ring-red-400/50";
+
+const enquiryTypes = collaborationTypes.map((c) => c.value);
 
 // Compact layout: heading, options and the whole form fit on one screen on desktop
 export default function Collaboration() {
@@ -29,6 +37,12 @@ export default function Collaboration() {
   // After sending, the form stays in place (cleared) and a snackbar says thank you
   const [sending, startSending] = useTransition();
   const toast = useToast();
+  // The date picker starts at today; set after loading so the server and browser agree
+  const [today, setToday] = useState<string>();
+  useEffect(() => setToday(isoDate()), []);
+  const check = useFieldErrors("collab", (values) =>
+    validateEnquiry(values, { types: enquiryTypes, earliestDate: isoDate() })
+  );
 
   return (
     <section
@@ -103,14 +117,22 @@ export default function Collaboration() {
         >
             <form
               className="space-y-3.5"
+              {...check.formEvents}
               onSubmit={(e) => {
                 e.preventDefault();
                 const formElement = e.currentTarget;
+                // Point at what needs fixing before sending anything
+                if (!check.checkAll(formElement)) return toast.error(dictionary.validation.fixFields);
                 const form = new FormData(formElement);
                 startSending(async () => {
-                  const { ok } = await submitEnquiry(form);
+                  const { ok, errors } = await submitEnquiry(form);
+                  if (errors) {
+                    check.show(formElement, errors);
+                    return toast.error(dictionary.validation.fixFields);
+                  }
                   if (!ok) return toast.error(dictionary.common.submitError);
                   formElement.reset();
+                  check.clear();
                   toast.success(`${t.thanks} ${t.thanksText}`);
                 });
               }}
@@ -123,13 +145,20 @@ export default function Collaboration() {
               <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden className="absolute -left-[9999px] h-0 w-0 opacity-0" />
 
               <div className="grid gap-3.5 sm:grid-cols-2">
-                <Field name="name" label={t.name} placeholder={t.namePlaceholder} />
-                <Field name="organisation" label={t.organisation} placeholder={t.organisationPlaceholder} required={false} />
-                <Field name="email" label={t.email} type="email" placeholder="you@email.com" />
-                <Field name="mobile" label={t.mobile} type="tel" placeholder="+91 00000 00000" />
+                <Field check={check} name="name" label={t.name} placeholder={t.namePlaceholder} autoComplete="name" />
+                <Field check={check} name="organisation" label={t.organisation} placeholder={t.organisationPlaceholder} autoComplete="organization" required={false} />
+                <Field check={check} name="email" label={t.email} type="email" inputMode="email" autoComplete="email" placeholder="you@email.com" />
+                <Field check={check} name="mobile" label={t.mobile} type="tel" inputMode="tel" autoComplete="tel" placeholder="+91 98765 43210" />
                 <div>
-                  <label className={labelClass}>{t.collaborationType}</label>
-                  <select name="collaborationType" required defaultValue="" className={`${fieldClass} bg-charcoal-900`}>
+                  <label htmlFor="collab-collaborationType" className={labelClass}>{t.collaborationType}</label>
+                  <select
+                    id="collab-collaborationType"
+                    name="collaborationType"
+                    required
+                    defaultValue=""
+                    {...check.fieldProps("collaborationType")}
+                    className={cn(fieldClass, "bg-charcoal-900", check.errors.collaborationType && invalidClass)}
+                  >
                     <option value="" disabled className="bg-charcoal-900 text-white/40">
                       Select collaboration type
                     </option>
@@ -139,16 +168,36 @@ export default function Collaboration() {
                       </option>
                     ))}
                   </select>
+                  <FieldError dark id={check.messageId("collaborationType")} code={check.errors.collaborationType} />
                 </div>
                 <div>
-                  <label className={labelClass}>{t.preferredDate}</label>
-                  <input name="preferredDate" type="date" required className={`${fieldClass} [color-scheme:dark]`} />
+                  <label htmlFor="collab-preferredDate" className={labelClass}>{t.preferredDate}</label>
+                  <input
+                    id="collab-preferredDate"
+                    name="preferredDate"
+                    type="date"
+                    required
+                    min={today}
+                    {...check.fieldProps("preferredDate")}
+                    className={cn(fieldClass, "[color-scheme:dark]", check.errors.preferredDate && invalidClass)}
+                  />
+                  <FieldError dark id={check.messageId("preferredDate")} code={check.errors.preferredDate} />
                 </div>
               </div>
 
               <div>
-                <label className={labelClass}>{t.message}</label>
-                <textarea name="message" required maxLength={2000} rows={3} placeholder={t.messagePlaceholder} className={fieldClass} />
+                <label htmlFor="collab-message" className={labelClass}>{t.message}</label>
+                <textarea
+                  id="collab-message"
+                  name="message"
+                  required
+                  maxLength={2000}
+                  rows={3}
+                  placeholder={t.messagePlaceholder}
+                  {...check.fieldProps("message")}
+                  className={cn(fieldClass, check.errors.message && invalidClass)}
+                />
+                <FieldError dark id={check.messageId("message")} code={check.errors.message} />
               </div>
 
               <Button
@@ -167,22 +216,39 @@ export default function Collaboration() {
 }
 
 function Field({
+  check,
   name,
   label,
   type = "text",
+  inputMode,
+  autoComplete,
   placeholder,
   required = true,
 }: {
+  check: ReturnType<typeof useFieldErrors>;
   name: string;
   label: string;
   type?: string;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  autoComplete?: string;
   placeholder: string;
   required?: boolean;
 }) {
   return (
     <div>
-      <label className={labelClass}>{label}</label>
-      <input name={name} required={required} type={type} placeholder={placeholder} className={fieldClass} />
+      <label htmlFor={`collab-${name}`} className={labelClass}>{label}</label>
+      <input
+        id={`collab-${name}`}
+        name={name}
+        required={required}
+        type={type}
+        inputMode={inputMode}
+        autoComplete={autoComplete}
+        placeholder={placeholder}
+        {...check.fieldProps(name)}
+        className={cn(fieldClass, check.errors[name] && invalidClass)}
+      />
+      <FieldError dark id={check.messageId(name)} code={check.errors[name]} />
     </div>
   );
 }

@@ -91,7 +91,7 @@ export const deliveryModes: DeliveryMode[] = [
     id: "pre-recorded",
     title: "Pre-Recorded Classes",
     icon: "play",
-    points: ["70+ hours of content", "12 weeks, learn at your own pace", "Lifetime access + certificate"],
+    points: ["70+ hours of content", "12 weeks, learn at your own place", "Lifetime access + certificate"],
   },
 ];
 
@@ -222,7 +222,7 @@ export const testimonials: Testimonial[] = [
 export const faqs: FAQItem[] = [
   { id: "f1", question: "What age group is Zayit Academy for?", answer: "Our classes are designed for children aged 5–16 years, progressing through the Basic, Advanced and Pro levels." },
   { id: "f2", question: "Do I need any prior art experience to join Basic?", answer: "No prior experience is required. The Basic course is built from the ground up — line, form and shading — through fully visual, hands-on classes." },
-  { id: "f3", question: "What's the difference between Online Live and Pre-Recorded classes?", answer: "Online Live mirrors the offline schedule with real-time instructor feedback over 24 weeks. Pre-Recorded gives you 70+ hours of structured lessons across 12 weeks with lifetime access, so you can learn at your own pace." },
+  { id: "f3", question: "What's the difference between Online Live and Pre-Recorded classes?", answer: "Online Live mirrors the offline schedule with real-time instructor feedback over 24 weeks. Pre-Recorded gives you 70+ hours of structured lessons across 12 weeks with lifetime access, so you can learn at your own place." },
   { id: "f4", question: "Is a certificate provided for every course?", answer: "Yes — Basic, Advanced, Pro, Online Live and Pre-Recorded courses all include a certificate of completion." },
   { id: "f5", question: "How large are the batches?", answer: "We intentionally cap batches at 15 students so every student gets real, individual attention from instructors." },
   { id: "f6", question: "Is there a minimum fee to be paid at admission?", answer: "Yes — every new student pays a minimum of 3 months' course fees at the time of admission." },

@@ -53,27 +53,7 @@ export default function AboutForm({ initial }: { initial: AboutContent }) {
 
   return (
     <form onSubmit={save} className="mx-auto max-w-4xl space-y-5 pb-24">
-      <Section title="Founder’s story" hint="The first part of the page: photo, name and story.">
-        <ImageUpload
-          value={about.photo}
-          onChange={(url) => set("photo", url)}
-          folder="about"
-          aspect="aspect-[3/4]"
-          compact
-          hint="A portrait photo works best. Large photos are made smaller automatically."
-        />
-        <div className="grid gap-4 sm:grid-cols-2">
-          {line("title", "Founder’s name")}
-          {line("quoteBy", "Caption on the photo")}
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {line("eyebrow", "Small label above the name")}
-          {line("highlight", "Line under the name")}
-        </div>
-        {text("story", "Story", 8, "Leave an empty line between paragraphs. The last paragraph is shown as a highlighted quote.")}
-      </Section>
-
-      <Section title="About Zayit Academy">
+      <Section title="About Zayit Academy" hint="The top of the page: the main heading and the academy’s story.">
         {line("aboutZayitTitle", "Title")}
         {text("aboutZayitText", "Text", 6, "Leave an empty line between paragraphs. The first paragraph is shown larger.")}
         {line("aboutZayitTagline", "Tagline", "Each sentence becomes a numbered line (01, 02, 03).")}
@@ -89,6 +69,39 @@ export default function AboutForm({ initial }: { initial: AboutContent }) {
           {line("visionTitle", "Label")}
           {line("visionTagline", "Headline")}
           {text("vision", "Text", 4)}
+        </Section>
+      </div>
+
+      <div className="grid gap-5 md:grid-cols-2">
+        <Section title="Founder" hint="Shown in “Our Founders”, with a small photo.">
+          <ImageUpload
+            value={about.photo}
+            onChange={(url) => set("photo", url)}
+            folder="about"
+            aspect="aspect-[3/4]"
+            compact
+            hint="A portrait photo works best. Large photos are made smaller automatically."
+          />
+          {line("title", "Name")}
+          {line("founderRole", "Role")}
+          {line("highlight", "Line under the name")}
+          {line("eyebrow", "Label above the story")}
+          {text("story", "Story", 8, "Leave an empty line between paragraphs. The last paragraph is shown as a highlighted quote.")}
+          {line("quoteBy", "Under the quote")}
+        </Section>
+
+        <Section title="Co-founder" hint="Shown next to the founder. Replace the [placeholders] with the real details.">
+          <ImageUpload
+            value={about.coFounderPhoto}
+            onChange={(url) => set("coFounderPhoto", url)}
+            folder="about"
+            aspect="aspect-[3/4]"
+            compact
+            hint="Optional. Without a photo, the co-founder’s initials are shown."
+          />
+          {line("coFounderName", "Name")}
+          {line("coFounderRole", "Role")}
+          {text("coFounderBio", "Introduction", 6, "Leave an empty line between paragraphs.")}
         </Section>
       </div>
 

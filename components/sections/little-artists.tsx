@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { usePaintTrail } from "@/hooks/use-paint-trail";
 import { useSettings } from "@/hooks/use-settings";
 import { useT } from "@/hooks/use-i18n";
+import { useShownLink } from "@/hooks/use-content";
 
 type Stroke = { d: string; color: string; width?: number };
 
@@ -638,6 +639,8 @@ export default function LittleArtists() {
   const [active, setActive] = useState<number | null>(null);
   const { settings } = useSettings();
   const t = useT();
+  // "Try the Fun Zone" only while the admin shows that page
+  const shown = useShownLink();
   // The trail itself checks the "trail" setting and reduced motion
   const { spawn, trail } = usePaintTrail();
 
@@ -813,15 +816,17 @@ export default function LittleArtists() {
             >
               {t.littleArtists.enrollChild} <ArrowRight className="h-4 w-4 shrink-0" />
             </Link>
-            <Link
-              href="/fun-zone"
-              className={cn(
-                buttonVariants({ size: "md", variant: "outline" }),
-                "min-w-0 flex-1 gap-1.5 whitespace-nowrap px-3 text-[13px] sm:flex-none sm:gap-2 sm:px-6 sm:text-sm"
-              )}
-            >
-              <Palette className="h-4 w-4 shrink-0" /> {t.littleArtists.tryFunZone}
-            </Link>
+            {shown("/fun-zone") && (
+              <Link
+                href="/fun-zone"
+                className={cn(
+                  buttonVariants({ size: "md", variant: "outline" }),
+                  "min-w-0 flex-1 gap-1.5 whitespace-nowrap px-3 text-[13px] sm:flex-none sm:gap-2 sm:px-6 sm:text-sm"
+                )}
+              >
+                <Palette className="h-4 w-4 shrink-0" /> {t.littleArtists.tryFunZone}
+              </Link>
+            )}
           </div>
         </motion.div>
       </div>

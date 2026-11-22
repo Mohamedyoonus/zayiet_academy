@@ -13,6 +13,9 @@ import { useData, useT } from "@/hooks/use-i18n";
 import { fmt } from "@/lib/i18n";
 import { submitEnrollment } from "@/lib/submissions";
 import { useToast } from "@/components/admin/toast";
+import FieldError from "@/components/ui/field-error";
+import { useFieldErrors } from "@/hooks/use-field-errors";
+import { validateEnrollment } from "@/lib/validation";
 
 function RadioDot({ checked, size = "md" }: { checked: boolean; size?: "sm" | "md" }) {
   const outer = size === "sm" ? "h-4 w-4" : "h-5 w-5";
@@ -60,6 +63,7 @@ export default function Enroll() {
   const [submitted, setSubmitted] = useState(false);
   const [sending, startSending] = useTransition();
   const toast = useToast();
+  const check = useFieldErrors("enroll", validateEnrollment);
 
   const course = courses.find((c) => c.id === courseId) ?? courses[0];
   const fee = mode === "offline" ? course.feeOffline : course.feeOnline;
@@ -221,14 +225,23 @@ export default function Enroll() {
             >
               <form
                 className="space-y-4 sm:space-y-5"
+                {...check.formEvents}
                 onSubmit={(ev) => {
                   ev.preventDefault();
-                  const form = new FormData(ev.currentTarget);
+                  const formElement = ev.currentTarget;
+                  // Point at what needs fixing before sending anything
+                  if (!check.checkAll(formElement)) return toast.error(t.validation.fixFields);
+                  const form = new FormData(formElement);
                   form.set("course", course.id);
                   form.set("mode", mode);
                   startSending(async () => {
-                    const { ok } = await submitEnrollment(form);
+                    const { ok, errors } = await submitEnrollment(form);
+                    if (errors) {
+                      check.show(formElement, errors);
+                      return toast.error(t.validation.fixFields);
+                    }
                     if (!ok) return toast.error(t.common.submitError);
+                    check.clear();
                     setSubmitted(true);
                     toast.success(e.doneTitle);
                   });
@@ -239,23 +252,26 @@ export default function Enroll() {
                 <input type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden className="absolute -left-[9999px] h-0 w-0 opacity-0" />
 
                 <div className="grid gap-4 sm:gap-5 sm:grid-cols-2">
-                  <Field name="studentName" label={e.studentName} placeholder={e.fullName} required requiredLabel={t.common.required} />
-                  <Field name="studentAge" label={e.studentAge} type="number" placeholder={e.agePlaceholder} min={5} max={16} required requiredLabel={t.common.required} hint={e.ageHint} />
+                  <Field check={check} name="studentName" label={e.studentName} placeholder={e.fullName} autoComplete="off" required requiredLabel={t.common.required} />
+                  <Field check={check} name="studentAge" label={e.studentAge} type="number" inputMode="numeric" placeholder={e.agePlaceholder} min={5} max={16} required requiredLabel={t.common.required} hint={e.ageHint} />
                 </div>
                 <div className="grid gap-4 sm:gap-5 sm:grid-cols-2">
-                  <Field name="parentName" label={e.parentName} placeholder={e.fullName} required requiredLabel={t.common.required} />
-                  <Field name="mobile" label={e.mobile} type="tel" placeholder="+91 00000 00000" required requiredLabel={t.common.required} />
+                  <Field check={check} name="parentName" label={e.parentName} placeholder={e.fullName} autoComplete="name" required requiredLabel={t.common.required} />
+                  <Field check={check} name="mobile" label={e.mobile} type="tel" inputMode="tel" autoComplete="tel" placeholder="+91 98765 43210" required requiredLabel={t.common.required} />
                 </div>
-                <Field name="email" label={e.email} type="email" placeholder="you@email.com" required requiredLabel={t.common.required} />
+                <Field check={check} name="email" label={e.email} type="email" inputMode="email" autoComplete="email" placeholder="you@email.com" required requiredLabel={t.common.required} />
                 <div>
-                  <label className="mb-2 block text-xs sm:text-sm font-medium text-charcoal-700">{e.message} <span className="font-normal text-charcoal-400">{t.common.optional}</span></label>
+                  <label htmlFor="enroll-message" className="mb-2 block text-xs sm:text-sm font-medium text-charcoal-700">{e.message} <span className="font-normal text-charcoal-400">{t.common.optional}</span></label>
                   <textarea
+                    id="enroll-message"
                     name="message"
                     maxLength={2000}
                     rows={4}
                     placeholder={e.messagePlaceholder}
-                    className="w-full rounded-2xl border border-sage-200/50 bg-white px-4 sm:px-5 py-3 sm:py-4 text-sm text-charcoal-900 placeholder:text-charcoal-400 focus:border-sage-400 focus:outline-none focus:ring-1 focus:ring-sage-400/50 focus-visible:ring-2 focus-visible:ring-sage-500"
+                    {...check.fieldProps("message")}
+                    className={cn(fieldClass, "py-3 sm:py-4", check.errors.message && invalidClass)}
                   />
+                  <FieldError id={check.messageId("message")} code={check.errors.message} />
                 </div>
                 <Button type="submit" size="lg" disabled={sending} className="w-full justify-center h-11 sm:h-12">
                   {e.confirm} {sending ? <Dots label="Sending" /> : <Send className="h-4 w-4" />}
@@ -270,10 +286,18 @@ export default function Enroll() {
   );
 }
 
+const fieldClass =
+  "w-full rounded-2xl border border-sage-200/50 bg-white px-4 sm:px-5 text-sm text-charcoal-900 placeholder:text-charcoal-400 focus:border-sage-400 focus:outline-none focus:ring-1 focus:ring-sage-400/50 focus-visible:ring-2 focus-visible:ring-sage-500";
+/** A field that needs fixing */
+const invalidClass = "border-red-400 focus:border-red-400 focus:ring-red-300/60 focus-visible:ring-red-300";
+
 function Field({
+  check,
   name,
   label,
   type = "text",
+  inputMode,
+  autoComplete,
   placeholder,
   min,
   max,
@@ -281,9 +305,12 @@ function Field({
   requiredLabel,
   hint,
 }: {
+  check: ReturnType<typeof useFieldErrors>;
   name: string;
   label: string;
   type?: string;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  autoComplete?: string;
   placeholder: string;
   min?: number;
   max?: number;
@@ -292,9 +319,10 @@ function Field({
   requiredLabel?: string;
   hint?: string;
 }) {
+  const error = check.errors[name];
   return (
     <div>
-      <label className="mb-2 block text-xs sm:text-sm font-medium text-charcoal-700">
+      <label htmlFor={`enroll-${name}`} className="mb-2 block text-xs sm:text-sm font-medium text-charcoal-700">
         {label}
         {required && (
           <>
@@ -304,15 +332,24 @@ function Field({
         )}
       </label>
       <input
+        id={`enroll-${name}`}
         name={name}
         required={required}
         type={type}
+        inputMode={inputMode}
+        autoComplete={autoComplete}
         min={min}
         max={max}
         placeholder={placeholder}
-        className="w-full rounded-2xl border border-sage-200/50 bg-white px-4 sm:px-5 py-2.5 sm:py-3.5 text-sm text-charcoal-900 placeholder:text-charcoal-400 focus:border-sage-400 focus:outline-none focus:ring-1 focus:ring-sage-400/50 focus-visible:ring-2 focus-visible:ring-sage-500"
+        {...check.fieldProps(name)}
+        className={cn(fieldClass, "py-2.5 sm:py-3.5", error && invalidClass)}
       />
-      {hint && <p className="mt-1.5 text-[11px] text-charcoal-400">{hint}</p>}
+      {/* The hint makes way for the message while there's a problem */}
+      {error ? (
+        <FieldError id={check.messageId(name)} code={error} />
+      ) : (
+        hint && <p className="mt-1.5 text-[11px] text-charcoal-400">{hint}</p>
+      )}
     </div>
   );
 }

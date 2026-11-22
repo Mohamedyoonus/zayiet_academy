@@ -42,6 +42,42 @@ export function Field({ label, hint, children }: { label: string; hint?: string;
   );
 }
 
+/** On/off switch, with "Shown"/"Hidden" (or your own words) beside it from sm up */
+export function Toggle({
+  on,
+  onChange,
+  label,
+  onText = "Shown",
+  offText = "Hidden",
+}: {
+  on: boolean;
+  onChange: (on: boolean) => void;
+  /** What the switch controls, for screen readers */
+  label: string;
+  onText?: string;
+  offText?: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      aria-label={label}
+      onClick={() => onChange(!on)}
+      className="flex shrink-0 items-center gap-2 rounded-full p-1 text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500"
+    >
+      <span className={cn("hidden min-w-12 text-right sm:inline-block", on ? "text-sage-700" : "text-charcoal-400")}>
+        {on ? onText : offText}
+      </span>
+      <span className={cn("relative inline-flex h-6 w-11 items-center rounded-full transition-colors", on ? "bg-sage-600" : "bg-charcoal-200")}>
+        <span
+          className={cn("inline-block h-5 w-5 rounded-full bg-white shadow transition-transform", on ? "translate-x-[22px]" : "translate-x-0.5")}
+        />
+      </span>
+    </button>
+  );
+}
+
 export const statusStyles: Record<Status, string> = {
   new: "bg-amber-100 text-amber-800",
   contacted: "bg-sky-100 text-sky-800",

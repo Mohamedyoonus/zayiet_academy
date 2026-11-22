@@ -15,12 +15,13 @@ import {
   materialsKit,
   nav,
   otherServices,
-  products,
   testimonials,
   workshops,
 } from "@/lib/data";
 import type { EventClient, GalleryItem, Testimonial } from "@/types";
 import { useContent } from "@/hooks/use-content";
+import { isLinkHidden } from "@/lib/site-layout";
+import { STARTING_STORE } from "@/lib/store";
 
 type I18nContextValue = {
   locale: Locale;
@@ -116,9 +117,13 @@ export function useData() {
     const galleryCategory = (c: GalleryItem["category"]) => tr.galleryCategories?.[c] ?? c;
     const eventCategory = (c: EventClient["category"]) => tr.eventCategories?.[c] ?? c;
     const role = (r: Testimonial["role"]) => tr.roles?.[r] ?? r;
+    const kitItems = materialsKit.map((item, i) => tr.materialsKit?.[i] ?? item);
 
     return {
-      nav: nav.map((item) => ({ ...item, label: t.nav[item.key] })),
+      // Pages and sections the admin has hidden drop out of the menus
+      nav: nav
+        .filter((item) => !isLinkHidden(content.layout, item.href))
+        .map((item) => ({ ...item, label: t.nav[item.key] })),
       courses: content.courses
         ? content.courses.map((c) => ({ ...c, tierLabel: c.tier }))
         : courses.map((c) => {
@@ -142,8 +147,21 @@ export function useData() {
         const x = tr.workshops?.[w.id] ?? {};
         return { ...w, title: x.title ?? w.title, venue: x.venue ?? w.venue, date: x.date ?? w.date };
       }),
-      products: products.map((p) => ({ ...p, name: tr.products?.[p.id] ?? p.name })),
-      materialsKit: materialsKit.map((item, i) => tr.materialsKit?.[i] ?? item),
+      // The admin's store (English) when saved; otherwise the starting products, translated where possible
+      store: content.store ?? {
+        ...STARTING_STORE,
+        products: STARTING_STORE.products.map((p) => ({
+          ...p,
+          name: tr.products?.[p.id] ?? p.name,
+          includes: p.id === STARTING_STORE.kit.productId ? kitItems : p.includes,
+        })),
+        kit: {
+          ...STARTING_STORE.kit,
+          title: `${t.store.kitTitleLine1} ${t.store.kitTitleLine2}`,
+          description: t.store.kitDescription,
+          items: kitItems,
+        },
+      },
       accessories: accessories.map((a) => ({ ...a, name: tr.accessories?.[a.id] ?? a.name })),
       eventClients: eventClients.map((e) => {
         const x = tr.eventClients?.[e.id] ?? {};

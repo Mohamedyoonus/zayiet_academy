@@ -6,9 +6,13 @@ import { Instagram, Facebook, Youtube, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { scrollToHash } from "@/lib/utils";
 import { useData, useT } from "@/hooks/use-i18n";
-import { useContent } from "@/hooks/use-content";
+import { useContent, useShownLink } from "@/hooks/use-content";
 import { fmt } from "@/lib/i18n";
 import { webLink } from "@/lib/contact";
+import FieldError from "@/components/ui/field-error";
+import { useFieldErrors } from "@/hooks/use-field-errors";
+import { checkEmail } from "@/lib/validation";
+import { cn } from "@/lib/utils";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -23,6 +27,22 @@ export default function Footer() {
   ].filter((s) => s.href);
   const linkClass =
     "transition-all duration-300 hover:text-sage-300 hover:pl-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 rounded px-1";
+  // Pages the admin has hidden are left out
+  const shown = useShownLink();
+  const emailCheck = useFieldErrors("footer", (values) => {
+    const code = checkEmail(values.email);
+    return code ? { email: code } : {};
+  });
+  const supportLinks: [href: string, label: string][] = [
+    ["/faq", t.footer.helpCenter],
+    ["/classes", t.footer.courseSupport],
+    ["/contact", t.footer.customerSupport],
+    ["/faq", t.footer.faq],
+    ["/accessories", t.footer.accessories],
+    ["/other-services", t.footer.otherServices],
+    ["/testimonials", t.footer.testimonials],
+    ["/settings", t.footer.settings],
+  ];
 
   // If already on the target page, smooth-scroll immediately; otherwise let
   // the Link's own navigation happen — Navbar's useHashScroll picks it up on arrival.
@@ -95,34 +115,53 @@ export default function Footer() {
         <div>
           <h4 className="font-display text-sm sm:text-base font-semibold text-white">{t.footer.support}</h4>
           <ul className="mt-4 sm:mt-5 space-y-2 sm:space-y-3 text-xs sm:text-sm text-white/60">
-            <li><Link href="/faq" className={linkClass}>{t.footer.helpCenter}</Link></li>
-            <li><Link href="/classes" className={linkClass}>{t.footer.courseSupport}</Link></li>
-            <li><Link href="/contact" className={linkClass}>{t.footer.customerSupport}</Link></li>
-            <li><Link href="/faq" className={linkClass}>{t.footer.faq}</Link></li>
-            <li><Link href="/accessories" className={linkClass}>{t.footer.accessories}</Link></li>
-            <li><Link href="/other-services" className={linkClass}>{t.footer.otherServices}</Link></li>
-            <li><Link href="/testimonials" className={linkClass}>{t.footer.testimonials}</Link></li>
-            <li><Link href="/settings" className={linkClass}>{t.footer.settings}</Link></li>
+            {supportLinks
+              .filter(([href]) => shown(href))
+              .map(([href, label]) => (
+                <li key={label}>
+                  <Link href={href} className={linkClass}>
+                    {label}
+                  </Link>
+                </li>
+              ))}
           </ul>
         </div>
 
         <div>
           <h4 className="font-display text-sm sm:text-base font-semibold text-white">{t.footer.stayInspired}</h4>
           <p className="mt-3 sm:mt-5 text-xs sm:text-sm text-white/60">{t.footer.newsletter}</p>
-          <form className="mt-4 flex flex-row items-center gap-2 sm:gap-3" onSubmit={(e) => e.preventDefault()}>
-            <input
-              type="email"
-              required
-              placeholder={t.footer.emailPlaceholder}
-              className="h-11 sm:h-12 min-w-0 flex-1 rounded-full border border-white/15 bg-white/5 px-4 sm:px-5 text-sm text-white placeholder:text-white/40 transition-all duration-300 focus:border-sage-400 focus:bg-white/10 focus:outline-none focus:ring-2 focus:ring-sage-400/20"
-            />
-            <Button
-              size="md"
-              className="!h-11 sm:!h-12 !w-11 sm:!w-12 !p-0 bg-sage-500 hover:bg-sage-600 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-sage-500/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 shrink-0"
-              aria-label={t.footer.subscribe}
-            >
-              <Send className="h-4 w-4" />
-            </Button>
+          <form
+            className="mt-4"
+            {...emailCheck.formEvents}
+            onSubmit={(e) => {
+              e.preventDefault();
+              emailCheck.checkAll(e.currentTarget);
+            }}
+          >
+            <div className="flex flex-row items-center gap-2 sm:gap-3">
+              <input
+                name="email"
+                type="email"
+                inputMode="email"
+                autoComplete="email"
+                required
+                aria-label={t.footer.emailPlaceholder}
+                placeholder={t.footer.emailPlaceholder}
+                {...emailCheck.fieldProps("email")}
+                className={cn(
+                  "h-11 sm:h-12 min-w-0 flex-1 rounded-full border border-white/15 bg-white/5 px-4 sm:px-5 text-sm text-white placeholder:text-white/40 transition-all duration-300 focus:border-sage-400 focus:bg-white/10 focus:outline-none focus:ring-2 focus:ring-sage-400/20",
+                  emailCheck.errors.email && "border-red-400/80 focus:border-red-400 focus:ring-red-400/30"
+                )}
+              />
+              <Button
+                size="md"
+                className="!h-11 sm:!h-12 !w-11 sm:!w-12 !p-0 bg-sage-500 hover:bg-sage-600 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-sage-500/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 shrink-0"
+                aria-label={t.footer.subscribe}
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
+            <FieldError dark id={emailCheck.messageId("email")} code={emailCheck.errors.email} />
           </form>
         </div>
       </div>

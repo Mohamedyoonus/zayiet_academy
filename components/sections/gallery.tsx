@@ -9,6 +9,7 @@ import SectionHeading from "@/components/ui/section-heading";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useData, useT } from "@/hooks/use-i18n";
+import { useShownLink } from "@/hooks/use-content";
 import { galleryCategories } from "@/lib/data";
 
 const filters = ["All", ...galleryCategories] as const;
@@ -42,6 +43,8 @@ const viewerSlide = {
 export default function Gallery({ preview = false }: { preview?: boolean }) {
   const t = useT();
   const { galleryItems, galleryCategory } = useData();
+  // The home page's View Gallery button only while the Gallery page is shown
+  const shown = useShownLink();
   const [filter, setFilter] = useState<(typeof filters)[number]>("All");
 
   const filtered = filter === "All" ? galleryItems : galleryItems.filter((g) => g.category === filter);
@@ -191,7 +194,7 @@ export default function Gallery({ preview = false }: { preview?: boolean }) {
           </AnimatePresence>
         </motion.div>
 
-        {preview && (
+        {preview && shown("/gallery") && (
           <div className="mt-8 flex justify-center lg:mt-10">
             <Link href="/gallery" className={cn(buttonVariants({ variant: "outline" }), "h-11 sm:h-12")}>
               {t.hero.viewGallery} <ArrowRight className="h-4 w-4" />

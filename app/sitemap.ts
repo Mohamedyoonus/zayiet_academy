@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
+import { getSiteContent } from "@/lib/content";
+import { isLinkHidden } from "@/lib/site-layout";
 
 // Every page Google should list (Settings is left out on purpose)
 const PAGES = [
@@ -19,8 +21,10 @@ const PAGES = [
   "/contact",
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  return PAGES.map((path) => ({
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Pages the admin has hidden aren't listed
+  const { layout } = await getSiteContent();
+  return PAGES.filter((path) => !isLinkHidden(layout, path)).map((path) => ({
     url: new URL(path, SITE_URL).toString(),
     changeFrequency: "monthly",
     priority: path === "/" ? 1 : 0.7,

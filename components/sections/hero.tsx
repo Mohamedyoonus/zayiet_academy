@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { usePaintTrail } from "@/hooks/use-paint-trail";
 import { useMotionReduced, useSettings } from "@/hooks/use-settings";
 import { useT } from "@/hooks/use-i18n";
-import { useContent } from "@/hooks/use-content";
+import { useContent, useShownLink } from "@/hooks/use-content";
 
 const ease = [0.16, 1, 0.3, 1] as const;
 
@@ -76,6 +76,7 @@ const PARALLAX_SPRING = { stiffness: 120, damping: 22, mass: 0.5 };
 export default function Hero() {
   const t = useT();
   const router = useRouter();
+  const shown = useShownLink();
   // Text, photo and numbers set in the admin (English only); the translated defaults until then
   const hero = useContent().hero ?? {
     eyebrow: t.hero.eyebrow,
@@ -449,39 +450,44 @@ export default function Hero() {
               lg:mt-6
             "
           >
-            <Button
-              size="lg"
-              className="
-                h-11
-                px-5
-                text-sm
+            {/* Each button only while the admin shows its page */}
+            {shown("/classes") && (
+              <Button
+                size="lg"
+                className="
+                  h-11
+                  px-5
+                  text-sm
 
-                sm:h-12
-                sm:px-6
-                sm:text-base
-              "
-              onClick={() => router.push("/classes")}
-            >
-              {t.hero.exploreClasses}
-              <ArrowRight className="h-4 w-4" />
-            </Button>
+                  sm:h-12
+                  sm:px-6
+                  sm:text-base
+                "
+                onClick={() => router.push("/classes")}
+              >
+                {t.hero.exploreClasses}
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            )}
 
-            <Button
-              size="lg"
-              variant="outline"
-              className="
-                h-11
-                px-5
-                text-sm
+            {shown("/gallery") && (
+              <Button
+                size="lg"
+                variant="outline"
+                className="
+                  h-11
+                  px-5
+                  text-sm
 
-                sm:h-12
-                sm:px-6
-                sm:text-base
-              "
-              onClick={() => router.push("/gallery")}
-            >
-              {t.hero.viewGallery}
-            </Button>
+                  sm:h-12
+                  sm:px-6
+                  sm:text-base
+                "
+                onClick={() => router.push("/gallery")}
+              >
+                {t.hero.viewGallery}
+              </Button>
+            )}
           </motion.div>
 
           {/* Stats */}

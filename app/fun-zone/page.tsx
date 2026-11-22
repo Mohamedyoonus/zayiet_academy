@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirectIfHidden } from "@/lib/content";
 import FunZone from "@/components/sections/fun-zone";
 
 export const metadata: Metadata = {
@@ -8,6 +9,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/fun-zone" },
 };
 
-export default function FunZonePage() {
+// Visitors are sent to the home page while the admin has this page hidden
+export default async function FunZonePage() {
+  await redirectIfHidden("fun-zone");
   return <FunZone />;
 }

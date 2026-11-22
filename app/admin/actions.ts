@@ -8,6 +8,8 @@ import { CONTENT_TAG, type AboutContent, type ContactContent, type HeroContent }
 import { MEDIA_BUCKET, SUPABASE_URL, supabaseConfigured } from "@/lib/supabase/config";
 import { createSessionClient } from "@/lib/supabase/server";
 import { galleryCategories } from "@/lib/data";
+import { normalizeLayout, type LayoutContent } from "@/lib/site-layout";
+import { normalizeStore, storeProblem, type StoreContent } from "@/lib/store";
 
 // Everything the admin pages change. Each action checks for a signed-in admin
 // first; the database's own rules check again.
@@ -117,6 +119,47 @@ export async function saveHero(input: HeroContent) {
   });
 }
 
+/* ------------------------------- Pages & sections ------------------------------- */
+
+export async function saveLayout(input: LayoutContent) {
+  return run(async () => {
+    // Drops unknown names and keeps the hero first, whatever was sent
+    const layout = normalizeLayout(input);
+    const supabase = await admin();
+    const { error } = await supabase
+      .from("site_content")
+      .upsert({ key: "layout", data: layout, updated_at: new Date().toISOString() });
+    if (error) return failed(error.message);
+    refreshSite("/admin/pages");
+    return done;
+  });
+}
+
+/* ------------------------------------ Store ------------------------------------ */
+
+export async function saveStore(input: StoreContent) {
+  return run(async () => {
+    const store = normalizeStore(input);
+    if (!store) return failed("Nothing to save.");
+    const problem = storeProblem(store);
+    if (problem) return failed(problem.message);
+
+    const supabase = await admin();
+    // Photos uploaded for products that are now deleted (or replaced) are removed from storage
+    const { data: before } = await supabase.from("site_content").select("data").eq("key", "store").maybeSingle();
+    const kept = new Set(store.products.map((p) => p.image));
+    const dropped = (normalizeStore(before?.data)?.products ?? []).map((p) => p.image).filter((url) => !kept.has(url));
+
+    const { error } = await supabase
+      .from("site_content")
+      .upsert({ key: "store", data: store, updated_at: new Date().toISOString() });
+    if (error) return failed(error.message);
+    await Promise.all(dropped.map((url) => removeMedia(supabase, url)));
+    refreshSite("/admin/store");
+    return done;
+  });
+}
+
 /* ------------------------------- About & Contact ------------------------------- */
 
 async function savePage(key: "about" | "contact", data: Record<string, string>) {
@@ -128,14 +171,15 @@ async function savePage(key: "about" | "contact", data: Record<string, string>) 
 }
 
 // Longer fields hold paragraphs; everything else is a line or two
-const ABOUT_LONG = new Set<keyof AboutContent>(["story", "aboutZayitText", "mission", "vision", "closingText"]);
+const ABOUT_LONG = new Set<keyof AboutContent>(["story", "coFounderBio", "aboutZayitText", "mission", "vision", "closingText"]);
+const ABOUT_PHOTOS = new Set<keyof AboutContent>(["photo", "coFounderPhoto"]);
 
 export async function saveAbout(input: AboutContent) {
   return run(async () => {
     const data = Object.fromEntries(
       (Object.keys(input) as (keyof AboutContent)[]).map((key) => [
         key,
-        clean(input[key], key === "photo" ? 1000 : ABOUT_LONG.has(key) ? 3000 : 200),
+        clean(input[key], ABOUT_PHOTOS.has(key) ? 1000 : ABOUT_LONG.has(key) ? 3000 : 200),
       ])
     );
     if (!data.photo) return failed("Add the founder’s photo.");

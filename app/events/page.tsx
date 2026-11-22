@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirectIfHidden } from "@/lib/content";
 import CommunityEvents from "@/components/sections/community-events";
 
 export const metadata: Metadata = {
@@ -8,6 +9,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/events" },
 };
 
-export default function EventsPage() {
+// Visitors are sent to the home page while the admin has this page hidden
+export default async function EventsPage() {
+  await redirectIfHidden("events");
   return <CommunityEvents />;
 }

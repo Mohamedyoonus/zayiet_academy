@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirectIfHidden } from "@/lib/content";
 import FAQ from "@/components/sections/faq";
 
 export const metadata: Metadata = {
@@ -8,6 +9,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/faq" },
 };
 
-export default function FAQPage() {
+// Visitors are sent to the home page while the admin has this page hidden
+export default async function FAQPage() {
+  await redirectIfHidden("faq");
   return <FAQ />;
 }

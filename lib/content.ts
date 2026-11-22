@@ -1,6 +1,9 @@
 import { unstable_cache } from "next/cache";
+import { redirect } from "next/navigation";
 import { createPublicClient } from "@/lib/supabase/server";
 import { supabaseConfigured } from "@/lib/supabase/config";
+import { DEFAULT_LAYOUT, normalizeLayout, type LayoutContent, type PageId } from "@/lib/site-layout";
+import { normalizeStore, type StoreContent } from "@/lib/store";
 import type { Course, GalleryItem } from "@/types";
 
 // Website content that the admin edits (English only). Every page reads it
@@ -18,16 +21,26 @@ export type HeroContent = {
   stats: HeroStat[];
 };
 
-/** About page text and founder photo. Keys match the `about` dictionary section, so saved values override it. */
+/** About page text and the founders' photos. Keys match the `about` dictionary section, so saved values override it. */
 export type AboutContent = {
+  /** Founder's photo */
   photo: string;
-  /** Caption on the photo, e.g. "— Chalz Simon, Founder" */
+  /** Under the founder's highlighted quote, e.g. "— Chalz Simon, Founder" */
   quoteBy: string;
+  /** Label above the founder's story, e.g. "The Founder's Story" */
   eyebrow: string;
+  /** Founder's name */
   title: string;
+  /** Line under the founder's name */
   highlight: string;
   /** Paragraphs separated by an empty line; the last one is shown as a quote */
   story: string;
+  founderRole: string;
+  coFounderPhoto: string;
+  coFounderName: string;
+  coFounderRole: string;
+  /** Paragraphs separated by an empty line */
+  coFounderBio: string;
   aboutZayitTitle: string;
   aboutZayitText: string;
   aboutZayitTagline: string;
@@ -68,10 +81,14 @@ export type SiteContent = {
   contact: Partial<ContactContent> | null;
   courses: Course[] | null;
   gallery: GalleryItem[] | null;
+  /** Which pages and home sections are shown (always filled in; defaults show everything) */
+  layout: LayoutContent;
+  /** Store products and settings (null: show the starting products) */
+  store: StoreContent | null;
 };
 
 /** The keys stored in the site_content table */
-export type ContentKey = "hero" | "about" | "contact";
+export type ContentKey = "hero" | "about" | "contact" | "layout" | "store";
 
 export const CONTENT_TAG = "site-content";
 
@@ -117,7 +134,15 @@ export function courseFromRow(row: CourseRow): Course {
   };
 }
 
-const EMPTY: SiteContent = { hero: null, about: null, contact: null, courses: null, gallery: null };
+export const EMPTY_CONTENT: SiteContent = {
+  hero: null,
+  about: null,
+  contact: null,
+  courses: null,
+  gallery: null,
+  layout: DEFAULT_LAYOUT,
+  store: null,
+};
 
 const loadContent = unstable_cache(
   async (): Promise<SiteContent> => {
@@ -140,6 +165,8 @@ const loadContent = unstable_cache(
       // The enroll form and class finder need at least one course, so an empty list keeps the defaults
       courses: courseRows.length ? courseRows.map(courseFromRow) : null,
       gallery: (gallery.data ?? []) as GalleryRow[],
+      layout: normalizeLayout(page("layout")),
+      store: normalizeStore(page("store")),
     };
   },
   ["site-content"],
@@ -148,11 +175,19 @@ const loadContent = unstable_cache(
 );
 
 export async function getSiteContent(): Promise<SiteContent> {
-  if (!supabaseConfigured) return EMPTY;
+  if (!supabaseConfigured) return EMPTY_CONTENT;
   try {
-    return await loadContent();
+    const content = await loadContent();
+    // A copy cached before page visibility existed has no layout: show everything
+    return { ...content, layout: content.layout ?? DEFAULT_LAYOUT, store: content.store ?? null };
   } catch (error) {
     console.error("Could not load content from Supabase, showing the defaults:", error);
-    return EMPTY;
+    return EMPTY_CONTENT;
   }
+}
+
+/** For a page the admin can hide: visitors who open it while it's hidden go to the home page */
+export async function redirectIfHidden(page: PageId) {
+  const { layout } = await getSiteContent();
+  if (layout.hiddenPages.includes(page)) redirect("/");
 }

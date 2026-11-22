@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirectIfHidden } from "@/lib/content";
 import ArtClasses from "@/components/sections/art-classes";
 
 export const metadata: Metadata = {
@@ -8,6 +9,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/classes" },
 };
 
-export default function ClassesPage() {
+// Visitors are sent to the home page while the admin has this page hidden
+export default async function ClassesPage() {
+  await redirectIfHidden("classes");
   return <ArtClasses />;
 }

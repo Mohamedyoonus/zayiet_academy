@@ -16,6 +16,11 @@ const DEFAULT_ABOUT: AboutContent = {
   title: en.about.title,
   highlight: en.about.highlight,
   story: en.about.story,
+  founderRole: en.about.founderRole,
+  coFounderPhoto: "",
+  coFounderName: en.about.coFounderName,
+  coFounderRole: en.about.coFounderRole,
+  coFounderBio: en.about.coFounderBio,
   aboutZayitTitle: en.about.aboutZayitTitle,
   aboutZayitText: en.about.aboutZayitText,
   aboutZayitTagline: en.about.aboutZayitTagline,
@@ -37,7 +42,10 @@ export default async function AboutAdminPage() {
 
   return (
     <>
-      <PageHeader title="About page" description="The founder’s story, About Zayit Academy, Mission, Vision and the closing words." />
+      <PageHeader
+        title="About page"
+        description="About Zayit Academy, Mission, Vision, the founder and co-founder, and the closing words."
+      />
       <AboutForm initial={withSaved(DEFAULT_ABOUT, data?.data as Partial<AboutContent> | undefined)} />
     </>
   );

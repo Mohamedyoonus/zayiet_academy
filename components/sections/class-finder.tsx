@@ -25,6 +25,7 @@ import SectionHeading from "@/components/ui/section-heading";
 import { buttonVariants } from "@/components/ui/button";
 import { cn, formatINR } from "@/lib/utils";
 import { useData, useT } from "@/hooks/use-i18n";
+import { useShownLink } from "@/hooks/use-content";
 import { fmt, type Dictionary } from "@/lib/i18n";
 
 type Option = { value: string; label: string; hint?: string; icon: LucideIcon };
@@ -81,6 +82,7 @@ const slide = {
 function Result({ answers, onRestart }: { answers: Answers; onRestart: () => void }) {
   const t = useT().classFinder;
   const { courses, admissionNote } = useData();
+  const shown = useShownLink();
 
   if (answers.age === "16+") {
     return (
@@ -92,9 +94,11 @@ function Result({ answers, onRestart }: { answers: Answers; onRestart: () => voi
         <h3 className="mt-3 font-display text-2xl font-medium text-charcoal-900 sm:text-3xl">{t.olderTitle}</h3>
         <p className="mx-auto mt-3 max-w-md text-charcoal-500">{t.olderText}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <Link href="/contact" className={buttonVariants({ size: "md" })}>
-            {t.contactUs} <ArrowRight className="h-4 w-4" />
-          </Link>
+          {shown("/contact") && (
+            <Link href="/contact" className={buttonVariants({ size: "md" })}>
+              {t.contactUs} <ArrowRight className="h-4 w-4" />
+            </Link>
+          )}
           <button type="button" onClick={onRestart} className={buttonVariants({ size: "md", variant: "outline" })}>
             <RotateCcw className="h-4 w-4" /> {t.retake}
           </button>

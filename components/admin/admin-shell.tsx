@@ -4,7 +4,18 @@ import { useEffect, type ReactNode } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { ExternalLink, Handshake, Images, Inbox, LayoutTemplate, Palette, PhoneCall, UserRound } from "lucide-react";
+import {
+  ExternalLink,
+  Handshake,
+  Images,
+  Inbox,
+  Layers,
+  LayoutTemplate,
+  Palette,
+  PhoneCall,
+  ShoppingBag,
+  UserRound,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import NavigationProgress from "@/components/admin/nav-progress";
 import SignOutButton from "@/components/admin/sign-out-button";
@@ -21,9 +32,11 @@ const NAV_GROUPS = [
   {
     label: "Website",
     items: [
+      { href: "/admin/pages", label: "Pages & sections", icon: Layers },
       { href: "/admin/hero", label: "Hero section", icon: LayoutTemplate },
       { href: "/admin/classes", label: "Art Classes", icon: Palette },
       { href: "/admin/gallery", label: "Gallery", icon: Images },
+      { href: "/admin/store", label: "Store", icon: ShoppingBag },
       { href: "/admin/about", label: "About page", icon: UserRound },
       { href: "/admin/contact", label: "Contact details", icon: PhoneCall },
     ],

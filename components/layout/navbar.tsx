@@ -12,25 +12,13 @@ import { cn, scrollToHash } from "@/lib/utils";
 import { useHashScroll } from "@/hooks/use-hash-scroll";
 import { useEffectEnabled } from "@/hooks/use-settings";
 import { useData, useI18n } from "@/hooks/use-i18n";
+import { useShownLink } from "@/hooks/use-content";
+import { setScrollLock } from "@/lib/scroll-lock";
 
 type Splash = { id: number; href: string; scope: "desktop" | "mobile"; x: number; y: number };
 
-/**
- * Stops the page scrolling behind the mobile menu. The page scrolls on <html>
- * here (globals.css gives html `overflow-x: hidden`), so that's what gets
- * locked; the scrollbar's width is kept as padding so nothing jumps sideways.
- */
-function setScrollLock(locked: boolean) {
-  const root = document.documentElement;
-  if (locked) {
-    const scrollbar = window.innerWidth - root.clientWidth;
-    root.style.overflow = "hidden";
-    if (scrollbar > 0) root.style.paddingRight = `${scrollbar}px`;
-  } else {
-    root.style.overflow = "";
-    root.style.paddingRight = "";
-  }
-}
+/** The page mustn't scroll behind the open phone menu */
+const lockMenuScroll = (locked: boolean) => setScrollLock("menu", locked);
 
 // Theme-aware: brand (#A8BA8E), sage-400 (#93A57D), sage-500 (#7C8B6F) and a light brand tint (~#BFCDA8)
 const SPLASH_COLORS = [
@@ -134,6 +122,8 @@ export default function Navbar() {
   const pathname = usePathname();
   const { t, locale } = useI18n();
   const { nav: navItems } = useData();
+  // Buttons to pages the admin has hidden are left out (the menu lists are filtered already)
+  const shown = useShownLink();
   // Translated labels run longer than English, so the full menu needs a wider screen
   const wide = locale !== "en";
 
@@ -193,7 +183,7 @@ export default function Navbar() {
   // the Link's own navigation happen and useHashScroll picks it up on arrival.
   const handleNavClick = (href: string) => {
     // Release the menu's scroll lock first, so a same-page scroll below can move the page
-    setScrollLock(false);
+    lockMenuScroll(false);
     setOpen(false);
     setActive(href);
     if (!href.includes("#")) return;
@@ -217,8 +207,8 @@ export default function Navbar() {
       setMobileHovered(null);
       return;
     }
-    setScrollLock(true);
-    return () => setScrollLock(false);
+    lockMenuScroll(true);
+    return () => lockMenuScroll(false);
   }, [open]);
 
   // Whatever changes the page (a menu link, the logo, the browser's Back button), close the menu
@@ -307,17 +297,19 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Quick Fun Zone access on smaller screens (desktop has it in the nav) */}
-          <Link
-            href="/fun-zone"
-            onClick={() => handleNavClick("/fun-zone")}
-            className={cn(
-              "inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full bg-[linear-gradient(135deg,#E8B04B,#D9695F,#6B9AC4)] px-3 text-xs font-semibold text-white shadow-sm transition-transform active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 sm:text-sm",
-              wide ? "2xl:hidden" : "xl:hidden"
-            )}
-          >
-            <Palette className="h-4 w-4 shrink-0" />
-            {t.nav.funZone}
-          </Link>
+          {shown("/fun-zone") && (
+            <Link
+              href="/fun-zone"
+              onClick={() => handleNavClick("/fun-zone")}
+              className={cn(
+                "inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full bg-[linear-gradient(135deg,#E8B04B,#D9695F,#6B9AC4)] px-3 text-xs font-semibold text-white shadow-sm transition-transform active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-500 sm:text-sm",
+                wide ? "2xl:hidden" : "xl:hidden"
+              )}
+            >
+              <Palette className="h-4 w-4 shrink-0" />
+              {t.nav.funZone}
+            </Link>
+          )}
           <Link
             href="/settings"
             aria-label={t.nav.settings}
@@ -330,13 +322,15 @@ export default function Navbar() {
           >
             <SettingsIcon className="h-5 w-5 transition-transform duration-500 group-hover:rotate-90" />
           </Link>
-          <Link
-            href="/contact"
-            onClick={() => handleNavClick("/contact")}
-            className={cn(buttonVariants({ size: "sm" }), "hidden bg-brand text-header hover:bg-brand/90 sm:inline-flex")}
-          >
-            {t.common.enquire}
-          </Link>
+          {shown("/contact") && (
+            <Link
+              href="/contact"
+              onClick={() => handleNavClick("/contact")}
+              className={cn(buttonVariants({ size: "sm" }), "hidden bg-brand text-header hover:bg-brand/90 sm:inline-flex")}
+            >
+              {t.common.enquire}
+            </Link>
+          )}
           <button
             aria-label={t.nav.openMenu}
             className={cn(
@@ -490,19 +484,21 @@ export default function Navbar() {
           </motion.div>
         </nav>
 
-        {/* Always visible at the bottom, clear of the phone's home bar */}
-        <div
-          className="container-academy shrink-0 border-t border-charcoal-900/5 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 sm:px-6"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <Link
-            href="/contact"
-            onClick={() => handleNavClick("/contact")}
-            className={cn(buttonVariants(), "w-full bg-brand text-header hover:bg-brand/90")}
+        {/* Always visible at the bottom, clear of the phone's home bar (unless Contact is hidden) */}
+        {shown("/contact") && (
+          <div
+            className="container-academy shrink-0 border-t border-charcoal-900/5 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 sm:px-6"
+            onClick={(e) => e.stopPropagation()}
           >
-            {t.common.enquire}
-          </Link>
-        </div>
+            <Link
+              href="/contact"
+              onClick={() => handleNavClick("/contact")}
+              className={cn(buttonVariants(), "w-full bg-brand text-header hover:bg-brand/90")}
+            >
+              {t.common.enquire}
+            </Link>
+          </div>
+        )}
       </motion.div>
     </header>
   );

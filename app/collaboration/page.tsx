@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { redirectIfHidden } from "@/lib/content";
 import Collaboration from "@/components/sections/collaboration";
 
 export const metadata: Metadata = {
@@ -8,6 +9,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/collaboration" },
 };
 
-export default function CollaborationPage() {
+// Visitors are sent to the home page while the admin has this page hidden
+export default async function CollaborationPage() {
+  await redirectIfHidden("collaboration");
   return <Collaboration />;
 }
