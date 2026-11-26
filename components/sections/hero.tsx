@@ -319,83 +319,88 @@ export default function Hero() {
             className="bottom-2 right-[10%] hidden h-10 w-10 sm:block lg:right-[16%]"
           />
 
-          {/* Eyebrow */}
+          {/* The eyebrow ("Zayit Academy") and the big title are one heading, so the
+              page's main heading names the academy for search engines; it looks the same */}
+          <h1>
+            {/* Eyebrow */}
 
-          <motion.span
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.5,
-              ease,
-            }}
-            className="
-              eyebrow
-              text-xs
-              sm:text-sm
-            "
-          >
-            <span className="h-1 w-1 rounded-full bg-sage-500" />
-            {hero.eyebrow}
-          </motion.span>
+            <motion.span
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.5,
+                ease,
+              }}
+              className="
+                eyebrow
+                text-xs
+                sm:text-sm
+              "
+            >
+              <span className="h-1 w-1 rounded-full bg-sage-500" />
+              {hero.eyebrow}
+            </motion.span>{" "}
 
-          {/* Heading */}
+            {/* Title */}
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.7,
-              delay: 0.08,
-              ease,
-            }}
-            className="
-              mt-4
-              max-w-2xl
-              font-display
-              text-[2.65rem]
-              font-medium
-              leading-[0.98]
-              tracking-tight
-              text-charcoal-900
+            <motion.span
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.7,
+                delay: 0.08,
+                ease,
+              }}
+              className="
+                mt-4
+                block
+                max-w-2xl
+                font-display
+                text-[2.65rem]
+                font-medium
+                leading-[0.98]
+                tracking-tight
+                text-charcoal-900
 
-              sm:mt-5
-              sm:text-5xl
+                sm:mt-5
+                sm:text-5xl
 
-              md:text-6xl
+                md:text-6xl
 
-              lg:mt-4
-              lg:text-[3.45rem]
-              lg:leading-[0.94]
+                lg:mt-4
+                lg:text-[3.45rem]
+                lg:leading-[0.94]
 
-              xl:text-[3.9rem]
+                xl:text-[3.9rem]
 
-              2xl:text-[4.25rem]
-            "
-          >
-            {hero.titleBefore && <>{hero.titleBefore} </>}
-            <span className="relative inline-block italic text-sage-700">
-              {hero.titleHighlight}
-              <svg
-                aria-hidden
-                viewBox="0 0 120 12"
-                preserveAspectRatio="none"
-                fill="none"
-                className="pointer-events-none absolute -bottom-1 left-0 h-2.5 w-full"
-              >
-                <motion.path
-                  d="M2 8 Q 12 2 22 8 T 42 8 T 62 8 T 82 8 T 102 8 T 118 7"
-                  stroke={CRAYON.coral}
-                  strokeWidth={3}
-                  strokeLinecap="round"
-                  vectorEffect="non-scaling-stroke"
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: 1 }}
-                  transition={{ duration: 0.9, delay: 0.7, ease: "easeInOut" }}
-                />
-              </svg>
-            </span>
-            {hero.titleAfter && <> {hero.titleAfter}</>}
-          </motion.h1>
+                2xl:text-[4.25rem]
+              "
+            >
+              {hero.titleBefore && <>{hero.titleBefore} </>}
+              <span className="relative inline-block italic text-sage-700">
+                {hero.titleHighlight}
+                <svg
+                  aria-hidden
+                  viewBox="0 0 120 12"
+                  preserveAspectRatio="none"
+                  fill="none"
+                  className="pointer-events-none absolute -bottom-1 left-0 h-2.5 w-full"
+                >
+                  <motion.path
+                    d="M2 8 Q 12 2 22 8 T 42 8 T 62 8 T 82 8 T 102 8 T 118 7"
+                    stroke={CRAYON.coral}
+                    strokeWidth={3}
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 0.9, delay: 0.7, ease: "easeInOut" }}
+                  />
+                </svg>
+              </span>
+              {hero.titleAfter && <> {hero.titleAfter}</>}
+            </motion.span>
+          </h1>
 
           {/* Description */}
 

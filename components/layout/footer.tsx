@@ -75,6 +75,8 @@ export default function Footer() {
           <div className="mt-3 sm:mt-4 max-w-xs space-y-1 text-xs sm:text-sm text-white/70">
             <p className="font-medium text-white/90">Create with Purpose. Grow with Confidence.</p>
             <p className="text-sage-300">Spreading Peace Through Art.</p>
+            {/* The address written out, so searches for "zayitacademy" (one word) match the site */}
+            <p className="pt-1 text-white/50">www.zayitacademy.com</p>
           </div>
           {socials.length > 0 && (
             <div className="mt-6 flex gap-3">

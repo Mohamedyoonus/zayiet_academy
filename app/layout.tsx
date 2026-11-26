@@ -7,8 +7,9 @@ import { I18nProvider } from "@/hooks/use-i18n";
 import { settingsBootScript } from "@/lib/settings";
 import { loadDictionary } from "@/lib/i18n";
 import { DEFAULT_LOCALE, LOCALE_COOKIE, getLanguage, isLocale, scriptFontHref } from "@/lib/i18n/config";
-import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from "@/lib/site";
-import { getSiteContent } from "@/lib/content";
+import { SITE_ALTERNATE_NAMES, SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_TITLE, SITE_URL } from "@/lib/site";
+import { getSiteContent, type SiteContent } from "@/lib/content";
+import { phoneDigits, webLink } from "@/lib/contact";
 import { ContentProvider } from "@/hooks/use-content";
 import SiteChrome from "@/components/layout/site-chrome";
 import { ToastProvider } from "@/components/admin/toast";
@@ -22,30 +23,87 @@ const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakart
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   // Pages set a short title ("About") and get " — Zayit Academy" added
-  title: { default: `${SITE_NAME} — ${SITE_TAGLINE}`, template: `%s — ${SITE_NAME}` },
+  title: { default: SITE_TITLE, template: `%s — ${SITE_NAME}` },
   description: SITE_DESCRIPTION,
-  keywords: ["art academy", "art classes", "drawing classes", "painting classes", "Zayit Academy", "art workshop", "Bangalore"],
+  applicationName: SITE_NAME,
+  keywords: [
+    "Zayit Academy",
+    "ZayitAcademy",
+    "zayitacademy",
+    "art academy Bangalore",
+    "art classes for kids",
+    "drawing classes",
+    "painting classes",
+    "art workshop",
+    "Bangalore",
+    "Bengaluru",
+  ],
   openGraph: {
-    title: `${SITE_NAME} — ${SITE_TAGLINE}`,
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
     siteName: SITE_NAME,
     locale: "en_IN",
     type: "website",
   },
+  // Search Console's "HTML tag" check: set NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION in Vercel to its code
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
-// Tells Google who the academy is, so searches for the name can show it as an organisation
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "EducationalOrganization",
-  name: SITE_NAME,
-  url: SITE_URL,
-  logo: `${SITE_URL}/assets/logo_only.png`,
-  slogan: SITE_TAGLINE,
-  description: SITE_DESCRIPTION,
-  founder: { "@type": "Person", name: "Chalz Simon" },
-  address: { "@type": "PostalAddress", addressLocality: "Bangalore", addressRegion: "Karnataka", addressCountry: "IN" },
-};
+/**
+ * Tells Google who the academy is: its name and the other ways it's written
+ * (so "zayitacademy" finds it too), the site's name for search results, the
+ * logo, and the contact details and social pages saved in Admin → Contact details.
+ */
+function siteJsonLd(contact: SiteContent["contact"]) {
+  const phone = phoneDigits(contact?.phoneValue);
+  const email = contact?.emailValue && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.emailValue) ? contact.emailValue : undefined;
+  // Profile addresses without tracking bits (e.g. Instagram's "?utm_source=qr"), as Google expects
+  const socials = [contact?.instagram, contact?.facebook, contact?.youtube]
+    .map((link) => webLink(link)?.split(/[?#]/)[0])
+    .filter(Boolean);
+  const home = `${SITE_URL}/`;
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "EducationalOrganization",
+        "@id": `${home}#organization`,
+        name: SITE_NAME,
+        alternateName: SITE_ALTERNATE_NAMES,
+        url: home,
+        logo: { "@type": "ImageObject", url: `${SITE_URL}/assets/logo_only.png`, width: 472, height: 472 },
+        image: `${SITE_URL}/opengraph-image.jpg`,
+        slogan: SITE_TAGLINE,
+        description: SITE_DESCRIPTION,
+        founder: { "@type": "Person", name: "Chalz Simon" },
+        address: {
+          "@type": "PostalAddress",
+          ...(contact?.addressValue ? { streetAddress: contact.addressValue } : {}),
+          addressLocality: "Bengaluru",
+          addressRegion: "Karnataka",
+          addressCountry: "IN",
+        },
+        areaServed: { "@type": "City", name: "Bengaluru" },
+        ...(phone ? { telephone: `+${phone}` } : {}),
+        ...(email ? { email } : {}),
+        ...(socials.length ? { sameAs: socials } : {}),
+      },
+      {
+        // The name Google shows above results, instead of "zayitacademy.com"
+        "@type": "WebSite",
+        "@id": `${home}#website`,
+        name: SITE_NAME,
+        alternateName: SITE_ALTERNATE_NAMES,
+        url: home,
+        inLanguage: "en-IN",
+        publisher: { "@id": `${home}#organization` },
+      },
+    ],
+  };
+}
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   // The visitor's language (chosen on /settings) is kept in a cookie, so pages
@@ -65,7 +123,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         {/* Applies saved theme / text size before first paint (no flash of the default) */}
         <script dangerouslySetInnerHTML={{ __html: settingsBootScript }} />
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
+        <script
+          type="application/ld+json"
+          // "<" escaped so text saved in the admin can never close the script tag
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd(content.contact)).replace(/</g, "\\u003c") }}
+        />
         {language.font && (
           <link id={`font-script-${locale}`} rel="stylesheet" href={scriptFontHref(language.font)} />
         )}
